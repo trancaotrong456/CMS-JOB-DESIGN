@@ -109,65 +109,74 @@ function cms_seed_asset($key, $filename, $title, $alt) {
     return (int) $attachment_id;
 }
 
-function cms_seed_upsert_post($post_type, $key, array $post_data, $fallback_slug = '') {
-    $found = [];
-    if ($fallback_slug) {
-        $by_slug = get_page_by_path($fallback_slug, OBJECT, $post_type);
-        if ($by_slug) {
-            $found = [(int) $by_slug->ID];
-        }
+function cms_seed_create_once($post_type, $key, array $post_data, $fallback_slug = '') {
+    global $cms_seed_created_posts, $cms_seed_conflicts;
+
+    $cms_seed_created_posts = isset($cms_seed_created_posts) ? $cms_seed_created_posts : [];
+    $cms_seed_conflicts = isset($cms_seed_conflicts) ? $cms_seed_conflicts : [];
+
+    $seeded = get_posts([
+        'post_type'        => $post_type,
+        'post_status'      => ['publish', 'draft', 'pending', 'expired', 'private', 'future'],
+        'numberposts'      => 1,
+        'fields'           => 'ids',
+        'meta_key'         => '_cms_shared_seed_key',
+        'meta_value'       => $key,
+        'suppress_filters' => true,
+    ]);
+    if ($seeded) {
+        $cms_seed_created_posts[(int) $seeded[0]] = false;
+        return (int) $seeded[0];
     }
-    if (!$found) {
-        $found = get_posts([
+
+    $conflict = null;
+    if ($fallback_slug) {
+        $slug_matches = get_posts([
             'post_type'        => $post_type,
             'post_status'      => ['publish', 'draft', 'pending', 'expired', 'private', 'future'],
             'numberposts'      => 1,
+            'name'             => $fallback_slug,
             'fields'           => 'ids',
-            'meta_key'         => '_cms_shared_seed_key',
-            'meta_value'       => $key,
             'suppress_filters' => true,
         ]);
+        $conflict = $slug_matches ? get_post((int) $slug_matches[0]) : null;
     }
-    if (!$found && !empty($post_data['post_title']) && $post_type === 'job_listing') {
-        $candidates = get_posts([
+    if (!$conflict && !empty($post_data['post_title'])) {
+        $same_title = get_posts([
             'post_type'        => $post_type,
             'post_status'      => ['publish', 'draft', 'pending', 'expired', 'private', 'future'],
-            'numberposts'      => -1,
+            'numberposts'      => 1,
+            'title'            => $post_data['post_title'],
             'fields'           => 'ids',
             'suppress_filters' => true,
         ]);
-        foreach ($candidates as $candidate_id) {
-            if (get_the_title($candidate_id) === $post_data['post_title']) {
-                $found = [(int) $candidate_id];
-                break;
-            }
-        }
+        $conflict = $same_title ? get_post((int) $same_title[0]) : null;
+    }
+    if ($conflict) {
+        $cms_seed_conflicts[] = [
+            'type'  => $post_type,
+            'title' => $post_data['post_title'],
+            'id'    => (int) $conflict->ID,
+        ];
+        return 0;
     }
 
-    if ($found) {
-        $post_data['ID'] = (int) $found[0];
-    }
     $post_id = wp_insert_post(wp_slash($post_data), true);
     if (is_wp_error($post_id)) {
         throw new RuntimeException($post_id->get_error_message());
     }
-    update_post_meta($post_id, '_cms_shared_seed_key', $key);
-
-    if ($post_type === 'job_listing') {
-        global $wpdb;
-        $duplicates = $wpdb->get_col($wpdb->prepare(
-            "SELECT ID FROM {$wpdb->posts} WHERE post_type = %s AND post_title = %s AND ID <> %d",
-            $post_type,
-            $post_data['post_title'],
-            $post_id
-        ));
-        foreach ($duplicates as $duplicate_id) {
-            if (get_post_meta((int) $duplicate_id, '_cms_shared_seed_key', true) === $key) {
-                wp_delete_post((int) $duplicate_id, true);
-            }
-        }
+    if (!$post_id) {
+        return 0;
     }
+
+    add_post_meta($post_id, '_cms_shared_seed_key', $key, true);
+    $cms_seed_created_posts[(int) $post_id] = true;
     return (int) $post_id;
+}
+
+function cms_seed_is_new_post($post_id) {
+    global $cms_seed_created_posts;
+    return !empty($cms_seed_created_posts[(int) $post_id]);
 }
 function cms_seed_image_html($attachment_id, $alt, $class = '') {
     $url = wp_get_attachment_image_url($attachment_id, 'full');
@@ -211,7 +220,7 @@ foreach ($job_rows as $row) {
     if ($slug === 'chief-operating-officer-hotel-resort-chain') {
         $body .= $detail_placeholder;
     }
-    $job_id = cms_seed_upsert_post('job_listing', 'job:' . $slug, [
+    $job_id = cms_seed_create_once('job_listing', 'job:' . $slug, [
         'post_type'      => 'job_listing',
         'post_status'    => 'publish',
         'post_title'     => $title,
@@ -223,19 +232,23 @@ foreach ($job_rows as $row) {
         'comment_status' => 'closed',
         'ping_status'    => 'closed',
     ], $slug);
+    if (!$job_id) {
+        continue;
+    }
+    $job_ids[] = $job_id;
+    if (!cms_seed_is_new_post($job_id)) {
+        continue;
+    }
+
     update_post_meta($job_id, '_company_name', $company);
     update_post_meta($job_id, '_job_location', 'Ho Chi Minh City');
-    update_post_meta($job_id, '_job_expires', '');
-    delete_post_meta($job_id, '_job_expires');
     wp_set_object_terms($job_id, [$job_type_id], 'job_listing_type', false);
     wp_set_object_terms($job_id, [$job_category_id], 'job_listing_category', false);
     if ($slug === 'chief-operating-officer-hotel-resort-chain') {
         update_post_meta($job_id, '_cms_reference_staff_rating', '4.0');
         update_post_meta($job_id, '_cms_reference_company_photo_count', '6');
     }
-    $job_ids[] = $job_id;
 }
-
 $assets = [
     'project' => cms_seed_asset('news-project-development', 'news-project-development.png', 'Project Development — Kyoto restaurant exterior', 'Traditional Kyoto restaurant exterior'),
     'restaurant' => cms_seed_asset('news-restaurant-operations', 'news-restaurant-hotel-operations.png', 'Restaurant and hotel operations — Kyoto', 'Japanese restaurant entrance and guest'),
@@ -261,7 +274,7 @@ foreach ($news_rows as $index => $row) {
     $timestamp = current_time('timestamp') - ($index * 60);
     $date = wp_date('Y-m-d H:i:s', $timestamp);
     $content = $paragraph . $paragraph . $paragraph;
-    $post_id = cms_seed_upsert_post('post', 'news:' . $slug, [
+    $post_id = cms_seed_create_once('post', 'news:' . $slug, [
         'post_type'      => 'post',
         'post_status'    => 'publish',
         'post_title'     => $title,
@@ -273,16 +286,20 @@ foreach ($news_rows as $index => $row) {
         'post_category'  => $news_category,
         'comment_status' => 'closed',
         'ping_status'    => 'closed',
-    ]);
-    wp_set_post_categories($post_id, $news_category, false);
-    set_post_thumbnail($post_id, $image_id);
+    ], $slug);
+    if (!$post_id) {
+        continue;
+    }
     $news_ids[] = $post_id;
+    if (cms_seed_is_new_post($post_id)) {
+        wp_set_post_categories($post_id, $news_category, false);
+        set_post_thumbnail($post_id, $image_id);
+    }
 }
-
 $detail_slug = 'chief-operating-officer-hotel-resort-chain-news';
 $detail_content = $paragraph . cms_seed_image_html($assets['project'], 'Japanese restaurant exterior')
     . $paragraph . cms_seed_image_html($assets['consulting'], 'Cherry blossoms and lanterns in Japan') . $paragraph;
-$detail_post_id = cms_seed_upsert_post('post', 'news:reference-detail', [
+$detail_post_id = cms_seed_create_once('post', 'news:reference-detail', [
     'post_type'      => 'post',
     'post_status'    => 'publish',
     'post_title'     => 'CHIEF OPERATING OFFICER HOTEL/ RESORT CHAIN',
@@ -294,11 +311,12 @@ $detail_post_id = cms_seed_upsert_post('post', 'news:reference-detail', [
     'post_category'  => $news_category,
     'comment_status' => 'closed',
     'ping_status'    => 'closed',
-]);
-wp_set_post_categories($detail_post_id, $news_category, false);
-set_post_thumbnail($detail_post_id, $assets['project']);
-update_post_meta($detail_post_id, '_cms_reference_location', 'Ho Chi Minh City');
-
+], $detail_slug);
+if ($detail_post_id && cms_seed_is_new_post($detail_post_id)) {
+    wp_set_post_categories($detail_post_id, $news_category, false);
+    set_post_thumbnail($detail_post_id, $assets['project']);
+    update_post_meta($detail_post_id, '_cms_reference_location', 'Ho Chi Minh City');
+}
 $about_content = cms_seed_image_html($assets['torii'], 'Vermilion torii gate in a Japanese lake')
     . '<h2>Our Vision</h2><p>Create hotels and restaurants around the world that offer memorable experiences while building a lasting, positive relationship together with our guests, partners, team members and communities.</p>'
     . '<h2>Our Mission</h2><p>Share “Omotenashi” with the world.</p>'
@@ -309,7 +327,7 @@ $about_content = cms_seed_image_html($assets['torii'], 'Vermilion torii gate in 
     . '<h2>Established since</h2><p>April 1993</p><h2>Head Office</h2><p>Marunouchi 2-1-1, Chiyoda, Tokyo</p>'
     . '<h2>Capital</h2><p>100,000,000 JPY</p><h2>CEO</h2><p>Yutaka Noda</p>'
     . '<h2>Number of Employees</h2><p>Full time: 830 / Total: 1,600</p>';
-$about_id = cms_seed_upsert_post('page', 'page:about', [
+$about_id = cms_seed_create_once('page', 'page:about', [
     'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'About', 'post_name' => 'about',
     'post_content' => $about_content, 'comment_status' => 'closed', 'ping_status' => 'closed',
 ], 'about');
@@ -319,37 +337,34 @@ $contact_content = cms_seed_image_html($assets['contact'], 'Japanese street with
     . '<h2>For Employers</h2><p>Call our Sales Hotline</p><h3>Ho Chi Minh</h3><h3>Ha Noi</h3>'
     . '<h2>For Jobseekers</h2><p>Ask a question on our Facebook page.<br>Read our blog posts on interview and CV tips.</p>'
     . '<h2>Call us at</h2><p>Request a call from one of our Customer Love Account Managers. We’re ready to help you grow!</p>';
-$contact_id = cms_seed_upsert_post('page', 'page:contact', [
+$contact_id = cms_seed_create_once('page', 'page:contact', [
     'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Contact', 'post_name' => 'contact',
     'post_content' => $contact_content, 'comment_status' => 'closed', 'ping_status' => 'closed',
 ], 'contact');
 
-$news_page = get_page_by_path('blog', OBJECT, 'page');
-if (!$news_page) {
-    $news_page = get_page_by_path('news', OBJECT, 'page');
-}
-if ($news_page) {
-    $news_page_id = wp_update_post([
-        'ID' => (int) $news_page->ID,
-        'post_title' => 'News',
-        'post_name' => 'news',
-        'post_status' => 'publish',
-    ], true);
-    if (is_wp_error($news_page_id)) {
-        throw new RuntimeException($news_page_id->get_error_message());
-    }
-    update_post_meta($news_page_id, '_cms_shared_seed_key', 'page:news-index');
-    update_option('page_for_posts', (int) $news_page_id);
+$news_page_id = cms_seed_create_once('page', 'page:news-index', [
+    'post_type'      => 'page',
+    'post_status'    => 'publish',
+    'post_title'     => 'News',
+    'post_name'      => 'news',
+    'post_content'   => '',
+    'comment_status' => 'closed',
+    'ping_status'    => 'closed',
+], 'news');
+if ($news_page_id && !get_option('page_for_posts')) {
+    update_option('page_for_posts', $news_page_id);
 }
 
 $jobs_page = get_page_by_path('jobs', OBJECT, 'page');
-if ($jobs_page) {
+if ($jobs_page && !get_option('job_manager_jobs_page_id')) {
     update_option('job_manager_jobs_page_id', (int) $jobs_page->ID);
 }
-update_option('job_manager_enable_categories', '1');
-update_option('posts_per_page', 4);
-flush_rewrite_rules(false);
-
+if (get_option('job_manager_enable_categories', false) === false) {
+    add_option('job_manager_enable_categories', '1');
+}
+if (get_option('posts_per_page', false) === false) {
+    add_option('posts_per_page', 4);
+}
 $expired_count = (int) (new WP_Query([
     'post_type' => 'job_listing', 'post_status' => 'expired', 'posts_per_page' => 1,
     'fields' => 'ids', 'no_found_rows' => false,
@@ -364,6 +379,8 @@ $result = [
     'news_index_page' => isset($news_page_id) ? (int) $news_page_id : null,
     'seed_assets' => $assets,
     'expired_job_count_preserved' => $expired_count,
+    'created_post_ids' => array_keys(array_filter($cms_seed_created_posts)),
+    'conflicts_skipped' => $cms_seed_conflicts,
 ];
 if (defined('WP_CLI') && WP_CLI) {
     WP_CLI::log(wp_json_encode($result, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));

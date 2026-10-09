@@ -1,22 +1,26 @@
 ﻿# Shared CMS content
 
-This directory contains an idempotent WordPress seed and a sanitized SQL content export for local development.
+This directory contains an add-only WordPress API seed and a sanitized content snapshot for the shared reference data.
 
-## Seed the content
+## Recommended setup and sync
 
-Install WordPress with the JobScout theme, WP Job Manager, and WP Job Manager Extra Fields enabled. Put the seven files in `wp-content/uploads/seed-cms-content/` on the target site, then run from the WordPress root:
+For WAMP64, follow [the team setup guide](../docs/WAMP64-SETUP.md). The PowerShell sync creates a database backup outside the repository before invoking the seed. It does not import the SQL snapshot.
+
+The seed creates missing reference jobs, News posts, About/Contact/News pages, categories, settings that are absent, and the seven shared images. A post with the same seed key is left untouched on later runs. An unrelated post with a matching title or slug is reported as a conflict and preserved. Existing site options are not changed.
+
+With WP-CLI, the seed can also be run from the WordPress root:
 
 ```sh
 wp eval-file database/seed-cms-content.php
 ```
 
-The seed uses WordPress APIs, and can be run repeatedly. It creates or updates the six reference job listings, four News posts, one News Detail post, About and Contact pages, and the seven generated reference-style images in the media library. The WordPress site front page must be the existing Home page; the script configures the Jobs and News archive settings.
+Back up the database first when running it manually. WP Job Manager and its required taxonomies must be active.
 
-## Import the SQL content export
+## Sanitized SQL snapshot
 
-`cms_job_design.sql` contains WordPress content and selected non-sensitive options only. It excludes user accounts, user metadata, comments, and credentials. Install a local WordPress instance with the same `wp_` table prefix and required theme/plugins, create your own local administrator during setup, and import the SQL into that site's database. The administrator should have ID 1 so imported post authors resolve. Copy the media directory above to the same uploads path. If the local URL differs, update the `home` and `siteurl` options for that local instance.
+`cms_job_design.sql` contains selected content tables and safe settings only. It excludes user accounts, user metadata, comments, and credentials. Use it only with a newly created local WordPress database whose content tables are still empty and whose `wp_` prefix matches. Create a separate local administrator before importing, so imported author IDs resolve to that local admin. Copy the shared image directory from `wp-content/uploads/seed-cms-content/` into the same path in the new site.
 
-The export is intended as a development content transfer into a matching WordPress database, not as a complete WordPress installation or backup.
+Do not import this snapshot into an existing personal database. SQL import can collide with content IDs and is not the safe sync mechanism. The export is not a full WordPress backup or installation.
 
 ## Reference data limitations
 
