@@ -216,6 +216,10 @@ function jobscout_scripts() {
 
     wp_enqueue_style( 'owl-carousel', get_template_directory_uri(). '/css' . $build . '/owl.carousel' . $suffix . '.css', array(), '2.3.4' );
     wp_enqueue_style( 'jobscout', get_stylesheet_uri(), array(), JOBSCOUT_THEME_VERSION );
+
+    if ( is_page_template( 'page-news.php' ) || is_page( 'news' ) || ( is_home() && get_option( 'page_for_posts' ) && 'news' === get_post_field( 'post_name', get_option( 'page_for_posts' ) ) ) ) {
+        wp_enqueue_style( 'jobscout-news', get_template_directory_uri() . '/assets/css/news.css', array( 'jobscout' ), JOBSCOUT_THEME_VERSION );
+    }
     
     wp_enqueue_script( 'all', get_template_directory_uri() . '/js' . $build . '/all' . $suffix . '.js', array( 'jquery' ), '5.6.3', true );
     wp_enqueue_script( 'v4-shims', get_template_directory_uri() . '/js' . $build . '/v4-shims' . $suffix . '.js', array( 'jquery', 'all' ), '5.6.3', true );
@@ -241,6 +245,16 @@ function jobscout_scripts() {
 }
 endif;
 add_action( 'wp_enqueue_scripts', 'jobscout_scripts' );
+
+/** Use the dedicated News layout for the News page, including when it is the Posts Page. */
+function jobscout_news_template( $template ) {
+    if ( is_page( 'news' ) || ( is_home() && get_option( 'page_for_posts' ) && 'news' === get_post_field( 'post_name', get_option( 'page_for_posts' ) ) ) ) {
+        $news_template = get_template_directory() . '/page-news.php';
+        if ( file_exists( $news_template ) ) return $news_template;
+    }
+    return $template;
+}
+add_filter( 'template_include', 'jobscout_news_template', 99 );
 
 if( ! function_exists( 'jobscout_admin_scripts' ) ) :
 /**
