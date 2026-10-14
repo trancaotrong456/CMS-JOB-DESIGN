@@ -1,0 +1,329 @@
+/* ==========================================================================
+   Contact Us Page Scoped Styles (Nguyen Huu Phong)
+   Prefix: pds-contact-
+   ========================================================================== */
+
+/* Remove default theme padding/breadcrumbs/sidebars on Contact page */
+.pds-contact-page-body #content.site-content {
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
+}
+
+.pds-contact-page-body .breadcrumb-wrap,
+.pds-contact-page-body #secondary,
+.pds-contact-page-body .sidebar {
+    display: none !important;
+}
+
+.pds-contact-page-body #primary.content-area {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Ensure CONTACT in navigation displays active underline */
+.site-header .main-navigation .nav-menu li.menu-item a[href*="contact"] {
+    border-bottom: 2px solid var(--jobscout-orange, #f2761b);
+}
+
+.pds-contact-page {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Hero Section
+   -------------------------------------------------------------------------- */
+.pds-contact-hero {
+    position: relative;
+    width: 100%;
+    min-height: 380px;
+    background: #1f1b18 url('../images/contact-hero.png') center 42% / cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+}
+
+.pds-contact-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.22);
+}
+
+.pds-contact-hero-inner {
+    position: relative;
+    z-index: 2;
+    padding: 40px 20px;
+}
+
+.pds-contact-hero-title {
+    margin: 0;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: clamp(32px, 4.5vw, 48px);
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    line-height: 1.2;
+}
+
+/* --------------------------------------------------------------------------
+   Headquarters Address Section
+   -------------------------------------------------------------------------- */
+.pds-contact-hq {
+    background: #ffffff;
+    padding: 64px 24px 52px;
+    text-align: center;
+}
+
+.pds-contact-container {
+    width: min(1040px, 100%);
+    margin: 0 auto;
+}
+
+.pds-contact-hq-title {
+    margin: 0 0 14px;
+    color: #2b2725;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+.pds-contact-hq-address {
+    margin: 0;
+    color: #635f5c;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+   Two-Column Contact Channels
+   -------------------------------------------------------------------------- */
+.pds-contact-channels {
+    background: #f4f4f4;
+    padding: 68px 24px 80px;
+}
+
+.pds-contact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px 80px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.pds-contact-column {
+    text-align: center;
+}
+
+.pds-contact-col-title {
+    margin: 0 0 6px;
+    color: #2b2725;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.pds-contact-col-subtitle {
+    margin: 0 0 24px;
+    color: #635f5c;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.pds-contact-city-group {
+    margin-bottom: 18px;
+}
+
+.pds-contact-city-name {
+    margin: 0 0 4px;
+    color: #2b2725;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.pds-contact-phone {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.pds-contact-phone a {
+    color: #2b2725;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.pds-contact-phone a:hover,
+.pds-contact-phone a:focus-visible {
+    color: #f2761b;
+}
+
+.pds-contact-note {
+    margin-top: 26px;
+}
+
+.pds-contact-note p {
+    margin: 0;
+    color: #55514f;
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+.pds-contact-seeker-actions {
+    margin: 0 0 28px;
+}
+
+.pds-contact-action-item {
+    margin: 0 0 8px;
+    color: #55514f;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.pds-contact-link-orange {
+    color: #f2761b;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.15s ease, text-decoration 0.15s ease;
+}
+
+.pds-contact-link-orange:hover,
+.pds-contact-link-orange:focus-visible {
+    color: #d95f0e;
+    text-decoration: underline;
+}
+
+.pds-contact-seeker-call {
+    margin-top: 24px;
+}
+
+/* --------------------------------------------------------------------------
+   Newsletter Banner
+   -------------------------------------------------------------------------- */
+.pds-contact-newsletter {
+    background: #f2761b;
+    color: #ffffff;
+    padding: 30px 24px;
+}
+
+.pds-contact-newsletter-inner {
+    width: min(920px, 100%);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 32px;
+    align-items: center;
+}
+
+.pds-contact-newsletter-heading {
+    margin: 0;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.pds-contact-newsletter-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 150px;
+    gap: 16px;
+    align-items: center;
+}
+
+.pds-contact-newsletter-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 52px;
+    padding: 0 16px;
+    background: #ffffff;
+    border-radius: 1px;
+    gap: 12px;
+    cursor: text;
+}
+
+.pds-contact-newsletter-icon {
+    display: flex;
+    align-items: center;
+    color: #f2761b;
+    flex-shrink: 0;
+}
+
+.pds-contact-newsletter-field input {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    outline: 0;
+    color: #393431;
+    font-size: 14px;
+    background: transparent;
+    padding: 0;
+}
+
+.pds-contact-newsletter-field input::placeholder {
+    color: #92908e;
+}
+
+.pds-contact-newsletter-btn {
+    height: 52px;
+    padding: 0 24px;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    background: transparent;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 1px;
+    transition: background 0.18s ease, color 0.18s ease;
+}
+
+.pds-contact-newsletter-btn:hover,
+.pds-contact-newsletter-btn:focus-visible {
+    background: #ffffff;
+    color: #f2761b;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Adaptations
+   -------------------------------------------------------------------------- */
+@media (max-width: 860px) {
+    .pds-contact-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+    }
+
+    .pds-contact-newsletter-inner {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .pds-contact-newsletter-heading {
+        text-align: center;
+    }
+}
+
+@media (max-width: 580px) {
+    .pds-contact-newsletter-form {
+        grid-template-columns: 1fr;
+    }
+
+    .pds-contact-hero {
+        min-height: 260px;
+    }
+
+    .pds-contact-hq {
+        padding: 44px 20px 36px;
+    }
+
+    .pds-contact-channels {
+        padding: 48px 20px 60px;
+    }
+}
