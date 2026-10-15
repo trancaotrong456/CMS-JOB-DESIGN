@@ -31,3 +31,27 @@ wp-content/backups/
 # Local agent worktrees
 .kilo/
 .worktrees/
+
+# Machine-local WordPress configuration and environment
+/wp-config.local.php
+/wp-config.local.*.php
+/.env
+/.env.*
+!/.env.example
+
+# Local uploads (the shared reference seed media is tracked)
+/wp-content/uploads/*
+!/wp-content/uploads/seed-cms-content/
+!/wp-content/uploads/seed-cms-content/**
+/wp-content/debug.log
+/wp-content/uploads/debug.log
+
+# Personal database exports and backups
+/database/*.local.sql
+/database/*.private.sql
+/database/*.backup.sql
+/database/backups/
+/database/*.sql.gz
+*.sql.bak
+*.dump
+*.dump.gz
