@@ -81,7 +81,7 @@ get_header();
                 <!-- LEFT COLUMN: TORII GATE PHOTO -->
                 <div class="pds-about-col pds-about-col-media">
                     <div class="pds-about-image-wrapper">
-                        <img src="<?php echo esc_url( $torii_url ); ?>" alt="<?php echo esc_attr( $torii_alt ); ?>" class="pds-about-img" loading="lazy">
+                        <img src="<?php echo esc_url( $torii_url ); ?>" alt="<?php echo esc_attr( $torii_alt ); ?>" class="pds-about-img pds-about-img-torii" loading="lazy">
                     </div>
                 </div>
 
@@ -167,7 +167,7 @@ get_header();
                 <!-- RIGHT COLUMN: TOKYO TOWER PHOTO -->
                 <div class="pds-about-col pds-about-col-media">
                     <div class="pds-about-image-wrapper">
-                        <img src="<?php echo esc_url( $tokyo_url ); ?>" alt="<?php echo esc_attr( $tokyo_alt ); ?>" class="pds-about-img" loading="lazy">
+                        <img src="<?php echo esc_url( $tokyo_url ); ?>" alt="<?php echo esc_attr( $tokyo_alt ); ?>" class="pds-about-img pds-about-img-tokyo" loading="lazy">
                     </div>
                 </div>
             </div>

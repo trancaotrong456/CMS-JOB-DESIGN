@@ -90,7 +90,7 @@
    -------------------------------------------------------------------------- */
 .pds-about-vision-section {
     background: #ffffff;
-    padding: 64px 0 72px;
+    padding: 70px 0 80px;
 }
 
 .pds-about-main-title {
@@ -106,16 +106,27 @@
 .pds-about-two-col {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 56px;
+    gap: 52px;
+    align-items: stretch;
+}
+
+.pds-about-col-media {
+    display: flex;
     align-items: center;
+    justify-content: center;
+    height: 100%;
 }
 
 .pds-about-image-wrapper {
     width: 100%;
+    height: 100%;
+    min-height: 350px;
+    max-height: 390px;
     aspect-ratio: 4 / 3;
     overflow: hidden;
     background: #e9ecef;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+    border-radius: 2px;
 }
 
 .pds-about-img {
@@ -126,12 +137,24 @@
     transition: transform 0.3s ease;
 }
 
-.pds-about-info-block {
-    margin-bottom: 30px;
+.pds-about-img-torii {
+    object-position: center center;
 }
 
-.pds-about-info-block:last-child {
-    margin-bottom: 0;
+.pds-about-img-tokyo {
+    object-position: center 20%;
+}
+
+.pds-about-col-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    padding: 6px 0;
+}
+
+.pds-about-info-block {
+    margin: 0;
 }
 
 .pds-about-block-title {
@@ -159,7 +182,7 @@
    -------------------------------------------------------------------------- */
 .pds-about-management-section {
     background: #ffffff;
-    padding: 36px 0 70px;
+    padding: 40px 0 76px;
 }
 
 .pds-about-management-inner {
@@ -192,20 +215,20 @@
    -------------------------------------------------------------------------- */
 .pds-about-facts-section {
     background: #f4f5f7;
-    padding: 72px 0 80px;
+    padding: 80px 0 88px;
 }
 
 .pds-about-col-facts {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
     text-align: center;
-    padding: 10px 20px;
+    padding: 6px 16px;
 }
 
 .pds-about-fact-item {
-    margin-bottom: 26px;
-}
-
-.pds-about-fact-item:last-child {
-    margin-bottom: 0;
+    margin: 0;
 }
 
 .pds-about-fact-label {
@@ -332,12 +355,39 @@
 @media (max-width: 860px) {
     .pds-about-two-col {
         grid-template-columns: 1fr;
-        gap: 40px;
+        gap: 36px;
+        align-items: center;
     }
 
     .pds-about-col-media {
-        max-width: 540px;
+        max-width: 520px;
+        width: 100%;
         margin: 0 auto;
+        height: auto;
+    }
+
+    .pds-about-image-wrapper {
+        height: auto;
+        min-height: unset;
+        max-height: unset;
+        aspect-ratio: 4 / 3;
+    }
+
+    .pds-about-col-content,
+    .pds-about-col-facts {
+        height: auto;
+        justify-content: flex-start;
+        padding: 0;
+    }
+
+    .pds-about-info-block,
+    .pds-about-fact-item {
+        margin-bottom: 24px;
+    }
+
+    .pds-about-info-block:last-child,
+    .pds-about-fact-item:last-child {
+        margin-bottom: 0;
     }
 
     .pds-about-newsletter-inner {
