@@ -52,7 +52,9 @@ if ( ! empty( $tokyo_query ) ) {
     $tokyo_id = (int) $tokyo_query[0];
 }
 $tokyo_url = $tokyo_id ? wp_get_attachment_image_url( $tokyo_id, 'large' ) : content_url( '/uploads/seed-cms-content/about-tokyo-tower.png' );
-$tokyo_alt = $tokyo_id ? get_post_meta( $tokyo_id, '_wp_attachment_image_alt', true ) : __( 'Tokyo Tower above the city at blue hour', 'jobscout' );
+// Remove theme container wrapper to allow full-width edge-to-edge layout like footer
+remove_action( 'jobscout_content', 'jobscout_content_start' );
+remove_action( 'jobscout_before_footer', 'jobscout_content_end', 20 );
 
 get_header();
 ?>

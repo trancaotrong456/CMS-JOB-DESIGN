@@ -4,12 +4,17 @@
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   Reset & Page Container Setup
+   Reset & Page Container Setup - Full Width Edge-to-Edge Like Footer
    -------------------------------------------------------------------------- */
-.pds-about-page-body #content.site-content {
+.pds-about-page-body #page,
+.pds-about-page-body #acc-content,
+.pds-about-page-body #content,
+.pds-about-page-body #content.site-content,
+.pds-about-page-body #content.site-content > .container {
     padding: 0 !important;
     margin: 0 !important;
     max-width: 100% !important;
+    width: 100% !important;
 }
 
 .pds-about-page-body .breadcrumb-wrap,
@@ -34,6 +39,7 @@
 
 .pds-about-page {
     width: 100%;
+    max-width: 100%;
     margin: 0;
     padding: 0;
     background: #ffffff;
