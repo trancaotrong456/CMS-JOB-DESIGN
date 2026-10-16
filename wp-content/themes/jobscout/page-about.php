@@ -1,6 +1,11 @@
 <?php
 /**
- * Template Name: About
+ * page-about.php
+ *
+ * WordPress automatically selects this file for the page with slug "about"
+ * via template hierarchy: page-{slug}.php → page-{id}.php → page.php
+ * No manual template assignment in WP Admin required — works on every machine.
+ *
  * Description: Purpose-built About Us page for JobScout.
  *
  * @package JobScout
