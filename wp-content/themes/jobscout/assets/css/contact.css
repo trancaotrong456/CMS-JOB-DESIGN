@@ -3,11 +3,17 @@
    Prefix: pds-contact-
    ========================================================================== */
 
-/* Remove default theme padding/breadcrumbs/sidebars on Contact page */
 .pds-contact-page-body #content.site-content {
     padding: 0;
     margin: 0;
     max-width: 100%;
+}
+
+.pds-contact-page-body #content.site-content > .container {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 .pds-contact-page-body .breadcrumb-wrap,
