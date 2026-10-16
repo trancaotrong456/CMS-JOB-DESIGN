@@ -137,6 +137,9 @@ $news_query = new WP_Query([
 
     </main>
 
+    <!-- NEWSLETTER BANNER -->
+    <?php get_template_part('template-parts/pds-newsletter'); ?>
+
 </div>
 
 <?php get_footer(); ?>
