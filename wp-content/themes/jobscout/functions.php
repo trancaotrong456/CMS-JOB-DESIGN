@@ -86,3 +86,11 @@ if( jobscout_is_woocommerce_activated() ){
 if( jobscout_is_wp_job_manager_activated() ) :
 	require get_template_directory() . '/inc/wp-job-manager-filters.php';
 endif;
+add_action('wp_enqueue_scripts', function () {
+    wp_enqueue_style(
+        'pds-newsletter',
+        get_template_directory_uri() . '/assets/css/pds-newsletter.css',
+        [],
+        filemtime(get_template_directory() . '/assets/css/pds-newsletter.css')
+    );
+});

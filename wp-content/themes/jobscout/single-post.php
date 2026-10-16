@@ -137,7 +137,7 @@ get_header();
                                 <p class="pds-news-detail-related-meta"><?php echo esc_html( $related_categories ? $related_categories[0]->name : 'News' ); ?></p>
                                 <p class="pds-news-detail-related-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt( $related_id ), 18, '…' ) ); ?></p>
                                 <a class="pds-news-read-more"
-                                    href="<?php echo esc_url(get_permalink()); ?>">
+                                    href="<?php echo esc_url(get_permalink($related_id)); ?>">
                                     Read More
                                 </a>
                             </div>
@@ -150,7 +150,10 @@ get_header();
         wp_reset_postdata();
         endwhile; ?>
     </div>
+    
 </div>
+<!-- NEWSLETTER BANNER -->
+<?php get_template_part('template-parts/pds-newsletter'); ?>
 <script>
 (function () {
     var btn = document.querySelector('.pds-news-detail-share');
