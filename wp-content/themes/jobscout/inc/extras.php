@@ -165,8 +165,9 @@ if( ! function_exists( 'jobscout_primary_nagivation' ) ) :
 */
 function jobscout_primary_nagivation(){ 
 
-    $post_job_label  = get_theme_mod( 'post_job_label', __( 'Post Jobs', 'jobscout' ) );
-    $post_job_url    = get_theme_mod( 'post_job_url', '#' );
+    $post_job_label  = get_theme_mod( 'post_job_label', __( 'Submit Job', 'jobscout' ) );
+    $submit_page_id  = absint( get_option( 'job_manager_submit_job_form_page_id' ) );
+    $post_job_url    = get_theme_mod( 'post_job_url', $submit_page_id ? get_permalink( $submit_page_id ) : home_url( '/submit-job/' ) );
     ?>
     	<nav id="site-navigation" class="main-navigation" role="navigation" itemscope itemtype="https://schema.org/SiteNavigationElement">
         <button class="toggle-btn" data-toggle-target=".main-menu-modal" data-toggle-body-class="showing-main-menu-modal" aria-expanded="false" data-set-focus=".close-main-nav-toggle">
@@ -175,13 +176,7 @@ function jobscout_primary_nagivation(){
             <span class="toggle-bar"></span>
         </button>
             <?php
-    			wp_nav_menu( array(
-    				'theme_location' => 'primary',
-    				'menu_id'        => 'primary-menu',
-                    'menu_class'     => 'nav-menu',
-                    'container'      => false,
-                    'fallback_cb'    => 'jobscout_primary_menu_fallback',
-    			) );
+            jobscout_primary_menu_fallback();
     		?>
     	</nav><!-- #site-navigation -->
         <?php if( $post_job_label || $post_job_url ){ ?>
@@ -198,12 +193,46 @@ if( ! function_exists( 'jobscout_primary_menu_fallback' ) ) :
 /**
  * Fallback for primary menu
 */
-function jobscout_primary_menu_fallback(){
-    if( current_user_can( 'manage_options' ) ){
-        echo '<ul id="primary-menu" class="menu">';
-        echo '<li><a href="' . esc_url( admin_url( 'nav-menus.php' ) ) . '">' . esc_html__( 'Click here to add a menu', 'jobscout' ) . '</a></li>';
-        echo '</ul>';
+function jobscout_primary_menu_fallback( $menu_id = 'primary-menu' ){
+    $jobs_id  = absint( get_option( 'job_manager_jobs_page_id' ) );
+    $posts_id = absint( get_option( 'page_for_posts' ) );
+    $about    = get_page_by_path( 'about' );
+    $contact  = get_page_by_path( 'contact' );
+    $links = array(
+        __( 'Home', 'jobscout' )    => home_url( '/' ),
+        __( 'Jobs', 'jobscout' )    => $jobs_id ? get_permalink( $jobs_id ) : home_url( '/jobs/' ),
+        __( 'News', 'jobscout' )    => $posts_id ? get_permalink( $posts_id ) : home_url( '/news/' ),
+        __( 'About', 'jobscout' )   => $about ? get_permalink( $about ) : home_url( '/about/' ),
+        __( 'Contact', 'jobscout' ) => $contact ? get_permalink( $contact ) : home_url( '/contact/' ),
+    );
+    echo '<ul id="' . esc_attr( $menu_id ) . '" class="nav-menu">';
+    foreach ( $links as $label => $url ) {
+        $active = ( 'Home' === $label && is_front_page() ) ? ' class="current-menu-item"' : '';
+        echo '<li' . $active . '><a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a></li>';
     }
+    echo '</ul>';
+}
+endif;
+
+if( ! function_exists( 'jobscout_footer_menu_fallback' ) ) :
+function jobscout_footer_menu_fallback(){
+    $jobs_id  = absint( get_option( 'job_manager_jobs_page_id' ) );
+    $posts_id = absint( get_option( 'page_for_posts' ) );
+    $companies = get_page_by_path( 'companies' );
+    $about    = get_page_by_path( 'about' );
+    $contact  = get_page_by_path( 'contact' );
+    $links = array(
+        __( 'Jobs', 'jobscout' )      => $jobs_id ? get_permalink( $jobs_id ) : home_url( '/jobs/' ),
+        __( 'Companies', 'jobscout' ) => $companies ? get_permalink( $companies ) : home_url( '/companies/' ),
+        __( 'Blog', 'jobscout' )      => $posts_id ? get_permalink( $posts_id ) : home_url( '/blog/' ),
+        __( 'About', 'jobscout' )     => $about ? get_permalink( $about ) : home_url( '/about/' ),
+        __( 'Contact', 'jobscout' )   => $contact ? get_permalink( $contact ) : home_url( '/contact/' ),
+    );
+    echo '<ul id="footer-menu" class="home-footer-menu">';
+    foreach ( $links as $label => $url ) {
+        echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a></li>';
+    }
+    echo '</ul>';
 }
 endif;
 

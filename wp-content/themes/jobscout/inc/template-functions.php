@@ -48,23 +48,7 @@ function jobscout_responsive_header(){
             <div class="primary-menu-list main-menu-modal cover-modal" data-modal-target-string=".main-menu-modal">
                 <button class="close close-main-nav-toggle" data-toggle-target=".main-menu-modal" data-toggle-body-class="showing-main-menu-modal" aria-expanded="false" data-set-focus=".main-menu-modal"></button>
                 <div class="mobile-menu" aria-label="<?php esc_attr_e( 'Mobile', 'jobscout' ); ?>">
-                    <?php
-                        wp_nav_menu( array(
-                            'theme_location' => 'primary',
-                            'menu_id'        => 'mobile-primary-menu',
-                            'menu_class'     => 'nav-menu main-menu-modal',
-                            'container'      => false,
-                            'fallback_cb'    => 'jobscout_primary_menu_fallback',
-                        ) );
-
-                        wp_nav_menu( array(
-                            'theme_location' => 'secondary',
-                            'menu_class'     => 'nav-menu',
-                            'menu_id'        => 'secondary-menu',
-                            'container'      => false,
-                            'fallback_cb'    => 'jobscout_secondary_menu_fallback',
-                        ) );
-                    ?>
+                    <?php jobscout_primary_menu_fallback( 'mobile-primary-menu' ); ?>
                 
                     <?php if( $post_job_label || $post_job_url ){ ?>
                         <div class="btn-wrap">
@@ -534,6 +518,31 @@ if( ! function_exists( 'jobscout_footer_bottom' ) ) :
  * Footer Bottom
 */
 function jobscout_footer_bottom(){ ?>
+    <div class="home-footer-main">
+        <div class="container">
+            <div class="home-footer-brand"><?php jobscout_site_branding( true ); ?></div>
+            <nav class="home-footer-navigation" aria-label="<?php esc_attr_e( 'Footer navigation', 'jobscout' ); ?>">
+                <?php wp_nav_menu( array( 'theme_location' => 'footer', 'menu_id' => 'footer-menu', 'menu_class' => 'home-footer-menu', 'container' => false, 'fallback_cb' => 'jobscout_footer_menu_fallback' ) ); ?>
+            </nav>
+            <div class="home-footer-social" aria-label="<?php esc_attr_e( 'Social links', 'jobscout' ); ?>">
+                <?php
+                $home_social_links = array( 'facebook' => 'Facebook', 'twitter' => 'Twitter', 'instagram' => 'Instagram', 'linkedin' => 'LinkedIn' );
+                $has_home_social_link = false;
+                foreach ( $home_social_links as $key => $label ) :
+                    $social_url = get_theme_mod( $key . '_link', '' );
+                    if ( $social_url ) : $has_home_social_link = true; ?>
+                        <a class="home-social--<?php echo esc_attr( $key ); ?>" href="<?php echo esc_url( $social_url ); ?>" rel="noopener noreferrer" target="_blank" aria-label="<?php echo esc_attr( $label ); ?>"><?php echo esc_html( 'facebook' === $key ? 'f' : strtoupper( substr( $label, 0, 1 ) ) ); ?></a>
+                    <?php endif;
+                endforeach;
+                if ( ! $has_home_social_link ) : ?>
+                    <span class="home-social--facebook" aria-hidden="true">f</span>
+                    <span class="home-social--google" aria-hidden="true">G</span>
+                    <span class="home-social--line" aria-hidden="true">LINE</span>
+                    <span class="home-social--twitter" aria-hidden="true">t</span>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
     <div class="footer-b">
 		<div class="container">
             <?php 
@@ -541,9 +550,7 @@ function jobscout_footer_bottom(){ ?>
             ?>
 			<div class="copyright">            
             <?php
-                jobscout_get_footer_copyright();
-                jobscout_ed_author_link();
-                jobscout_ed_wp_link();
+                echo '&copy; ' . esc_html( gmdate( 'Y' ) ) . ' ' . esc_html( get_bloginfo( 'name' ) ) . '.';
             ?>               
             </div>
 		</div>
