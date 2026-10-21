@@ -184,6 +184,8 @@ function jobscout_primary_nagivation(){
 
     $post_job_label  = get_theme_mod( 'post_job_label', __( 'Submit Job', 'jobscout' ) );
     $post_job_url = jobscout_get_submit_job_url();
+    $submit_page_id  = absint( get_option( 'job_manager_submit_job_form_page_id' ) );
+    $post_job_url    = get_theme_mod( 'post_job_url', $submit_page_id ? get_permalink( $submit_page_id ) : home_url( '/submit-job/' ) );
     ?>
     	<nav id="site-navigation" class="main-navigation" role="navigation" itemscope itemtype="https://schema.org/SiteNavigationElement">
         <button class="toggle-btn" data-toggle-target=".main-menu-modal" data-toggle-body-class="showing-main-menu-modal" aria-expanded="false" data-set-focus=".close-main-nav-toggle">
