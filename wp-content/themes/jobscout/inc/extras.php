@@ -159,6 +159,23 @@ function jobscout_site_branding( $responsive = false ){
 }
 endif;
 
+if ( ! function_exists( 'jobscout_get_submit_job_url' ) ) :
+/**
+ * Get the configured WP Job Manager submission page URL.
+ */
+function jobscout_get_submit_job_url() {
+    $submit_page_id = absint( get_option( 'job_manager_submit_job_form_page_id' ) );
+    if ( $submit_page_id && 'publish' === get_post_status( $submit_page_id ) ) {
+        $submit_page_url = get_permalink( $submit_page_id );
+        if ( $submit_page_url ) {
+            return $submit_page_url;
+        }
+    }
+
+    return home_url( '/submit-job/' );
+}
+endif;
+
 if( ! function_exists( 'jobscout_primary_nagivation' ) ) :
 /**
  * Primary Navigation.
@@ -166,8 +183,7 @@ if( ! function_exists( 'jobscout_primary_nagivation' ) ) :
 function jobscout_primary_nagivation(){ 
 
     $post_job_label  = get_theme_mod( 'post_job_label', __( 'Submit Job', 'jobscout' ) );
-    $submit_page_id  = absint( get_option( 'job_manager_submit_job_form_page_id' ) );
-    $post_job_url    = get_theme_mod( 'post_job_url', $submit_page_id ? get_permalink( $submit_page_id ) : home_url( '/submit-job/' ) );
+    $post_job_url = jobscout_get_submit_job_url();
     ?>
     	<nav id="site-navigation" class="main-navigation" role="navigation" itemscope itemtype="https://schema.org/SiteNavigationElement">
         <button class="toggle-btn" data-toggle-target=".main-menu-modal" data-toggle-body-class="showing-main-menu-modal" aria-expanded="false" data-set-focus=".close-main-nav-toggle">
