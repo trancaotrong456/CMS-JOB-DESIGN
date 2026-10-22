@@ -18,7 +18,7 @@ add_filter( 'body_class', function( $classes ) {
     return $classes;
 } );
 
-add_action( 'wp_enqueue_scripts', function() {
+$pds_enqueue_job_detail = function() {
     wp_enqueue_style(
         'pds-job-detail-style',
         get_template_directory_uri() . '/assets/css/job-detail.css',
@@ -33,7 +33,13 @@ add_action( 'wp_enqueue_scripts', function() {
         defined( 'JOBSCOUT_THEME_VERSION' ) ? JOBSCOUT_THEME_VERSION : '1.0.0',
         true
     );
-}, 20 );
+};
+
+if ( did_action( 'wp_enqueue_scripts' ) ) {
+    $pds_enqueue_job_detail();
+} else {
+    add_action( 'wp_enqueue_scripts', $pds_enqueue_job_detail, 20 );
+}
 
 get_header();
 
@@ -52,11 +58,11 @@ while ( have_posts() ) :
 
     // Job Type
     $types    = wp_get_post_terms( $job_id, 'job_listing_type' );
-    $job_type = ! empty( $types ) ? $types[0]->name : __( 'Fulltime', 'jobscout' );
+    $job_type = ( ! empty( $types ) && ! is_wp_error( $types ) ) ? $types[0]->name : __( 'Fulltime', 'jobscout' );
 
     // Job Category
     $categories   = wp_get_post_terms( $job_id, 'job_listing_category' );
-    $job_category = ! empty( $categories ) ? $categories[0]->name : __( 'Category Name', 'jobscout' );
+    $job_category = ( ! empty( $categories ) && ! is_wp_error( $categories ) ) ? $categories[0]->name : __( 'Hospitality', 'jobscout' );
 
     // Staff Rating
     $staff_rating = get_post_meta( $job_id, '_cms_reference_staff_rating', true );
@@ -92,6 +98,9 @@ while ( have_posts() ) :
     } else {
         $clean_content = $raw_content;
     }
+
+    $c_lower = function_exists( 'mb_strtolower' ) ? mb_strtolower( (string) $company, 'UTF-8' ) : strtolower( (string) $company );
+    $t_lower = function_exists( 'mb_strtolower' ) ? mb_strtolower( (string) $title, 'UTF-8' ) : strtolower( (string) $title );
 ?>
 
 <div class="pds-job-detail-page">
@@ -115,9 +124,8 @@ while ( have_posts() ) :
                     <img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $company ?: $title ); ?>" class="pds-job-detail-logo-img">
                 <?php else : ?>
                     <?php
-                    $c_lower = strtolower( (string) $company );
                     // Reference image 05-job-detail.png features The SODOH brand mark for this listing
-                    if ( str_contains( $c_lower, 'sodoh' ) || str_contains( strtolower( $title ), 'chief operating officer' ) || empty( $company ) ) :
+                    if ( false !== strpos( $c_lower, 'sodoh' ) || false !== strpos( $t_lower, 'chief operating officer' ) || empty( $company ) ) :
                     ?>
                         <div class="pds-logo-sodoh">
                             <svg class="pds-logo-sodoh-icon" viewBox="0 0 40 40" width="34" height="34" fill="currentColor">
@@ -134,31 +142,31 @@ while ( have_posts() ) :
                                 <span class="pds-sodoh-loc">HIGASHIYAMA KYOTO</span>
                             </div>
                         </div>
-                    <?php elseif ( str_contains( $c_lower, 'fortune' ) || str_contains( $c_lower, 'garden' ) ) : ?>
+                    <?php elseif ( false !== strpos( $c_lower, 'fortune' ) || false !== strpos( $c_lower, 'garden' ) ) : ?>
                         <div class="pds-logo-fortune">
                             <span class="pds-fortune-title">FORTUNE GARDEN</span>
                             <span class="pds-fortune-sub">KYOTO</span>
                         </div>
-                    <?php elseif ( str_contains( $c_lower, 'shikaku' ) ) : ?>
+                    <?php elseif ( false !== strpos( $c_lower, 'shikaku' ) ) : ?>
                         <div class="pds-logo-shikaku">
                             <div class="pds-shikaku-square">
                                 <div class="pds-shikaku-inner"></div>
                             </div>
                             <span class="pds-shikaku-text">SHIKAKU</span>
                         </div>
-                    <?php elseif ( str_contains( $c_lower, 'sayan' ) ) : ?>
+                    <?php elseif ( false !== strpos( $c_lower, 'sayan' ) ) : ?>
                         <div class="pds-logo-sayan">
                             <span class="pds-sayan-script">The Sayan House</span>
                             <span class="pds-sayan-sub">BALI</span>
                         </div>
-                    <?php elseif ( str_contains( $c_lower, 'thìn' ) || str_contains( $c_lower, 'thin' ) || str_contains( $c_lower, 'phở' ) || str_contains( $c_lower, 'pho' ) ) : ?>
+                    <?php elseif ( false !== strpos( $c_lower, 'thìn' ) || false !== strpos( $c_lower, 'thin' ) || false !== strpos( $c_lower, 'phở' ) || false !== strpos( $c_lower, 'pho' ) ) : ?>
                         <div class="pds-logo-phothin">
                             <div class="pds-phothin-circle">
                                 <span class="pds-phothin-pho">PHỞ</span>
                                 <span class="pds-phothin-thin">THÌN</span>
                             </div>
                         </div>
-                    <?php elseif ( str_contains( $c_lower, 'stand' ) || str_contains( $c_lower, 'where' ) ) : ?>
+                    <?php elseif ( false !== strpos( $c_lower, 'stand' ) || false !== strpos( $c_lower, 'where' ) ) : ?>
                         <div class="pds-logo-stand">
                             <div class="pds-stand-circle">
                                 <svg class="pds-stand-cone" viewBox="0 0 30 30" width="22" height="22" fill="currentColor">
@@ -170,7 +178,7 @@ while ( have_posts() ) :
                         </div>
                     <?php else : ?>
                         <div class="pds-logo-generic">
-                            <span class="pds-generic-initial"><?php echo esc_html( mb_substr( $company ?: $title, 0, 1 ) ); ?></span>
+                            <span class="pds-generic-initial"><?php echo esc_html( function_exists( 'mb_substr' ) ? mb_substr( $company ?: $title, 0, 1, 'UTF-8' ) : substr( $company ?: $title, 0, 1 ) ); ?></span>
                             <span class="pds-generic-name"><?php echo esc_html( wp_trim_words( $company ?: $title, 2, '' ) ); ?></span>
                         </div>
                     <?php endif; ?>
@@ -222,10 +230,27 @@ while ( have_posts() ) :
                     <!-- Application Section -->
                     <div id="pds-job-apply" class="pds-job-detail-application-area">
                         <?php
+                        $has_application = false;
                         if ( function_exists( 'candidates_can_apply' ) && candidates_can_apply() ) {
+                            ob_start();
                             get_job_manager_template( 'job-application.php' );
+                            $app_html = ob_get_clean();
+                            if ( ! empty( trim( $app_html ) ) ) {
+                                echo $app_html;
+                                $has_application = true;
+                            }
                         }
+                        if ( ! $has_application ) :
+                            $admin_email = get_option( 'admin_email', 'careers@jobscout.com' );
                         ?>
+                            <div class="job_application application pds-job-application-fallback">
+                                <input type="button" class="application_button button" value="<?php esc_attr_e( 'Apply for job', 'jobscout' ); ?>" />
+                                <div class="application_details">
+                                    <p><?php esc_html_e( 'To apply for this job, please send your resume and application to:', 'jobscout' ); ?></p>
+                                    <p><a href="<?php echo esc_url( 'mailto:' . $admin_email . '?subject=' . rawurlencode( sprintf( __( 'Job Application: %s', 'jobscout' ), $title ) ) ); ?>" class="pds-apply-email-link"><?php echo esc_html( $admin_email ); ?></a></p>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </article>
             </main>
@@ -293,6 +318,7 @@ while ( have_posts() ) :
             $other_jobs_query = new WP_Query( array(
                 'post_type'      => 'job_listing',
                 'post_status'    => 'publish',
+                'post__not_in'   => array( $job_id ),
                 'posts_per_page' => 6,
                 'orderby'        => 'date',
                 'order'          => 'DESC',
