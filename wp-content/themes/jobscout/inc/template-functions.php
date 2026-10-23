@@ -36,7 +36,7 @@ if( ! function_exists( 'jobscout_responsive_header' ) ) :
 */
 function jobscout_responsive_header(){ 
     $post_job_label  = get_theme_mod( 'post_job_label', __( 'Post Jobs', 'jobscout' ) );
-    $post_job_url    = get_theme_mod( 'post_job_url', '#' );
+    $post_job_url = jobscout_get_submit_job_url();
     ?>
     <div class="responsive-nav">
         <div class="nav-top">
