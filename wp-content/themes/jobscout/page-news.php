@@ -1,18 +1,17 @@
+
 <?php
 /**
  * Template Name: News
- * Description: PDS News listing page.
+ * Description: PDS News page with widget areas.
  */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 get_header();
 
-$paged = max(
-    1,
-    (int) get_query_var('paged'),
-    (int) get_query_var('page')
-);
-
-$news_query = new WP_Query([
+$news_query = new WP_Query(array(
     'post_type'           => 'post',
     'post_status'         => 'publish',
     'posts_per_page'      => 8,
@@ -20,18 +19,25 @@ $news_query = new WP_Query([
     'order'               => 'DESC',
     'ignore_sticky_posts' => true,
     'no_found_rows'       => true,
-]);
+));
 ?>
 
 <div class="pds-news-page">
 
-    <!-- NEWS HERO -->
-    <section class="pds-news-hero"
-             aria-labelledby="pds-news-hero-title">
+    <!-- HERO -->
+    <section class="pds-news-hero" aria-label="News Hero Banner">
 
-        <h1 id="pds-news-hero-title">
-            PDS NEWS
-        </h1>
+        <?php if (is_active_sidebar('pds-news-hero')) : ?>
+
+            <?php dynamic_sidebar('pds-news-hero'); ?>
+
+        <?php else : ?>
+
+            <div class="pds-news-hero-content">
+                <h1>PDS NEWS</h1>
+            </div>
+
+        <?php endif; ?>
 
     </section>
 
@@ -40,9 +46,19 @@ $news_query = new WP_Query([
 
         <div class="pds-news-container">
 
-            <h2 class="pds-news-heading">
-                NEWEST BLOG ENTRIES
-            </h2>
+            <?php if (is_active_sidebar('pds-news-before-grid')) : ?>
+
+                <div class="pds-news-before-grid">
+                    <?php dynamic_sidebar('pds-news-before-grid'); ?>
+                </div>
+
+            <?php else : ?>
+
+                <h2 class="pds-news-heading">
+                    NEWEST BLOG ENTRIES
+                </h2>
+
+            <?php endif; ?>
 
             <?php if ($news_query->have_posts()) : ?>
 
@@ -54,40 +70,32 @@ $news_query = new WP_Query([
 
                         <article class="pds-news-card">
 
-                            <!-- Featured Image -->
                             <a
                                 class="pds-news-card-image"
-                                href="<?php echo esc_url(get_permalink()); ?>"
-                                aria-label="<?php echo esc_attr(get_the_title()); ?>"
+                                href="<?php the_permalink(); ?>"
                             >
-
                                 <?php if (has_post_thumbnail()) : ?>
 
                                     <?php the_post_thumbnail(
                                         'medium_large',
-                                        ['class' => 'pds-news-thumbnail']
+                                        array(
+                                            'class' => 'pds-news-thumbnail'
+                                        )
                                     ); ?>
 
                                 <?php else : ?>
 
-                                    <img
-                                        src="<?php echo esc_url(
-                                            get_template_directory_uri()
-                                            . '/images/banner-image.jpg'
-                                        ); ?>"
-                                        alt=""
-                                        loading="lazy"
-                                    >
+                                    <span class="pds-news-image-placeholder">
+                                        NEWS
+                                    </span>
 
                                 <?php endif; ?>
-
                             </a>
 
-                            <!-- Card Content -->
                             <div class="pds-news-card-content">
 
                                 <h3 class="pds-news-card-title">
-                                    <a href="<?php echo esc_url(get_permalink()); ?>">
+                                    <a href="<?php the_permalink(); ?>">
                                         <?php echo esc_html(get_the_title()); ?>
                                     </a>
                                 </h3>
@@ -106,9 +114,9 @@ $news_query = new WP_Query([
 
                                 <a
                                     class="pds-news-read-more"
-                                    href="<?php echo esc_url(get_permalink()); ?>"
+                                    href="<?php the_permalink(); ?>"
                                 >
-                                    <?php esc_html_e('Read More', 'jobscout'); ?>
+                                    Read More
                                 </a>
 
                             </div>
@@ -119,26 +127,41 @@ $news_query = new WP_Query([
 
                 </div>
 
-
             <?php else : ?>
 
                 <p class="pds-news-empty">
-                    <?php esc_html_e(
-                        'No news articles have been published yet.',
-                        'jobscout'
-                    ); ?>
+                    No news articles have been published yet.
                 </p>
 
             <?php endif; ?>
 
             <?php wp_reset_postdata(); ?>
 
+            <!-- AFTER GRID WIDGET -->
+            <?php if (is_active_sidebar('pds-news-after-grid')) : ?>
+
+                <div class="pds-news-after-grid">
+                    <?php dynamic_sidebar('pds-news-after-grid'); ?>
+                </div>
+
+            <?php endif; ?>
+
         </div>
 
     </main>
 
-    <!-- NEWSLETTER BANNER -->
-    <?php get_template_part('template-parts/pds-newsletter'); ?>
+    <!-- NEWSLETTER -->
+    <?php if (is_active_sidebar('pds-news-newsletter')) : ?>
+
+        <section class="pds-news-newsletter">
+            <?php dynamic_sidebar('pds-news-newsletter'); ?>
+        </section>
+
+    <?php else : ?>
+
+        <?php get_template_part('template-parts/pds-newsletter'); ?>
+
+    <?php endif; ?>
 
 </div>
 
