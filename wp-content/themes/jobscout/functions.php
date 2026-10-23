@@ -94,3 +94,29 @@ add_action('wp_enqueue_scripts', function () {
         filemtime(get_template_directory() . '/assets/css/pds-newsletter.css')
     );
 });
+
+/**
+ * PDS News Widget Areas
+ */
+function pds_register_news_widgets() {
+
+    $areas = array(
+        'pds-news-hero' => 'PDS News - Hero Banner',
+        'pds-news-before-grid' => 'PDS News - Before Grid',
+        'pds-news-after-grid' => 'PDS News - After Grid',
+        'pds-news-newsletter' => 'PDS News - Newsletter',
+    );
+
+    foreach ($areas as $id => $name) {
+        register_sidebar(array(
+            'name'          => __($name, 'jobscout'),
+            'id'            => $id,
+            'before_widget' => '<div class="pds-news-widget">',
+            'after_widget'  => '</div>',
+            'before_title'  => '<h2 class="pds-news-widget-title">',
+            'after_title'   => '</h2>',
+        ));
+    }
+}
+add_action('widgets_init', 'pds_register_news_widgets');
+
