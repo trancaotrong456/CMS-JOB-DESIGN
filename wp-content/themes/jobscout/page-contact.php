@@ -28,16 +28,34 @@ get_header();
 <div class="pds-contact-page">
 
     <!-- HERO BANNER -->
-    <section class="pds-contact-hero" aria-labelledby="pds-contact-hero-title">
-        <div class="pds-contact-hero-overlay"></div>
-        <div class="pds-contact-hero-inner">
-            <h1 id="pds-contact-hero-title" class="pds-contact-hero-title">
-                <?php esc_html_e( 'CONTACT US', 'jobscout' ); ?>
-            </h1>
-        </div>
-    </section>
+    <?php if ( is_active_sidebar( 'contact-hero-banner' ) ) : ?>
+        <section class="pds-contact-hero pds-contact-hero--widget" aria-labelledby="pds-contact-hero-title">
+            <?php dynamic_sidebar( 'contact-hero-banner' ); ?>
+        </section>
+    <?php else : ?>
+        <?php
+        $contact_featured_img = has_post_thumbnail() ? get_the_post_thumbnail_url( get_the_ID(), 'full' ) : '';
+        if ( ! empty( $contact_featured_img ) ) : ?>
+            <style>.pds-contact-hero { background-image: url('<?php echo esc_url( $contact_featured_img ); ?>') !important; }</style>
+        <?php endif; ?>
+        <section class="pds-contact-hero" aria-labelledby="pds-contact-hero-title">
+            <div class="pds-contact-hero-overlay"></div>
+            <div class="pds-contact-hero-inner" style="margin: 0 auto !important; text-align: center !important;">
+                <h1 id="pds-contact-hero-title" class="pds-contact-hero-title" style="margin: 0 auto !important; text-align: center !important;">
+                    <?php esc_html_e( 'CONTACT US', 'jobscout' ); ?>
+                </h1>
+            </div>
+        </section>
+    <?php endif; ?>
 
     <!-- HEADQUARTERS ADDRESS SECTION -->
+    <?php if ( is_active_sidebar( 'contact-headquarters' ) ) : ?>
+        <section class="pds-contact-hq pds-widget-area-section" aria-labelledby="pds-contact-hq-title">
+            <div class="pds-contact-container">
+                <?php dynamic_sidebar( 'contact-headquarters' ); ?>
+            </div>
+        </section>
+    <?php else : ?>
     <section class="pds-contact-hq" aria-labelledby="pds-contact-hq-title">
         <div class="pds-contact-container">
             <h2 id="pds-contact-hq-title" class="pds-contact-hq-title">
@@ -48,8 +66,16 @@ get_header();
             </p>
         </div>
     </section>
+    <?php endif; ?>
 
     <!-- TWO COLUMNS CONTACT CHANNELS -->
+    <?php if ( is_active_sidebar( 'contact-hotline-info' ) ) : ?>
+        <section class="pds-contact-channels pds-widget-area-section" aria-label="<?php esc_attr_e( 'Contact Channels', 'jobscout' ); ?>">
+            <div class="pds-contact-container">
+                <?php dynamic_sidebar( 'contact-hotline-info' ); ?>
+            </div>
+        </section>
+    <?php else : ?>
     <section class="pds-contact-channels" aria-label="<?php esc_attr_e( 'Contact Channels', 'jobscout' ); ?>">
         <div class="pds-contact-container">
             <div class="pds-contact-grid">
@@ -120,27 +146,11 @@ get_header();
             </div>
         </div>
     </section>
+    <?php endif; ?>
+
 
     <!-- NEWSLETTER BANNER -->
-    <section class="pds-contact-newsletter" aria-labelledby="pds-contact-newsletter-title">
-        <div class="pds-contact-newsletter-inner">
-            <h2 id="pds-contact-newsletter-title" class="pds-contact-newsletter-heading">
-                <?php esc_html_e( 'Subscribe To', 'jobscout' ); ?><br>
-                <?php esc_html_e( 'Our Newsletter', 'jobscout' ); ?>
-            </h2>
-            <form class="pds-contact-newsletter-form" onsubmit="return false;">
-                <label class="pds-contact-newsletter-field">
-                    <span class="pds-contact-newsletter-icon" aria-hidden="true">
-                        <svg width="20" height="16" viewBox="0 0 20 16" fill="currentColor">
-                            <path d="M18 0H2C0.9 0 0.01 0.9 0.01 2L0 14C0 15.1 0.9 16 2 16H18C19.1 16 20 15.1 20 14V2C20 0.9 19.1 0 18 0ZM18 4L10 9L2 4V2L10 7L18 2V4Z"/>
-                        </svg>
-                    </span>
-                    <input type="email" name="contact_newsletter_email" placeholder="<?php esc_attr_e( 'Input your email address', 'jobscout' ); ?>" required>
-                </label>
-                <button type="button" class="pds-contact-newsletter-btn"><?php esc_html_e( 'SUBSCRIBE', 'jobscout' ); ?></button>
-            </form>
-        </div>
-    </section>
+    <?php get_template_part( 'template-parts/pds-newsletter' ); ?>
 
 </div>
 
