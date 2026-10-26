@@ -9,12 +9,12 @@ body { color: var(--jobscout-ink); }
 .site-header .site-branding { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 .site-header .custom-logo { max-height: 54px; width: auto; }
 .site-header .site-description { margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; }
-.site-header .menu-wrap { display: flex; align-items: center; justify-content: flex-end; width: auto; }
-.site-header .main-navigation { width: auto; }
-.site-header .main-navigation .nav-menu { display: flex; align-items: center; gap: 34px; margin: 0; padding: 0; list-style: none; flex-wrap: nowrap; }
+.site-header .menu-wrap { display: flex !important; align-items: center !important; justify-content: flex-end !important; width: auto !important; }
+.site-header .main-navigation { width: auto !important; display: flex !important; align-items: center !important; }
+.site-header .main-navigation .nav-menu { display: flex !important; align-items: center !important; gap: clamp(14px, 1.8vw, 32px) !important; margin: 0 !important; padding: 0 !important; list-style: none !important; flex-wrap: nowrap !important; }
 .site-header .main-navigation .nav-menu li a { color: #292625; font-size: 14px; font-weight: 700; text-transform: uppercase; padding: 8px 0; white-space: nowrap; letter-spacing: 0.03em; }
 .site-header .main-navigation .nav-menu .current-menu-item > a { border-bottom: 2px solid var(--jobscout-orange); }
-.site-header .btn-wrap { width: auto; flex-shrink: 0; margin-left: 36px; }
+.site-header .btn-wrap { width: auto !important; flex-shrink: 0 !important; margin-left: 28px !important; position: relative !important; z-index: 5 !important; }
 .site-header .btn-wrap .btn { background: var(--jobscout-orange); border: 1px solid var(--jobscout-orange); padding: 13px 24px; color: #fff; font-size: 13px; font-weight: 700; text-transform: uppercase; white-space: nowrap; display: inline-flex; align-items: center; border-radius: 3px; }
 .home-page { margin: 0; padding: 0; }
 .home-container { width: min(1120px, calc(100% - 48px)); margin: 0 auto; }

@@ -290,3 +290,26 @@ add_filter( 'wp_nav_menu_items', function( $items, $args ) {
     }
     return $items;
 }, 99, 2 );
+
+// Tự động loại bỏ các mục menu demo rác (Portfolio, Style Guide, Pages, Shop) nếu database cục bộ của thành viên chưa dọn
+add_filter( 'wp_nav_menu_objects', function( $items, $args ) {
+    if ( isset( $args->theme_location ) && 'primary' === $args->theme_location ) {
+        $unwanted = array( 'portfolio', 'style guide', 'style-guide', 'pages', 'shop' );
+        $cleaned = array();
+        foreach ( $items as $item ) {
+            $t = strtolower( trim( $item->title ?? '' ) );
+            $skip = false;
+            foreach ( $unwanted as $slug ) {
+                if ( str_contains( $t, $slug ) ) {
+                    $skip = true;
+                    break;
+                }
+            }
+            if ( ! $skip ) {
+                $cleaned[] = $item;
+            }
+        }
+        return $cleaned;
+    }
+    return $items;
+}, 10, 2 );
