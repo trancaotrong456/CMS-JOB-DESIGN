@@ -18,11 +18,18 @@ add_filter( 'body_class', function( $classes ) {
     return $classes;
 } );
 
-$pds_enqueue_job_detail = function() {
+add_action( 'wp_enqueue_scripts', function() {
+    wp_enqueue_style(
+        'pds-all-jobs-style',
+        get_template_directory_uri() . '/assets/css/all-jobs.css',
+        array( 'jobscout' ),
+        defined( 'JOBSCOUT_THEME_VERSION' ) ? JOBSCOUT_THEME_VERSION : '1.0.0'
+    );
+
     wp_enqueue_style(
         'pds-job-detail-style',
         get_template_directory_uri() . '/assets/css/job-detail.css',
-        array( 'jobscout' ),
+        array( 'jobscout', 'pds-all-jobs-style' ),
         defined( 'JOBSCOUT_THEME_VERSION' ) ? JOBSCOUT_THEME_VERSION : '1.0.0'
     );
 
@@ -33,13 +40,7 @@ $pds_enqueue_job_detail = function() {
         defined( 'JOBSCOUT_THEME_VERSION' ) ? JOBSCOUT_THEME_VERSION : '1.0.0',
         true
     );
-};
-
-if ( did_action( 'wp_enqueue_scripts' ) ) {
-    $pds_enqueue_job_detail();
-} else {
-    add_action( 'wp_enqueue_scripts', $pds_enqueue_job_detail, 20 );
-}
+}, 20 );
 
 get_header();
 
@@ -58,11 +59,11 @@ while ( have_posts() ) :
 
     // Job Type
     $types    = wp_get_post_terms( $job_id, 'job_listing_type' );
-    $job_type = ( ! empty( $types ) && ! is_wp_error( $types ) ) ? $types[0]->name : __( 'Fulltime', 'jobscout' );
+    $job_type = ! empty( $types ) ? $types[0]->name : __( 'Fulltime', 'jobscout' );
 
     // Job Category
     $categories   = wp_get_post_terms( $job_id, 'job_listing_category' );
-    $job_category = ( ! empty( $categories ) && ! is_wp_error( $categories ) ) ? $categories[0]->name : __( 'Hospitality', 'jobscout' );
+    $job_category = ! empty( $categories ) ? $categories[0]->name : __( 'Category Name', 'jobscout' );
 
     // Staff Rating
     $staff_rating = get_post_meta( $job_id, '_cms_reference_staff_rating', true );
@@ -98,9 +99,6 @@ while ( have_posts() ) :
     } else {
         $clean_content = $raw_content;
     }
-
-    $c_lower = function_exists( 'mb_strtolower' ) ? mb_strtolower( (string) $company, 'UTF-8' ) : strtolower( (string) $company );
-    $t_lower = function_exists( 'mb_strtolower' ) ? mb_strtolower( (string) $title, 'UTF-8' ) : strtolower( (string) $title );
 ?>
 
 <div class="pds-job-detail-page">
@@ -116,6 +114,9 @@ while ( have_posts() ) :
         </nav>
 
         <!-- TOP SUMMARY / HEADER CARD -->
+        <?php if ( is_active_sidebar( 'job-detail-header' ) ) : ?>
+            <?php dynamic_sidebar( 'job-detail-header' ); ?>
+        <?php else : ?>
         <header class="pds-job-detail-header-card">
 
             <!-- Logo Box -->
@@ -124,8 +125,9 @@ while ( have_posts() ) :
                     <img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $company ?: $title ); ?>" class="pds-job-detail-logo-img">
                 <?php else : ?>
                     <?php
+                    $c_lower = strtolower( (string) $company );
                     // Reference image 05-job-detail.png features The SODOH brand mark for this listing
-                    if ( false !== strpos( $c_lower, 'sodoh' ) || false !== strpos( $t_lower, 'chief operating officer' ) || empty( $company ) ) :
+                    if ( str_contains( $c_lower, 'sodoh' ) || str_contains( strtolower( $title ), 'chief operating officer' ) || empty( $company ) ) :
                     ?>
                         <div class="pds-logo-sodoh">
                             <svg class="pds-logo-sodoh-icon" viewBox="0 0 40 40" width="34" height="34" fill="currentColor">
@@ -142,31 +144,31 @@ while ( have_posts() ) :
                                 <span class="pds-sodoh-loc">HIGASHIYAMA KYOTO</span>
                             </div>
                         </div>
-                    <?php elseif ( false !== strpos( $c_lower, 'fortune' ) || false !== strpos( $c_lower, 'garden' ) ) : ?>
+                    <?php elseif ( str_contains( $c_lower, 'fortune' ) || str_contains( $c_lower, 'garden' ) ) : ?>
                         <div class="pds-logo-fortune">
                             <span class="pds-fortune-title">FORTUNE GARDEN</span>
                             <span class="pds-fortune-sub">KYOTO</span>
                         </div>
-                    <?php elseif ( false !== strpos( $c_lower, 'shikaku' ) ) : ?>
+                    <?php elseif ( str_contains( $c_lower, 'shikaku' ) ) : ?>
                         <div class="pds-logo-shikaku">
                             <div class="pds-shikaku-square">
                                 <div class="pds-shikaku-inner"></div>
                             </div>
                             <span class="pds-shikaku-text">SHIKAKU</span>
                         </div>
-                    <?php elseif ( false !== strpos( $c_lower, 'sayan' ) ) : ?>
+                    <?php elseif ( str_contains( $c_lower, 'sayan' ) ) : ?>
                         <div class="pds-logo-sayan">
                             <span class="pds-sayan-script">The Sayan House</span>
                             <span class="pds-sayan-sub">BALI</span>
                         </div>
-                    <?php elseif ( false !== strpos( $c_lower, 'thìn' ) || false !== strpos( $c_lower, 'thin' ) || false !== strpos( $c_lower, 'phở' ) || false !== strpos( $c_lower, 'pho' ) ) : ?>
+                    <?php elseif ( str_contains( $c_lower, 'thìn' ) || str_contains( $c_lower, 'thin' ) || str_contains( $c_lower, 'phở' ) || str_contains( $c_lower, 'pho' ) ) : ?>
                         <div class="pds-logo-phothin">
                             <div class="pds-phothin-circle">
                                 <span class="pds-phothin-pho">PHỞ</span>
                                 <span class="pds-phothin-thin">THÌN</span>
                             </div>
                         </div>
-                    <?php elseif ( false !== strpos( $c_lower, 'stand' ) || false !== strpos( $c_lower, 'where' ) ) : ?>
+                    <?php elseif ( str_contains( $c_lower, 'stand' ) || str_contains( $c_lower, 'where' ) ) : ?>
                         <div class="pds-logo-stand">
                             <div class="pds-stand-circle">
                                 <svg class="pds-stand-cone" viewBox="0 0 30 30" width="22" height="22" fill="currentColor">
@@ -178,7 +180,7 @@ while ( have_posts() ) :
                         </div>
                     <?php else : ?>
                         <div class="pds-logo-generic">
-                            <span class="pds-generic-initial"><?php echo esc_html( function_exists( 'mb_substr' ) ? mb_substr( $company ?: $title, 0, 1, 'UTF-8' ) : substr( $company ?: $title, 0, 1 ) ); ?></span>
+                            <span class="pds-generic-initial"><?php echo esc_html( mb_substr( $company ?: $title, 0, 1 ) ); ?></span>
                             <span class="pds-generic-name"><?php echo esc_html( wp_trim_words( $company ?: $title, 2, '' ) ); ?></span>
                         </div>
                     <?php endif; ?>
@@ -216,12 +218,16 @@ while ( have_posts() ) :
             </div>
 
         </header>
+        <?php endif; ?>
 
         <!-- MAIN TWO-COLUMN CONTENT AREA -->
         <div class="pds-job-detail-columns">
 
             <!-- Left Column: Content Card -->
             <main class="pds-job-detail-main-content">
+                <?php if ( is_active_sidebar( 'job-detail-content' ) ) : ?>
+                    <?php dynamic_sidebar( 'job-detail-content' ); ?>
+                <?php else : ?>
                 <article class="pds-job-detail-content-card">
                     <div class="pds-job-detail-entry">
                         <?php echo apply_filters( 'the_content', $clean_content ); ?>
@@ -230,33 +236,21 @@ while ( have_posts() ) :
                     <!-- Application Section -->
                     <div id="pds-job-apply" class="pds-job-detail-application-area">
                         <?php
-                        $has_application = false;
                         if ( function_exists( 'candidates_can_apply' ) && candidates_can_apply() ) {
-                            ob_start();
                             get_job_manager_template( 'job-application.php' );
-                            $app_html = ob_get_clean();
-                            if ( ! empty( trim( $app_html ) ) ) {
-                                echo $app_html;
-                                $has_application = true;
-                            }
                         }
-                        if ( ! $has_application ) :
-                            $admin_email = get_option( 'admin_email', 'careers@jobscout.com' );
                         ?>
-                            <div class="job_application application pds-job-application-fallback">
-                                <input type="button" class="application_button button" value="<?php esc_attr_e( 'Apply for job', 'jobscout' ); ?>" />
-                                <div class="application_details">
-                                    <p><?php esc_html_e( 'To apply for this job, please send your resume and application to:', 'jobscout' ); ?></p>
-                                    <p><a href="<?php echo esc_url( 'mailto:' . $admin_email . '?subject=' . rawurlencode( sprintf( __( 'Job Application: %s', 'jobscout' ), $title ) ) ); ?>" class="pds-apply-email-link"><?php echo esc_html( $admin_email ); ?></a></p>
-                                </div>
-                            </div>
-                        <?php endif; ?>
                     </div>
                 </article>
+                <?php endif; ?>
             </main>
 
             <!-- Right Column: Sidebar -->
             <aside class="pds-job-detail-sidebar" aria-label="<?php esc_attr_e( 'Job Details Sidebar', 'jobscout' ); ?>">
+
+                <?php if ( is_active_sidebar( 'job-detail-sidebar' ) ) : ?>
+                    <?php dynamic_sidebar( 'job-detail-sidebar' ); ?>
+                <?php else : ?>
 
                 <!-- Widget 1: Staff Rating -->
                 <div class="pds-job-detail-widget pds-job-detail-widget-rating">
@@ -304,11 +298,18 @@ while ( have_posts() ) :
                     </div>
                 </div>
 
+                <?php endif; ?>
+
             </aside>
 
         </div>
 
         <!-- "OTHER JOBS" SECTION -->
+        <?php if ( is_active_sidebar( 'job-detail-related' ) ) : ?>
+            <section class="pds-job-detail-other-section pds-widget-area-section" aria-labelledby="pds-other-jobs-title">
+                <?php dynamic_sidebar( 'job-detail-related' ); ?>
+            </section>
+        <?php else : ?>
         <section class="pds-job-detail-other-section" aria-labelledby="pds-other-jobs-title">
             <h2 id="pds-other-jobs-title" class="pds-job-detail-other-title">
                 <?php esc_html_e( 'OTHER JOBS', 'jobscout' ); ?>
@@ -318,7 +319,6 @@ while ( have_posts() ) :
             $other_jobs_query = new WP_Query( array(
                 'post_type'      => 'job_listing',
                 'post_status'    => 'publish',
-                'post__not_in'   => array( $job_id ),
                 'posts_per_page' => 6,
                 'orderby'        => 'date',
                 'order'          => 'DESC',
@@ -338,6 +338,7 @@ while ( have_posts() ) :
 
             <?php wp_reset_postdata(); ?>
         </section>
+        <?php endif; ?>
 
     </div>
 
