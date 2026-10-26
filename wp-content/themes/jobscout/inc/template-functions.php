@@ -36,7 +36,7 @@ if( ! function_exists( 'jobscout_responsive_header' ) ) :
 */
 function jobscout_responsive_header(){ 
     $post_job_label  = get_theme_mod( 'post_job_label', __( 'Post Jobs', 'jobscout' ) );
-    $post_job_url    = get_theme_mod( 'post_job_url', '#' );
+    $post_job_url = jobscout_get_submit_job_url();
     ?>
     <div class="responsive-nav">
         <div class="nav-top">
@@ -174,12 +174,16 @@ function jobscout_content_start(){
         <?php endif; 
             if( is_singular( 'job_listing' ) ){
                 global $post;
-                $banner_image   = get_header_image();
-                $show_banner    = get_theme_mod( 'ed_job_banner', true );
+                if ( is_active_sidebar( 'job-detail-hero' ) ) {
+                    dynamic_sidebar( 'job-detail-hero' );
+                } else {
+                    $banner_image   = get_header_image();
+                    $show_banner    = get_theme_mod( 'ed_job_banner', true );
 
-                if( $banner_image && $show_banner ){
-                    $banner_style = 'background-image: url(' . esc_url( $banner_image ) . '); background-size: cover;';
-                    echo '<header class="entry-header" style="'. esc_attr( $banner_style ) .'"></header>';
+                    if( $banner_image && $show_banner ){
+                        $banner_style = 'background-image: url(' . esc_url( $banner_image ) . '); background-size: cover;';
+                        echo '<header class="entry-header" style="'. esc_attr( $banner_style ) .'"></header>';
+                    }
                 }
             } 
         ?>
@@ -520,27 +524,33 @@ if( ! function_exists( 'jobscout_footer_bottom' ) ) :
 function jobscout_footer_bottom(){ ?>
     <div class="home-footer-main">
         <div class="container">
-            <div class="home-footer-brand"><?php jobscout_site_branding( true ); ?></div>
-            <nav class="home-footer-navigation" aria-label="<?php esc_attr_e( 'Footer navigation', 'jobscout' ); ?>">
-                <?php wp_nav_menu( array( 'theme_location' => 'footer', 'menu_id' => 'footer-menu', 'menu_class' => 'home-footer-menu', 'container' => false, 'fallback_cb' => 'jobscout_footer_menu_fallback' ) ); ?>
-            </nav>
-            <div class="home-footer-social" aria-label="<?php esc_attr_e( 'Social links', 'jobscout' ); ?>">
-                <?php
-                $home_social_links = array( 'facebook' => 'Facebook', 'twitter' => 'Twitter', 'instagram' => 'Instagram', 'linkedin' => 'LinkedIn' );
-                $has_home_social_link = false;
-                foreach ( $home_social_links as $key => $label ) :
-                    $social_url = get_theme_mod( $key . '_link', '' );
-                    if ( $social_url ) : $has_home_social_link = true; ?>
-                        <a class="home-social--<?php echo esc_attr( $key ); ?>" href="<?php echo esc_url( $social_url ); ?>" rel="noopener noreferrer" target="_blank" aria-label="<?php echo esc_attr( $label ); ?>"><?php echo esc_html( 'facebook' === $key ? 'f' : strtoupper( substr( $label, 0, 1 ) ) ); ?></a>
-                    <?php endif;
-                endforeach;
-                if ( ! $has_home_social_link ) : ?>
-                    <span class="home-social--facebook" aria-hidden="true">f</span>
-                    <span class="home-social--google" aria-hidden="true">G</span>
-                    <span class="home-social--line" aria-hidden="true">LINE</span>
-                    <span class="home-social--twitter" aria-hidden="true">t</span>
-                <?php endif; ?>
-            </div>
+            <?php if ( is_active_sidebar( 'footer-bottom' ) ) : ?>
+                <div class="footer-bottom-sidebar">
+                    <?php dynamic_sidebar( 'footer-bottom' ); ?>
+                </div>
+            <?php else : ?>
+                <div class="home-footer-brand"><?php jobscout_site_branding( true ); ?></div>
+                <nav class="home-footer-navigation" aria-label="<?php esc_attr_e( 'Footer navigation', 'jobscout' ); ?>">
+                    <?php wp_nav_menu( array( 'theme_location' => 'footer', 'menu_id' => 'footer-menu', 'menu_class' => 'home-footer-menu', 'container' => false, 'fallback_cb' => 'jobscout_footer_menu_fallback' ) ); ?>
+                </nav>
+                <div class="home-footer-social" aria-label="<?php esc_attr_e( 'Social links', 'jobscout' ); ?>">
+                    <?php
+                    $home_social_links = array( 'facebook' => 'Facebook', 'twitter' => 'Twitter', 'instagram' => 'Instagram', 'linkedin' => 'LinkedIn' );
+                    $has_home_social_link = false;
+                    foreach ( $home_social_links as $key => $label ) :
+                        $social_url = get_theme_mod( $key . '_link', '' );
+                        if ( $social_url ) : $has_home_social_link = true; ?>
+                            <a class="home-social--<?php echo esc_attr( $key ); ?>" href="<?php echo esc_url( $social_url ); ?>" rel="noopener noreferrer" target="_blank" aria-label="<?php echo esc_attr( $label ); ?>"><?php echo esc_html( 'facebook' === $key ? 'f' : strtoupper( substr( $label, 0, 1 ) ) ); ?></a>
+                        <?php endif;
+                    endforeach;
+                    if ( ! $has_home_social_link ) : ?>
+                        <span class="home-social--facebook" aria-hidden="true">f</span>
+                        <span class="home-social--google" aria-hidden="true">G</span>
+                        <span class="home-social--line" aria-hidden="true">LINE</span>
+                        <span class="home-social--twitter" aria-hidden="true">t</span>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
     <div class="footer-b">
@@ -550,7 +560,7 @@ function jobscout_footer_bottom(){ ?>
             ?>
 			<div class="copyright">            
             <?php
-                echo '&copy; ' . esc_html( gmdate( 'Y' ) ) . ' ' . esc_html( get_bloginfo( 'name' ) ) . '.';
+                echo '&copy; ' . esc_html( gmdate( 'Y' ) ) . ' Plan Do See Global. All Rights Reserved.';
             ?>               
             </div>
 		</div>

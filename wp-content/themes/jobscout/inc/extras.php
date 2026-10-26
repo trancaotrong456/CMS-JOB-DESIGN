@@ -159,6 +159,23 @@ function jobscout_site_branding( $responsive = false ){
 }
 endif;
 
+if ( ! function_exists( 'jobscout_get_submit_job_url' ) ) :
+/**
+ * Get the configured WP Job Manager submission page URL.
+ */
+function jobscout_get_submit_job_url() {
+    $submit_page_id = absint( get_option( 'job_manager_submit_job_form_page_id' ) );
+    if ( $submit_page_id && 'publish' === get_post_status( $submit_page_id ) ) {
+        $submit_page_url = get_permalink( $submit_page_id );
+        if ( $submit_page_url ) {
+            return $submit_page_url;
+        }
+    }
+
+    return home_url( '/submit-job/' );
+}
+endif;
+
 if( ! function_exists( 'jobscout_primary_nagivation' ) ) :
 /**
  * Primary Navigation.
@@ -166,6 +183,7 @@ if( ! function_exists( 'jobscout_primary_nagivation' ) ) :
 function jobscout_primary_nagivation(){ 
 
     $post_job_label  = get_theme_mod( 'post_job_label', __( 'Submit Job', 'jobscout' ) );
+    $post_job_url    = jobscout_get_submit_job_url();
     $submit_page_id  = absint( get_option( 'job_manager_submit_job_form_page_id' ) );
     $post_job_url    = get_theme_mod( 'post_job_url', $submit_page_id ? get_permalink( $submit_page_id ) : home_url( '/submit-job/' ) );
     ?>
@@ -176,16 +194,26 @@ function jobscout_primary_nagivation(){
             <span class="toggle-bar"></span>
         </button>
             <?php
-            jobscout_primary_menu_fallback();
+            if ( has_nav_menu( 'primary' ) ) {
+                wp_nav_menu( array(
+                    'theme_location' => 'primary',
+                    'menu_id'        => 'primary-menu',
+                    'menu_class'     => 'nav-menu',
+                    'fallback_cb'    => 'jobscout_primary_menu_fallback',
+                ) );
+            } else {
+                jobscout_primary_menu_fallback();
+            }
     		?>
     	</nav><!-- #site-navigation -->
-        <?php if( $post_job_label || $post_job_url ){ ?>
-            <div class="btn-wrap">
-                <a class="btn" href="<?php echo esc_url( $post_job_url ) ?>"><?php echo esc_html( $post_job_label ) ?></a>
-            </div>
-        <?php } 
-  
-    
+        <div class="btn-wrap">
+            <?php if ( is_active_sidebar( 'header-cta' ) ) : ?>
+                <?php dynamic_sidebar( 'header-cta' ); ?>
+            <?php elseif ( $post_job_label || $post_job_url ) : ?>
+                <a class="btn" href="<?php echo esc_url( $post_job_url ); ?>"><?php echo esc_html( $post_job_label ); ?></a>
+            <?php endif; ?>
+        </div>
+        <?php
 }
 endif;
 
@@ -199,16 +227,36 @@ function jobscout_primary_menu_fallback( $menu_id = 'primary-menu' ){
     $about    = get_page_by_path( 'about' );
     $contact  = get_page_by_path( 'contact' );
     $links = array(
-        __( 'Home', 'jobscout' )    => home_url( '/' ),
-        __( 'Jobs', 'jobscout' )    => $jobs_id ? get_permalink( $jobs_id ) : home_url( '/jobs/' ),
-        __( 'News', 'jobscout' )    => $posts_id ? get_permalink( $posts_id ) : home_url( '/news/' ),
-        __( 'About', 'jobscout' )   => $about ? get_permalink( $about ) : home_url( '/about/' ),
-        __( 'Contact', 'jobscout' ) => $contact ? get_permalink( $contact ) : home_url( '/contact/' ),
+        'Home'    => home_url( '/' ),
+        'Jobs'    => $jobs_id ? get_permalink( $jobs_id ) : home_url( '/jobs/' ),
+        'News'    => $posts_id ? get_permalink( $posts_id ) : home_url( '/news/' ),
+        'About'   => $about ? get_permalink( $about ) : home_url( '/about/' ),
+        'Contact' => $contact ? get_permalink( $contact ) : home_url( '/contact/' ),
     );
     echo '<ul id="' . esc_attr( $menu_id ) . '" class="nav-menu">';
     foreach ( $links as $label => $url ) {
-        $active = ( 'Home' === $label && is_front_page() ) ? ' class="current-menu-item"' : '';
-        echo '<li' . $active . '><a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a></li>';
+        $is_active = false;
+        if ( 'Home' === $label && is_front_page() ) {
+            $is_active = true;
+        } elseif ( 'Jobs' === $label && ( is_page( 'jobs' ) || is_post_type_archive( 'job_listing' ) || is_singular( 'job_listing' ) ) ) {
+            $is_active = true;
+        } elseif ( 'News' === $label && ( is_home() || is_singular( 'post' ) || is_page( 'news' ) || is_category() || is_tag() ) ) {
+            $is_active = true;
+        } elseif ( 'About' === $label && is_page( 'about' ) ) {
+            $is_active = true;
+        } elseif ( 'Contact' === $label && is_page( 'contact' ) ) {
+            $is_active = true;
+        }
+        $classes = array();
+        if ( $is_active ) {
+            $classes[] = 'current-menu-item current_page_item';
+        }
+        if ( 'Contact' === $label ) {
+            $classes[] = 'menu-item-contact-end';
+        }
+        $class_attr = ! empty( $classes ) ? ' class="' . esc_attr( implode( ' ', $classes ) ) . '"' : '';
+        $extra_style = ( 'Contact' === $label ) ? ' style="margin-right: 42px !important; display: inline-block !important;"' : '';
+        echo '<li' . $class_attr . $extra_style . '><a href="' . esc_url( $url ) . '">' . esc_html( strtoupper( $label ) ) . '</a></li>';
     }
     echo '</ul>';
 }
