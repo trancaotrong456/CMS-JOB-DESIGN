@@ -1,23 +1,16 @@
 <?php
 /**
  * page-about.php
- *
- * WordPress automatically selects this file for the page with slug "about"
- * via template hierarchy: page-{slug}.php → page-{id}.php → page.php
- * No manual template assignment in WP Admin required — works on every machine.
- *
- * Description: Purpose-built About Us page for JobScout.
+ * Hero + Newsletter giữ nguyên, phần giữa lấy từ editor (the_content).
  *
  * @package JobScout
  */
 
-// Filter body classes to allow page-scoped styling and disable breadcrumbs
 add_filter( 'body_class', function( $classes ) {
     $classes[] = 'pds-about-page-body';
     return $classes;
 } );
 
-// Enqueue About page scoped stylesheet
 add_action( 'wp_enqueue_scripts', function() {
     wp_enqueue_style(
         'pds-about-style',
@@ -27,37 +20,6 @@ add_action( 'wp_enqueue_scripts', function() {
     );
 }, 20 );
 
-// Retrieve torii gate image from WordPress attachment or seed fallback
-$torii_id = 0;
-$torii_query = get_posts( array(
-    'post_type'        => 'attachment',
-    'meta_key'         => '_cms_shared_seed_asset',
-    'meta_value'       => 'about-torii-lake',
-    'posts_per_page'   => 1,
-    'fields'           => 'ids',
-    'suppress_filters' => true,
-) );
-if ( ! empty( $torii_query ) ) {
-    $torii_id = (int) $torii_query[0];
-}
-$torii_url = $torii_id ? wp_get_attachment_image_url( $torii_id, 'large' ) : content_url( '/uploads/seed-cms-content/about-torii-lake.png' );
-$torii_alt = $torii_id ? get_post_meta( $torii_id, '_wp_attachment_image_alt', true ) : __( 'Vermilion torii gate in a Japanese lake', 'jobscout' );
-
-// Retrieve tokyo tower image from WordPress attachment or seed fallback
-$tokyo_id = 0;
-$tokyo_query = get_posts( array(
-    'post_type'        => 'attachment',
-    'meta_key'         => '_cms_shared_seed_asset',
-    'meta_value'       => 'about-tokyo-tower',
-    'posts_per_page'   => 1,
-    'fields'           => 'ids',
-    'suppress_filters' => true,
-) );
-if ( ! empty( $tokyo_query ) ) {
-    $tokyo_id = (int) $tokyo_query[0];
-}
-$tokyo_url = $tokyo_id ? wp_get_attachment_image_url( $tokyo_id, 'large' ) : content_url( '/uploads/seed-cms-content/about-tokyo-tower.png' );
-// Remove theme container wrapper to allow full-width edge-to-edge layout like footer
 remove_action( 'jobscout_content', 'jobscout_content_start' );
 remove_action( 'jobscout_before_footer', 'jobscout_content_end', 20 );
 
@@ -66,117 +28,40 @@ get_header();
 
 <div class="pds-about-page">
 
-    <!-- HERO BANNER -->
-    <section class="pds-about-hero" aria-labelledby="pds-about-hero-title">
+        <!-- HERO BANNER -->
+    <?php
+    $about_id   = get_queried_object_id();
+    $hero_img   = get_the_post_thumbnail_url( $about_id, 'full' );
+    $hero_text  = has_excerpt( $about_id ) ? get_the_excerpt( $about_id ) : "SHARE “OMOTENASHI”\nWITH THE WORLD";
+    ?>
+    <section class="pds-about-hero" aria-labelledby="pds-about-hero-title"
+        <?php if ( $hero_img ) : ?>style="background-image:url('<?php echo esc_url( $hero_img ); ?>');"<?php endif; ?>>
         <div class="pds-about-hero-overlay"></div>
         <div class="pds-about-hero-inner">
             <h1 id="pds-about-hero-title" class="pds-about-hero-title">
-                <?php esc_html_e( 'SHARE “OMOTENASHI”', 'jobscout' ); ?><br>
-                <?php esc_html_e( 'WITH THE WORLD', 'jobscout' ); ?>
+                <?php echo nl2br( esc_html( $hero_text ) ); ?>
             </h1>
         </div>
     </section>
 
-    <!-- ABOUT US INTRO + VISION / MISSION / VALUE -->
-    <section class="pds-about-vision-section" aria-labelledby="pds-about-main-title">
+       <!-- NỘI DUNG ADMIN CHỈNH TRONG EDITOR -->
+    <section class="pds-about-editable">
         <div class="pds-about-container">
-            <h2 id="pds-about-main-title" class="pds-about-main-title">
-                <?php esc_html_e( 'ABOUT US', 'jobscout' ); ?>
-            </h2>
+            <?php
+            while ( have_posts() ) :
+                the_post();
+                ?>
+                <h2 class="pds-about-main-title"><?php the_title(); ?></h2>
+                <?php
+            endwhile;
+            ?>
 
-            <div class="pds-about-two-col pds-about-vision-grid">
-                <!-- LEFT COLUMN: TORII GATE PHOTO -->
-                <div class="pds-about-col pds-about-col-media">
-                    <div class="pds-about-image-wrapper">
-                        <img src="<?php echo esc_url( $torii_url ); ?>" alt="<?php echo esc_attr( $torii_alt ); ?>" class="pds-about-img pds-about-img-torii" loading="lazy">
-                    </div>
-                </div>
-
-                <!-- RIGHT COLUMN: VISION, MISSION, VALUE -->
-                <div class="pds-about-col pds-about-col-content">
-                    <div class="pds-about-info-block">
-                        <h3 class="pds-about-block-title"><?php esc_html_e( 'Our Vision', 'jobscout' ); ?></h3>
-                        <p class="pds-about-block-desc">
-                            <?php esc_html_e( 'Create hotels and restaurants around the world that offer memorable experiences while building a lasting, positive relationship together with our guests, partners, team members and communities.', 'jobscout' ); ?>
-                        </p>
-                    </div>
-
-                    <div class="pds-about-info-block">
-                        <h3 class="pds-about-block-title"><?php esc_html_e( 'Ours Mission', 'jobscout' ); ?></h3>
-                        <p class="pds-about-block-desc">
-                            <?php esc_html_e( 'Share “Omotenashi” with the world', 'jobscout' ); ?>
-                        </p>
-                    </div>
-
-                    <div class="pds-about-info-block">
-                        <h3 class="pds-about-block-title"><?php esc_html_e( 'Our Core Value', 'jobscout' ); ?></h3>
-                        <p class="pds-about-block-desc">
-                            <span class="pds-about-quote-lead"><?php esc_html_e( '“If I were the guest…”', 'jobscout' ); ?></span><br>
-                            <?php esc_html_e( 'To provide guests with the hospitality you would want to receive as a guest.', 'jobscout' ); ?>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- MANAGEMENT OVERVIEW (CENTERED HIGHLIGHT) -->
-    <section class="pds-about-management-section" aria-labelledby="pds-about-mgmt-title">
-        <div class="pds-about-container">
-            <div class="pds-about-management-inner">
-                <h2 id="pds-about-mgmt-title" class="pds-about-mgmt-title">
-                    <?php esc_html_e( 'Hotels, restaurants, banquets/weddings management', 'jobscout' ); ?>
-                </h2>
-                <div class="pds-about-mgmt-text">
-                    <p>
-                        <?php esc_html_e( 'Plan Do See developed and operates 17 properties worldwide including 3 award-winning resorts in Japan; 17 restaurants of diverse cuisines in cities including New York, Miami and Los Angeles; and other countries including Japan, Indonesia, Malaysia and Bali.', 'jobscout' ); ?>
-                    </p>
-                    <p>
-                        <?php esc_html_e( 'Each venue carries its own concept and design. Many of them are originally historical landmarks that were loved by the local people.', 'jobscout' ); ?>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- COMPANY FACTS + TOKYO TOWER PHOTO -->
-    <section class="pds-about-facts-section" aria-label="<?php esc_attr_e( 'Company Facts', 'jobscout' ); ?>">
-        <div class="pds-about-container">
-            <div class="pds-about-two-col pds-about-facts-grid">
-                <!-- LEFT COLUMN: FACTS LIST -->
-                <div class="pds-about-col pds-about-col-facts">
-                    <div class="pds-about-fact-item">
-                        <h3 class="pds-about-fact-label"><?php esc_html_e( 'Established since', 'jobscout' ); ?></h3>
-                        <p class="pds-about-fact-value"><?php esc_html_e( 'April 1993', 'jobscout' ); ?></p>
-                    </div>
-
-                    <div class="pds-about-fact-item">
-                        <h3 class="pds-about-fact-label"><?php esc_html_e( 'Head Office', 'jobscout' ); ?></h3>
-                        <p class="pds-about-fact-value"><?php esc_html_e( 'Marunouchi 2-1-1, Chiyoda, Tokyo', 'jobscout' ); ?></p>
-                    </div>
-
-                    <div class="pds-about-fact-item">
-                        <h3 class="pds-about-fact-label"><?php esc_html_e( 'Capital', 'jobscout' ); ?></h3>
-                        <p class="pds-about-fact-value"><?php esc_html_e( '100,000,000 JPY', 'jobscout' ); ?></p>
-                    </div>
-
-                    <div class="pds-about-fact-item">
-                        <h3 class="pds-about-fact-label"><?php esc_html_e( 'CEO', 'jobscout' ); ?></h3>
-                        <p class="pds-about-fact-value"><?php esc_html_e( 'Yutaka Noda', 'jobscout' ); ?></p>
-                    </div>
-
-                    <div class="pds-about-fact-item">
-                        <h3 class="pds-about-fact-label"><?php esc_html_e( 'Number of Employees', 'jobscout' ); ?></h3>
-                        <p class="pds-about-fact-value"><?php esc_html_e( 'Full time: 830 / Total: 1,600', 'jobscout' ); ?></p>
-                    </div>
-                </div>
-
-                <!-- RIGHT COLUMN: TOKYO TOWER PHOTO -->
-                <div class="pds-about-col pds-about-col-media">
-                    <div class="pds-about-image-wrapper">
-                        <img src="<?php echo esc_url( $tokyo_url ); ?>" alt="<?php echo esc_attr( $tokyo_alt ); ?>" class="pds-about-img pds-about-img-tokyo" loading="lazy">
-                    </div>
-                </div>
+            <div class="pds-about-content">
+                <?php
+                if ( is_active_sidebar( 'about-page-content' ) ) {
+                    dynamic_sidebar( 'about-page-content' );
+                }
+                ?>
             </div>
         </div>
     </section>
