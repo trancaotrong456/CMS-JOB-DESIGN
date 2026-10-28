@@ -557,12 +557,16 @@ function jobscout_footer_bottom(){ ?>
 		<div class="container">
             <?php 
                 if ( function_exists( 'the_privacy_policy_link' )  )  the_privacy_policy_link( '<div class="privacy-block">', '</div>' );
+                if ( is_active_sidebar( 'footer-copyright' ) ) :
+                    dynamic_sidebar( 'footer-copyright' );
+                else :
             ?>
 			<div class="copyright">            
             <?php
                 echo '&copy; ' . esc_html( gmdate( 'Y' ) ) . ' Plan Do See Global. All Rights Reserved.';
             ?>               
             </div>
+            <?php endif; ?>
 		</div>
 	</div>
     <?php

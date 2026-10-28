@@ -245,6 +245,21 @@ function jobscout_register_cms_widget_areas() {
             'name'        => __( 'Contact Hotline Info', 'jobscout' ),
             'description' => __( 'Khối Hotline 2 cột trang Contact Us.', 'jobscout' ),
         ),
+        array(
+            'id'          => 'footer-copyright',
+            'name'        => __( 'Footer Copyright (Phần màu đen)', 'jobscout' ),
+            'description' => __( 'Dòng bản quyền và thông tin cuối cùng của website (dải màu đen đáy trang).', 'jobscout' ),
+        ),
+        array(
+            'id'          => 'submit-job-header',
+            'name'        => __( 'Submit Job Header', 'jobscout' ),
+            'description' => __( 'Khối tiêu đề POST A JOB và mô tả trang đăng tin.', 'jobscout' ),
+        ),
+        array(
+            'id'          => 'submit-job-content',
+            'name'        => __( 'Submit Job Content', 'jobscout' ),
+            'description' => __( 'Khối form đăng tin tuyển dụng JOB DETAILS.', 'jobscout' ),
+        ),
     );
 
     foreach ( $widget_areas as $area ) {
