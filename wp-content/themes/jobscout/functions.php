@@ -288,6 +288,14 @@ add_filter( 'customize_section_active', function( $active, $section ) {
     return $active;
 }, 20, 2 );
 
+require_once get_template_directory()
+    . '/pds-detail-register-areas.php';
+
+require_once get_template_directory()
+    . '/pds-detail-summary-widget.php';
+
+require_once get_template_directory()
+    . '/pds-detail-section-widgets.php';
 add_action( 'customize_register', function( $wp_customize ) {
     foreach ( $wp_customize->sections() as $section_id => $section ) {
         if ( str_starts_with( $section_id, 'sidebar-widgets-' ) ) {

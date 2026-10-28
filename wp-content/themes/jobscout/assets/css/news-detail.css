@@ -73,3 +73,224 @@ body.single-post #content .content-area, body.single-post #content .site-main { 
     color: #c65300;
     text-decoration: none;
 }
+
+/* News Detail Widgets */
+.pds-news-detail-custom-header {
+    margin-bottom: 30px;
+}
+
+.pds-detail-before-article {
+    margin-bottom: 24px;
+}
+
+.pds-detail-after-article {
+    margin-top: 30px;
+}
+
+.pds-detail-custom-sidebar {
+    margin-bottom: 24px;
+}
+
+.pds-detail-before-related {
+    margin-bottom: 24px;
+}
+
+.pds-news-detail-page .pds-detail-widget img {
+    max-width: 100%;
+    height: auto;
+}
+
+.pds-news-detail-page .pds-detail-widget-title {
+    margin-bottom: 16px;
+}
+
+/* =========================================
+   PDS NEWS DETAIL - CUSTOMIZER WIDGET FIX
+   ========================================= */
+
+/* 1. Widget wrapper */
+.pds-news-detail-page .pds-detail-summary-widget-area,
+.pds-news-detail-page .pds-detail-summary-area,
+.pds-news-detail-page .pds-news-detail-article > .pds-detail-widget,
+.pds-news-detail-page .pds-detail-summary-widget-area > .pds-detail-widget,
+.pds-news-detail-page .pds-detail-summary-area > .pds-detail-widget {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    margin-bottom: 10px;
+}
+
+/* 2. Main post summary layout */
+.pds-news-detail-page .pds-news-detail-article
+.pds-news-detail-summary {
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1fr) 175px;
+    align-items: center;
+    column-gap: 30px;
+
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+
+    margin: 0;
+    padding: 25px 30px;
+    box-sizing: border-box;
+}
+
+/* 3. Cover image */
+.pds-news-detail-page .pds-news-detail-cover {
+    width: 140px;
+    height: 140px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.pds-news-detail-page .pds-news-detail-cover img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 4. Post title and metadata */
+.pds-news-detail-page .pds-news-detail-summary-text {
+    min-width: 0;
+    width: 100%;
+}
+
+.pds-news-detail-page .pds-news-detail-summary-text h1 {
+    margin: 0 0 12px;
+    overflow-wrap: break-word;
+}
+
+.pds-news-detail-page .pds-news-detail-date {
+    margin-bottom: 12px;
+}
+
+.pds-news-detail-page .pds-news-detail-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 5. Share and Back buttons */
+.pds-news-detail-page .pds-news-detail-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+
+    position: static;
+    grid-column: auto;
+    grid-row: auto;
+
+    width: 175px;
+    min-width: 0;
+    margin: 0;
+}
+
+.pds-news-detail-page .pds-news-detail-actions
+.pds-news-detail-share,
+.pds-news-detail-page .pds-news-detail-actions
+.pds-news-detail-back {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    min-height: 45px;
+    margin: 0;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* 6. Tablet */
+@media (max-width: 900px) {
+    .pds-news-detail-page .pds-news-detail-article
+    .pds-news-detail-summary {
+        grid-template-columns: 110px minmax(0, 1fr);
+        gap: 20px;
+    }
+
+    .pds-news-detail-page .pds-news-detail-cover {
+        width: 110px;
+        height: 110px;
+    }
+
+    .pds-news-detail-page .pds-news-detail-actions {
+        grid-column: 1 / -1;
+        width: 100%;
+        flex-direction: row;
+    }
+
+    .pds-news-detail-page .pds-news-detail-actions
+    .pds-news-detail-share,
+    .pds-news-detail-page .pds-news-detail-actions
+    .pds-news-detail-back {
+        flex: 1;
+    }
+}
+
+/* 7. Mobile */
+@media (max-width: 600px) {
+    .pds-news-detail-page .pds-news-detail-article
+    .pds-news-detail-summary {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        padding: 20px;
+    }
+
+    .pds-news-detail-page .pds-news-detail-cover {
+        width: 120px;
+        height: 120px;
+    }
+
+    .pds-news-detail-page .pds-news-detail-actions {
+        grid-column: 1;
+        flex-direction: column;
+    }
+}
+
+/* =========================================
+   FIX SPACING: BREADCRUMB - NEWS HEADER
+   ========================================= */
+
+.pds-news-detail-page .pds-news-detail-breadcrumb {
+    margin-bottom: 20px;
+    padding-bottom: 0;
+}
+
+/* Remove excessive space from custom header */
+.pds-news-detail-page .pds-news-detail-custom-header {
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-top: 0;
+    padding-bottom: 0;
+    min-height: 0;
+    height: auto;
+}
+
+/* Remove extra spacing from widget wrappers */
+.pds-news-detail-page .pds-news-detail-custom-header
+.pds-detail-widget {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* Keep post summary close to breadcrumb */
+.pds-news-detail-page .pds-news-detail-article {
+    margin-top: 0;
+}
+
+.pds-news-detail-page
+.pds-news-detail-breadcrumb .widget {
+    margin-bottom: 0;
+}
+
+.pds-news-detail-page
+.pds-news-detail-breadcrumb {
+    margin-bottom: 20px;
+}
