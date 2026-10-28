@@ -6,14 +6,16 @@ body { color: var(--jobscout-ink); }
 .site-header .site-title a, .site-header .site-description, .home-footer-brand .site-title a, .home-footer-brand .site-description { color: #242120; }
 .site-header.header-one .header-main { padding-top: 0; padding-bottom: 0; }
 .site-header.header-one .header-main > .container { min-height: 86px; display: flex; align-items: center; justify-content: space-between; }
-.site-header .site-branding { display: flex; align-items: center; gap: 10px; }
+.site-header .site-branding { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 .site-header .custom-logo { max-height: 54px; width: auto; }
 .site-header .site-description { margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; }
-.site-header .main-navigation .nav-menu { display: flex; align-items: center; gap: 30px; }
-.site-header .main-navigation .nav-menu a { color: #292625; font-size: 14px; font-weight: 700; text-transform: uppercase; }
+.site-header .menu-wrap { display: flex !important; align-items: center !important; justify-content: flex-end !important; width: auto !important; }
+.site-header .main-navigation { width: auto !important; display: flex !important; align-items: center !important; }
+.site-header .main-navigation .nav-menu { display: flex !important; align-items: center !important; gap: clamp(14px, 1.8vw, 32px) !important; margin: 0 !important; padding: 0 !important; list-style: none !important; flex-wrap: nowrap !important; }
+.site-header .main-navigation .nav-menu li a { color: #292625; font-size: 14px; font-weight: 700; text-transform: uppercase; padding: 8px 0; white-space: nowrap; letter-spacing: 0.03em; }
 .site-header .main-navigation .nav-menu .current-menu-item > a { border-bottom: 2px solid var(--jobscout-orange); }
-.site-header .menu-wrap { display: flex; align-items: center; gap: 26px; }
-.site-header .btn-wrap .btn { background: var(--jobscout-orange); border: 1px solid var(--jobscout-orange); padding: 13px 22px; color: #fff; font-size: 13px; text-transform: uppercase; }
+.site-header .btn-wrap { width: auto !important; flex-shrink: 0 !important; margin-left: 28px !important; position: relative !important; z-index: 5 !important; }
+.site-header .btn-wrap .btn { background: var(--jobscout-orange); border: 1px solid var(--jobscout-orange); padding: 13px 24px; color: #fff; font-size: 13px; font-weight: 700; text-transform: uppercase; white-space: nowrap; display: inline-flex; align-items: center; border-radius: 3px; }
 .home-page { margin: 0; padding: 0; }
 .home-container { width: min(1120px, calc(100% - 48px)); margin: 0 auto; }
 .home-hero { min-height: 540px; display: flex; align-items: center; color: #fff; background: #282a2b url('../images/home-hero-kyoto.png') center 52% / cover no-repeat; position: relative; }
@@ -24,10 +26,11 @@ body { color: var(--jobscout-ink); }
 .home-hero h1 { margin: 0 0 8px; color: #fff; font-size: clamp(30px, 3vw, 42px); line-height: 1.15; text-transform: uppercase; }
 .home-hero__copy > p:not(.home-eyebrow) { max-width: 860px; margin: 0 0 25px; color: rgba(255,255,255,.92); font-size: 15px; line-height: 1.65; }
 .home-job-search { display: grid; grid-template-columns: minmax(260px, 1fr) 230px 160px; gap: 12px; padding: 12px; background: rgba(15,20,21,.48); }
-.home-search-field { display: flex; align-items: center; gap: 12px; min-width: 0; height: 52px; padding: 0 16px; color: var(--jobscout-orange); background: #fff; }
-.home-search-field input { width: 100%; height: 100%; border: 0; outline: 0; color: #3b3837; font-size: 14px; }
+.home-search-field { display: flex; align-items: center; gap: 12px; min-width: 0; height: 52px; padding: 0 16px; color: var(--jobscout-orange); background: #fff; position: relative; }
+.home-search-field input, .home-search-field select { width: 100%; height: 100%; border: 0; outline: 0; color: #3b3837; font-size: 14px; background: transparent; }
 .home-search-field input::placeholder { color: #92908e; }
-.home-search-icon, .home-location-icon { font-size: 22px; line-height: 1; }
+.home-search-icon, .home-location-icon { display: flex; align-items: center; justify-content: center; flex-shrink: 0; line-height: 1; }
+.home-search-icon svg, .home-location-icon svg { display: block; }
 .home-search-submit { height: 52px; padding: 0 22px; border: 1px solid var(--jobscout-orange); background: var(--jobscout-orange); color: #fff; font-size: 13px; font-weight: 700; text-transform: uppercase; cursor: pointer; }
 .home-search-submit:hover, .home-search-submit:focus-visible { background: #d95f0e; }
 .home-section { padding: 62px 0 68px; background: var(--jobscout-paper); }
@@ -130,3 +133,533 @@ body { color: var(--jobscout-ink); }
     .home-blog-card { grid-template-columns: 96px minmax(0,1fr); }
     .home-blog-card__image { height: 112px; }
 }
+
+/* ==========================================================================
+   STANDARDIZED WIDGET AREAS STYLING
+   Ensure custom HTML, shortcodes, and paragraph blocks match design mockup
+   ========================================================================== */
+.custom-widget-box {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.custom-widget-box .textwidget,
+.custom-widget-box .custom-html-widget {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header CTA Area */
+.site-header .btn-wrap .custom-widget-box,
+.site-header .btn-wrap .header-cta-widget,
+.header-cta-widget,
+#header-cta.custom-widget-box {
+    display: inline-flex;
+    align-items: center;
+}
+.header-cta-widget .widget-title,
+.site-header .btn-wrap .widget-title {
+    display: none !important;
+}
+.site-header .btn-wrap .custom-widget-box a,
+.site-header .btn-wrap .custom-widget-box button,
+.site-header .btn-wrap .header-cta-widget a,
+.site-header .btn-wrap .header-cta-widget button,
+.header-cta-widget a,
+.header-cta-widget button,
+#header-cta a,
+#header-cta button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #ef741b;
+    border: 1px solid #ef741b;
+    padding: 13px 24px;
+    color: #fff !important;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    border-radius: 2px;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+.site-header .btn-wrap .custom-widget-box a:hover,
+.site-header .btn-wrap .custom-widget-box button:hover,
+.site-header .btn-wrap .header-cta-widget a:hover,
+.site-header .btn-wrap .header-cta-widget button:hover,
+.header-cta-widget a:hover,
+.header-cta-widget button:hover,
+#header-cta a:hover,
+#header-cta button:hover {
+    background: #d96312;
+    border-color: #d96312;
+    color: #fff !important;
+}
+
+/* General Widget Area Sections Container & Typography */
+.pds-widget-area-section {
+    width: 100%;
+    box-sizing: border-box;
+}
+.pds-widget-area-section .custom-widget-box h1,
+.pds-widget-area-section .custom-widget-box h2,
+.pds-widget-area-section .custom-widget-box h3 {
+    text-transform: uppercase;
+    color: #1e1e1e;
+    font-family: inherit;
+    font-weight: 700;
+}
+.pds-widget-area-section .custom-widget-box a {
+    color: #ef741b;
+    transition: color 0.2s ease;
+}
+.pds-widget-area-section .custom-widget-box a:hover {
+    color: #d96312;
+}
+
+/* Fallback button styles for widget areas */
+.custom-widget-box .btn,
+.custom-widget-box .button,
+.custom-widget-box button,
+.custom-widget-box input[type="submit"] {
+    background-color: #ef741b;
+    border-color: #ef741b;
+    color: #ffffff !important;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: background 0.2s ease;
+}
+.custom-widget-box .btn:hover,
+.custom-widget-box .button:hover,
+.custom-widget-box button:hover,
+.custom-widget-box input[type="submit"]:hover {
+    background-color: #d96312;
+    border-color: #d96312;
+    color: #ffffff !important;
+}
+
+/* 1. Home Widget Areas */
+#home-hero-search.custom-widget-box,
+.home-hero-search-widget,
+.widget-area-home-hero-search {
+    max-width: 940px;
+    margin: 0 auto;
+    width: 100%;
+}
+.home-hero-search-widget .widget-title {
+    display: none !important;
+}
+#home-hero-search .home-job-search,
+#home-hero-search form,
+.home-hero-search-widget .home-job-search,
+.home-hero-search-widget form {
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) 230px 160px;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(15,20,21,.48);
+}
+@media (max-width: 767px) {
+    #home-hero-search .home-job-search,
+    #home-hero-search form,
+    .home-hero-search-widget .home-job-search,
+    .home-hero-search-widget form {
+        grid-template-columns: 1fr;
+    }
+}
+
+#home-top-jobs.custom-widget-box,
+.home-top-jobs-widget,
+.widget-area-home-top-jobs,
+#home-career-cta.custom-widget-box,
+.home-career-cta-widget,
+.widget-area-home-career-cta,
+#home-blog-entries.custom-widget-box,
+.home-blog-entries-widget,
+.widget-area-home-blog-entries {
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* 2. Job Widget Areas */
+#jobs-hero-banner.custom-widget-box,
+.jobs-hero-banner-widget,
+.widget-area-jobs-hero-banner {
+    width: 100% !important;
+    min-height: 420px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    margin: 0 auto !important;
+    position: relative !important;
+}
+
+.jobs-hero-banner-widget .widget-title {
+    display: none !important;
+}
+
+.jobs-list-content-widget,
+.widget-area-jobs-list-content {
+    width: 100%;
+}
+
+/* 3. Job Detail Widget Areas */
+.job-detail-sidebar-widget,
+.widget-area-job-detail-sidebar {
+    width: 100%;
+    margin-bottom: 24px;
+}
+.job-detail-sidebar-widget .widget-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e1e1e;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+}
+.job-detail-related-widget,
+.widget-area-job-detail-related {
+    width: 100%;
+}
+
+/* 4 & 5. News & News Detail Widget Areas */
+.news-grid-content-widget,
+.widget-area-news-grid-content,
+.news-detail-related-widget,
+.widget-area-news-detail-related {
+    width: 100%;
+}
+
+/* 6. About Widget Areas */
+.about-vision-section-widget,
+.widget-area-about-vision-section,
+.about-company-stats-widget,
+.widget-area-about-company-stats {
+    width: 100%;
+}
+
+/* 7. Contact Widget Areas */
+#contact-hero-banner.custom-widget-box,
+.contact-hero-banner-widget,
+.widget-area-contact-hero-banner {
+    width: 100% !important;
+    min-height: 380px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    margin: 0 auto !important;
+    position: relative !important;
+}
+
+.contact-hero-banner-widget .widget-title {
+    display: none !important;
+}
+
+.contact-headquarters-widget,
+.widget-area-contact-headquarters,
+.contact-hotline-info-widget,
+.widget-area-contact-hotline-info {
+    width: 100%;
+}
+
+/* 8. Footer Newsletter & Bottom Widget Areas */
+.footer-newsletter-widget,
+.widget-area-footer-newsletter {
+    width: 100%;
+}
+.footer-newsletter-widget .widget-title {
+    display: none !important;
+}
+
+/* Footer Bottom & Widget Area - Centered Stacked Layout Matching Reference Image 2 */
+#footer-bottom.custom-widget-box,
+.footer-bottom-widget,
+.widget-area-footer-bottom,
+.footer-bottom-sidebar,
+.home-footer-main .container,
+.footer-b .custom-widget-box {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100% !important;
+}
+
+.home-footer-main {
+    padding: 54px 0 58px !important;
+    background: #f5f6f8 !important;
+    text-align: center !important;
+}
+
+.home-footer-brand {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+}
+
+.home-footer-brand .site-branding {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+}
+
+.home-footer-brand .custom-logo,
+.home-footer-brand img {
+    max-height: 52px !important;
+    width: auto !important;
+    margin: 0 auto !important;
+    display: block !important;
+}
+
+.home-footer-navigation {
+    margin-top: 26px !important;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+}
+
+.home-footer-navigation ul,
+.home-footer-navigation .home-footer-menu {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 32px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+.home-footer-navigation a {
+    color: #292625 !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
+    text-decoration: none !important;
+    transition: color 0.18s ease !important;
+}
+
+.home-footer-navigation a:hover {
+    color: var(--jobscout-orange, #f2761b) !important;
+}
+
+.home-footer-social {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 16px !important;
+    margin-top: 28px !important;
+    width: 100% !important;
+}
+
+.home-footer-social a,
+.home-footer-social span {
+    width: 42px !important;
+    height: 42px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    font-size: 15px !important;
+    line-height: 1 !important;
+    transition: transform 0.18s ease, opacity 0.18s ease !important;
+}
+
+.home-footer-social a:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+.home-footer-social .home-social--facebook,
+.home-footer-social :nth-child(1) {
+    background: #4d79bd !important;
+    color: #fff !important;
+}
+
+.home-footer-social .home-social--google,
+.home-footer-social :nth-child(2) {
+    background: #ffffff !important;
+    border: 1px solid #e5e5e5 !important;
+    color: #4285f4 !important;
+}
+
+.home-footer-social .home-social--line,
+.home-footer-social :nth-child(3) {
+    background: #00c300 !important;
+    color: #ffffff !important;
+    font-size: 10px !important;
+    letter-spacing: -0.2px !important;
+}
+
+.home-footer-social .home-social--twitter,
+.home-footer-social :nth-child(4) {
+    background: #50a9db !important;
+    color: #fff !important;
+}
+
+.footer-bottom-widget .widget-title {
+    display: none !important;
+}
+
+.site-footer .footer-b {
+    background: #1a1615 !important;
+    padding: 18px 0 !important;
+    text-align: center !important;
+}
+
+.site-footer .footer-b .copyright {
+    color: #8c827d !important;
+    font-size: 13px !important;
+    letter-spacing: 0.3px !important;
+}
+
+/* ==========================================================================
+   Customizer Edit Pencil (Selective Refresh Shortcut) Position Fixes
+   Ensures pencils never obscure text or sit behind buttons
+   ========================================================================== */
+
+/* 1. Header CTA button pencil */
+.site-header .btn-wrap {
+    position: relative !important;
+}
+.site-header .btn-wrap .customize-partial-edit-shortcut {
+    top: -10px !important;
+    right: -10px !important;
+    left: auto !important;
+    z-index: 999999 !important;
+}
+
+/* 2. Menu navigation pencil (ensure ample spacing so "CONTACT" is 100% visible) */
+.site-header #site-navigation ul li:last-child,
+.site-header .main-navigation ul li:last-child,
+#primary-menu > li:last-child {
+    margin-right: 48px !important;
+}
+.customize-partial-edit-shortcut-nav_menu,
+div[class*="customize-partial-edit-shortcut-nav_menu"] {
+    margin-left: 24px !important;
+    z-index: 99999 !important;
+}
+
+/* 3. Newsletter banner edit pencil */
+.widget-area-footer-newsletter,
+.footer-newsletter-widget,
+.pds-contact-newsletter {
+    position: relative !important;
+}
+.widget-area-footer-newsletter > .customize-partial-edit-shortcut,
+.footer-newsletter-widget > .customize-partial-edit-shortcut {
+    top: 18px !important;
+    left: 32px !important;
+    right: auto !important;
+    z-index: 999999 !important;
+}
+
+/* 4. Hero Banners, CTA and Headquarters pencils (anchor to top-left of container) */
+.pds-all-jobs-hero,
+.pds-contact-hero,
+.pds-contact-hero-banner,
+.pds-news-hero,
+.pds-about-hero,
+.home-career-cta-widget,
+.widget-area-home-career-cta,
+.widget-area-contact-hero-banner,
+.widget-area-contact-headquarters,
+.widget-area-contact-hotline-info,
+.widget-area-about-hero-banner,
+.widget-area-about-management-section,
+.widget-area-news-hero-banner,
+.widget-area-jobs-hero-banner,
+.widget-area-job-detail-hero,
+.widget-area-news-detail-related,
+.widget-area-contact-form-area {
+    position: relative !important;
+}
+
+.widget-area-home-career-cta > .customize-partial-edit-shortcut,
+.widget-area-contact-hero-banner > .customize-partial-edit-shortcut,
+.widget-area-contact-headquarters > .customize-partial-edit-shortcut,
+.widget-area-about-hero-banner > .customize-partial-edit-shortcut,
+.widget-area-about-management-section > .customize-partial-edit-shortcut,
+.widget-area-news-hero-banner > .customize-partial-edit-shortcut,
+.widget-area-jobs-hero-banner > .customize-partial-edit-shortcut,
+.widget-area-job-detail-hero > .customize-partial-edit-shortcut,
+.widget-area-news-detail-related > .customize-partial-edit-shortcut,
+.widget-area-contact-form-area > .customize-partial-edit-shortcut,
+.home-career-cta-widget > .customize-partial-edit-shortcut {
+    top: 20px !important;
+    left: 28px !important;
+    right: auto !important;
+    transform: none !important;
+    z-index: 99999 !important;
+}
+
+/* ==========================================================================
+   News Page Pagination Styling
+   ========================================================================== */
+.pds-news-pagination {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 40px auto 20px !important;
+    text-align: center !important;
+}
+
+.pds-news-pagination .page-numbers {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 38px !important;
+    height: 38px !important;
+    padding: 0 12px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #211916 !important;
+    background: #ffffff !important;
+    border: 1px solid #e0d8d3 !important;
+    border-radius: 2px !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+}
+
+.pds-news-pagination .page-numbers:hover {
+    background: #f2761b !important;
+    border-color: #f2761b !important;
+    color: #ffffff !important;
+}
+
+.pds-news-pagination .page-numbers.current {
+    background: #f2761b !important;
+    border-color: #f2761b !important;
+    color: #ffffff !important;
+}
+
+.pds-news-pagination .prev,
+.pds-news-pagination .next {
+    font-size: 13px !important;
+    padding: 0 16px !important;
+}
+
