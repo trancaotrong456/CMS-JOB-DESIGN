@@ -161,7 +161,10 @@ class PDS_Home_Hero_Search_Widget extends WP_Widget {
         echo $args['before_widget'];
         if ( ! empty( $bg_image_url ) ) : ?>
             <style>.home-hero { background-image: url('<?php echo esc_url( $bg_image_url ); ?>') !important; }</style>
-        <?php endif; ?>
+        <?php endif;
+        $selected_loc      = isset( $_GET['search_location'] ) ? sanitize_text_field( wp_unslash( $_GET['search_location'] ) ) : '';
+        $default_loc_label = ( ! empty( $location_ph ) && 'Tokyo' !== $location_ph ) ? $location_ph : __( 'All Locations', 'jobscout' );
+        ?>
         <div class="home-hero__copy">
             <?php if ( ! empty( $eyebrow ) ) : ?>
                 <p class="home-eyebrow"><?php echo esc_html( $eyebrow ); ?></p>
@@ -186,10 +189,11 @@ class PDS_Home_Hero_Search_Widget extends WP_Widget {
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f2761b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                     </span>
                     <select name="search_location" class="home-search-location-select" style="width: 100%; height: 100%; border: 0; outline: 0; color: #3b3837; font-size: 14px; background: transparent; cursor: pointer; -webkit-appearance: none; -moz-appearance: none; appearance: none; padding-right: 18px;">
-                        <option value="Tokyo" <?php selected( $location_ph, 'Tokyo' ); ?>>Tokyo</option>
-                        <option value="Kyoto" <?php selected( $location_ph, 'Kyoto' ); ?>>Kyoto</option>
-                        <option value="Osaka" <?php selected( $location_ph, 'Osaka' ); ?>>Osaka</option>
-                        <option value="" <?php selected( empty( $location_ph ) || $location_ph === 'All Locations', true ); ?>>All Locations</option>
+                        <option value="" <?php selected( empty( $selected_loc ), true ); ?>><?php echo esc_html( $default_loc_label ); ?></option>
+                        <option value="Ho Chi Minh City" <?php selected( $selected_loc, 'Ho Chi Minh City' ); ?>>Ho Chi Minh City</option>
+                        <option value="Tokyo" <?php selected( $selected_loc, 'Tokyo' ); ?>>Tokyo</option>
+                        <option value="Kyoto" <?php selected( $selected_loc, 'Kyoto' ); ?>>Kyoto</option>
+                        <option value="Osaka" <?php selected( $selected_loc, 'Osaka' ); ?>>Osaka</option>
                     </select>
                     <span class="home-dropdown-arrow" style="pointer-events: none; margin-left: -12px; color: #696461; font-size: 10px;">▼</span>
                 </label>
@@ -745,14 +749,17 @@ class PDS_Jobs_List_Widget extends WP_Widget {
         $show_sort     = isset( $instance['show_sort'] ) ? (bool) $instance['show_sort'] : true;
         $show_loadmore = isset( $instance['show_loadmore'] ) ? (bool) $instance['show_loadmore'] : true;
 
-        $jobs_query = new WP_Query( array(
-            'post_type'      => 'job_listing',
-            'post_status'    => 'publish',
-            'posts_per_page' => $count,
-            'paged'          => 1,
-            'orderby'        => 'date',
-            'order'          => 'DESC',
-        ) );
+        $search_keywords = isset( $_GET['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) ) : '';
+        $search_location = isset( $_GET['search_location'] ) ? sanitize_text_field( wp_unslash( $_GET['search_location'] ) ) : '';
+        $current_sort    = isset( $_GET['sort'] ) ? sanitize_text_field( wp_unslash( $_GET['sort'] ) ) : 'latest';
+
+        $jobs_query = new WP_Query( pds_get_jobs_query_args( array(
+            'posts_per_page'  => $count,
+            'paged'           => 1,
+            'sort'            => $current_sort,
+            'search_keywords' => $search_keywords,
+            'search_location' => $search_location,
+        ) ) );
         $total_pages = $jobs_query->max_num_pages;
 
         echo $args['before_widget'];
@@ -761,17 +768,41 @@ class PDS_Jobs_List_Widget extends WP_Widget {
             <div class="pds-all-jobs-filter-bar" style="margin-bottom: 24px; background: #fbf9f7; padding: 18px 20px; border: 1px solid #ebdcd0; border-radius: 4px;">
                 <form class="pds-all-jobs-filter-form" method="get" action="<?php echo esc_url( home_url( '/jobs/' ) ); ?>" style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
                     <div style="flex: 2; min-width: 200px;">
-                        <input type="text" name="search_keywords" placeholder="<?php esc_attr_e( 'Keywords (e.g. Hotel Manager, Chef)...', 'jobscout' ); ?>" value="<?php echo esc_attr( get_query_var( 'search_keywords' ) ); ?>" style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 2px;">
+                        <input type="text" name="search_keywords" placeholder="<?php esc_attr_e( 'Keywords (e.g. Hotel Manager, Chef)...', 'jobscout' ); ?>" value="<?php echo esc_attr( $search_keywords ); ?>" style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 2px;">
                     </div>
                     <div style="flex: 1.5; min-width: 160px;">
-                        <input type="text" name="search_location" placeholder="<?php esc_attr_e( 'Location (e.g. Ho Chi Minh, Tokyo)...', 'jobscout' ); ?>" value="<?php echo esc_attr( get_query_var( 'search_location' ) ); ?>" style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 2px;">
+                        <input type="text" name="search_location" placeholder="<?php esc_attr_e( 'Location (e.g. Ho Chi Minh, Tokyo)...', 'jobscout' ); ?>" value="<?php echo esc_attr( $search_location ); ?>" style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 2px;">
                     </div>
-                    <div style="flex: 1; min-width: 130px;">
-                        <button type="submit" style="width: 100%; background: #f2761b; color: #fff; font-weight: 700; padding: 10px 16px; border: none; cursor: pointer; text-transform: uppercase; border-radius: 2px; font-size: 13px;">
+                    <?php if ( ! empty( $current_sort ) && 'latest' !== $current_sort ) : ?>
+                        <input type="hidden" name="sort" value="<?php echo esc_attr( $current_sort ); ?>">
+                    <?php endif; ?>
+                    <div style="flex: 1; min-width: 130px; display: flex; gap: 8px;">
+                        <button type="submit" style="flex: 1; background: #f2761b; color: #fff; font-weight: 700; padding: 10px 16px; border: none; cursor: pointer; text-transform: uppercase; border-radius: 2px; font-size: 13px;">
                             <?php esc_html_e( 'FILTER JOBS', 'jobscout' ); ?>
                         </button>
+                        <?php if ( ! empty( $search_keywords ) || ! empty( $search_location ) ) : ?>
+                            <a href="<?php echo esc_url( home_url( '/jobs/' ) ); ?>" style="display: inline-flex; align-items: center; justify-content: center; background: #eceae8; color: #555; font-weight: 600; padding: 10px 14px; text-decoration: none; border-radius: 2px; font-size: 13px;" title="<?php esc_attr_e( 'Clear filters', 'jobscout' ); ?>">✕</a>
+                        <?php endif; ?>
                     </div>
                 </form>
+            </div>
+        <?php endif; ?>
+
+        <?php if ( ! empty( $search_keywords ) || ! empty( $search_location ) ) : ?>
+            <div class="pds-all-jobs-filter-status" style="margin-bottom: 24px; font-size: 14px; color: #555; background: #fff8f2; border: 1px solid #ffd8b8; padding: 12px 18px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <strong><?php esc_html_e( 'Search results for:', 'jobscout' ); ?></strong>
+                    <?php if ( ! empty( $search_keywords ) ) : ?>
+                        <span style="color: #f2761b; font-weight: 600;">"<?php echo esc_html( $search_keywords ); ?>"</span>
+                    <?php endif; ?>
+                    <?php if ( ! empty( $search_location ) ) : ?>
+                        <?php esc_html_e( 'in', 'jobscout' ); ?> <span style="color: #f2761b; font-weight: 600;">"<?php echo esc_html( $search_location ); ?>"</span>
+                    <?php endif; ?>
+                    <span>(<?php printf( esc_html( _n( '%d job found', '%d jobs found', $jobs_query->found_posts, 'jobscout' ) ), (int) $jobs_query->found_posts ); ?>)</span>
+                </div>
+                <a href="<?php echo esc_url( home_url( '/jobs/' ) ); ?>" style="color: #d9534f; font-weight: 600; text-decoration: underline; font-size: 13px;">
+                    <?php esc_html_e( 'Clear Filter', 'jobscout' ); ?>
+                </a>
             </div>
         <?php endif; ?>
 
@@ -782,10 +813,10 @@ class PDS_Jobs_List_Widget extends WP_Widget {
                 <div class="pds-all-jobs-sort-wrapper">
                     <label for="pds-all-jobs-sort" class="screen-reader-text"><?php esc_html_e( 'Sort Jobs', 'jobscout' ); ?></label>
                     <select id="pds-all-jobs-sort" class="pds-all-jobs-sort-select">
-                        <option value="latest"><?php esc_html_e( 'Latest Jobs', 'jobscout' ); ?></option>
-                        <option value="oldest"><?php esc_html_e( 'Oldest Jobs', 'jobscout' ); ?></option>
-                        <option value="title_asc"><?php esc_html_e( 'Title: A - Z', 'jobscout' ); ?></option>
-                        <option value="title_desc"><?php esc_html_e( 'Title: Z - A', 'jobscout' ); ?></option>
+                        <option value="latest" <?php selected( $current_sort, 'latest' ); ?>><?php esc_html_e( 'Latest Jobs', 'jobscout' ); ?></option>
+                        <option value="oldest" <?php selected( $current_sort, 'oldest' ); ?>><?php esc_html_e( 'Oldest Jobs', 'jobscout' ); ?></option>
+                        <option value="title_asc" <?php selected( $current_sort, 'title_asc' ); ?>><?php esc_html_e( 'Title: A - Z', 'jobscout' ); ?></option>
+                        <option value="title_desc" <?php selected( $current_sort, 'title_desc' ); ?>><?php esc_html_e( 'Title: Z - A', 'jobscout' ); ?></option>
                     </select>
                 </div>
             <?php endif; ?>
@@ -812,6 +843,13 @@ class PDS_Jobs_List_Widget extends WP_Widget {
         <?php else : ?>
             <div class="pds-all-jobs-empty">
                 <p><?php esc_html_e( 'No job openings found matching your criteria.', 'jobscout' ); ?></p>
+                <?php if ( ! empty( $search_keywords ) || ! empty( $search_location ) ) : ?>
+                    <p style="margin-top: 14px;">
+                        <a href="<?php echo esc_url( home_url( '/jobs/' ) ); ?>" style="display: inline-block; background: #f2761b; color: #fff; padding: 10px 20px; font-weight: 700; text-transform: uppercase; border-radius: 3px; text-decoration: none; font-size: 13px;">
+                            <?php esc_html_e( 'VIEW ALL JOBS', 'jobscout' ); ?>
+                        </a>
+                    </p>
+                <?php endif; ?>
             </div>
         <?php endif; wp_reset_postdata(); ?>
 

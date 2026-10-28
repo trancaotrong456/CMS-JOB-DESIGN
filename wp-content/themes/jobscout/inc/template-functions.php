@@ -596,3 +596,86 @@ function jobscout_page_end(){ ?>
 }
 endif;
 add_action( 'jobscout_after_footer', 'jobscout_page_end', 20 );
+
+/**
+ * Filter job listings search clauses to cover title, content, excerpt, and company name.
+ */
+if ( ! function_exists( 'pds_filter_job_listing_search' ) ) :
+function pds_filter_job_listing_search( $clauses, $query ) {
+    $keywords = $query->get( 'pds_job_keywords' );
+    if ( ! empty( $keywords ) ) {
+        global $wpdb;
+        $kw = '%' . $wpdb->esc_like( $keywords ) . '%';
+        $clauses['join'] .= " LEFT JOIN {$wpdb->postmeta} AS pds_comp ON ({$wpdb->posts}.ID = pds_comp.post_id AND pds_comp.meta_key = '_company_name') ";
+        $clauses['where'] .= $wpdb->prepare(
+            " AND ({$wpdb->posts}.post_title LIKE %s OR {$wpdb->posts}.post_content LIKE %s OR {$wpdb->posts}.post_excerpt LIKE %s OR pds_comp.meta_value LIKE %s) ",
+            $kw, $kw, $kw, $kw
+        );
+        $clauses['distinct'] = 'DISTINCT';
+    }
+    return $clauses;
+}
+add_filter( 'posts_clauses', 'pds_filter_job_listing_search', 10, 2 );
+endif;
+
+/**
+ * Build unified WP_Query args for job listings with search keywords, location and sorting.
+ *
+ * @param array $params Custom overrides (posts_per_page, paged, sort, search_keywords, search_location)
+ * @return array Sanitized WP_Query arguments
+ */
+if ( ! function_exists( 'pds_get_jobs_query_args' ) ) :
+function pds_get_jobs_query_args( $params = array() ) {
+    $paged     = isset( $params['paged'] ) ? max( 1, (int) $params['paged'] ) : 1;
+    $count     = isset( $params['posts_per_page'] ) ? (int) $params['posts_per_page'] : 6;
+    $sort      = isset( $params['sort'] ) ? sanitize_text_field( $params['sort'] ) : 'latest';
+    $keywords  = isset( $params['search_keywords'] ) ? trim( sanitize_text_field( $params['search_keywords'] ) ) : '';
+    $location  = isset( $params['search_location'] ) ? trim( sanitize_text_field( $params['search_location'] ) ) : '';
+
+    $query_args = array(
+        'post_type'      => 'job_listing',
+        'post_status'    => 'publish',
+        'posts_per_page' => $count,
+        'paged'          => $paged,
+    );
+
+    // Sorting
+    switch ( $sort ) {
+        case 'oldest':
+            $query_args['orderby'] = 'date';
+            $query_args['order']   = 'ASC';
+            break;
+        case 'title_asc':
+            $query_args['orderby'] = 'title';
+            $query_args['order']   = 'ASC';
+            break;
+        case 'title_desc':
+            $query_args['orderby'] = 'title';
+            $query_args['order']   = 'DESC';
+            break;
+        case 'latest':
+        default:
+            $query_args['orderby'] = 'date';
+            $query_args['order']   = 'DESC';
+            break;
+    }
+
+    // Search keywords (matches post_title, post_content, post_excerpt, _company_name)
+    if ( ! empty( $keywords ) ) {
+        $query_args['pds_job_keywords'] = $keywords;
+    }
+
+    // Search location (matches _job_location meta)
+    if ( ! empty( $location ) && strtolower( $location ) !== 'all locations' ) {
+        $query_args['meta_query'] = array(
+            array(
+                'key'     => '_job_location',
+                'value'   => $location,
+                'compare' => 'LIKE',
+            ),
+        );
+    }
+
+    return $query_args;
+}
+endif;

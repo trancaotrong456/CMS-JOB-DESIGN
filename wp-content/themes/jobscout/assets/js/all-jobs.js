@@ -23,6 +23,14 @@
         var currentSort = sortSelect ? sortSelect.value : (config.sort || 'latest');
         var isLoading = false;
 
+        var currentUrlParams = new URLSearchParams(window.location.search);
+        var searchKeywords = (config.keywords !== undefined && config.keywords !== null && config.keywords !== '')
+            ? config.keywords
+            : (currentUrlParams.get('search_keywords') || '');
+        var searchLocation = (config.location !== undefined && config.location !== null && config.location !== '')
+            ? config.location
+            : (currentUrlParams.get('search_location') || '');
+
         // If initial load already has all posts loaded
         if (loadMoreBtn && maxPages <= 1) {
             loadMoreBtn.setAttribute('data-all-loaded', 'true');
@@ -53,6 +61,12 @@
                 url.searchParams.set('pds_ajax_jobs', '1');
                 url.searchParams.set('page', nextPage);
                 url.searchParams.set('sort', currentSort);
+                if (searchKeywords) {
+                    url.searchParams.set('search_keywords', searchKeywords);
+                }
+                if (searchLocation) {
+                    url.searchParams.set('search_location', searchLocation);
+                }
 
                 fetch(url.toString(), {
                     method: 'GET',
@@ -113,6 +127,12 @@
                 url.searchParams.set('pds_ajax_jobs', '1');
                 url.searchParams.set('page', '1');
                 url.searchParams.set('sort', currentSort);
+                if (searchKeywords) {
+                    url.searchParams.set('search_keywords', searchKeywords);
+                }
+                if (searchLocation) {
+                    url.searchParams.set('search_location', searchLocation);
+                }
 
                 fetch(url.toString(), {
                     method: 'GET',
@@ -149,6 +169,12 @@
                         if (window.history && window.history.pushState) {
                             var stateUrl = new URL(window.location.href);
                             stateUrl.searchParams.set('sort', currentSort);
+                            if (searchKeywords) {
+                                stateUrl.searchParams.set('search_keywords', searchKeywords);
+                            }
+                            if (searchLocation) {
+                                stateUrl.searchParams.set('search_location', searchLocation);
+                            }
                             window.history.pushState({ sort: currentSort }, '', stateUrl.toString());
                         }
                     }

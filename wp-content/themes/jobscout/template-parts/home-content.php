@@ -49,10 +49,11 @@ $jobs_query   = new WP_Query( array(
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f2761b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                             </span>
                             <select name="search_location" class="home-search-location-select" style="width: 100%; height: 100%; border: 0; outline: 0; color: #3b3837; font-size: 14px; background: transparent; cursor: pointer; -webkit-appearance: none; -moz-appearance: none; appearance: none; padding-right: 18px;">
+                                <option value=""><?php esc_html_e( 'All Locations', 'jobscout' ); ?></option>
+                                <option value="Ho Chi Minh City"><?php esc_html_e( 'Ho Chi Minh City', 'jobscout' ); ?></option>
                                 <option value="Tokyo"><?php esc_html_e( 'Tokyo', 'jobscout' ); ?></option>
                                 <option value="Kyoto"><?php esc_html_e( 'Kyoto', 'jobscout' ); ?></option>
                                 <option value="Osaka"><?php esc_html_e( 'Osaka', 'jobscout' ); ?></option>
-                                <option value=""><?php esc_html_e( 'All Locations', 'jobscout' ); ?></option>
                             </select>
                             <span class="home-dropdown-arrow" style="pointer-events: none; margin-left: -12px; color: #696461; font-size: 10px;">▼</span>
                         </label>

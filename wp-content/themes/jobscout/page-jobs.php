@@ -17,35 +17,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 // 1. Handle Self-Contained AJAX Requests for Load More & Dynamic Sort
 // -----------------------------------------------------------------------------
 if ( isset( $_REQUEST['pds_ajax_jobs'] ) ) {
-    $paged = isset( $_REQUEST['page'] ) ? max( 1, (int) $_REQUEST['page'] ) : 1;
-    $sort  = isset( $_REQUEST['sort'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['sort'] ) ) : 'latest';
+    $paged    = isset( $_REQUEST['page'] ) ? max( 1, (int) $_REQUEST['page'] ) : 1;
+    $sort     = isset( $_REQUEST['sort'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['sort'] ) ) : 'latest';
+    $keywords = isset( $_REQUEST['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['search_keywords'] ) ) : '';
+    $location = isset( $_REQUEST['search_location'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['search_location'] ) ) : '';
 
-    $args = array(
-        'post_type'      => 'job_listing',
-        'post_status'    => 'publish',
-        'posts_per_page' => 6,
-        'paged'          => $paged,
-    );
-
-    switch ( $sort ) {
-        case 'oldest':
-            $args['orderby'] = 'date';
-            $args['order']   = 'ASC';
-            break;
-        case 'title_asc':
-            $args['orderby'] = 'title';
-            $args['order']   = 'ASC';
-            break;
-        case 'title_desc':
-            $args['orderby'] = 'title';
-            $args['order']   = 'DESC';
-            break;
-        case 'latest':
-        default:
-            $args['orderby'] = 'date';
-            $args['order']   = 'DESC';
-            break;
-    }
+    $args = pds_get_jobs_query_args( array(
+        'posts_per_page'  => 6,
+        'paged'           => $paged,
+        'sort'            => $sort,
+        'search_keywords' => $keywords,
+        'search_location' => $location,
+    ) );
 
     $ajax_query = new WP_Query( $args );
 
@@ -73,37 +56,20 @@ if ( isset( $_REQUEST['pds_ajax_jobs'] ) ) {
 // -----------------------------------------------------------------------------
 // 2. Initial Page Query
 // -----------------------------------------------------------------------------
-$current_sort = isset( $_GET['sort'] ) ? sanitize_text_field( wp_unslash( $_GET['sort'] ) ) : 'latest';
-$current_page = max( 1, (int) get_query_var( 'paged' ), (int) get_query_var( 'page' ) );
+$current_sort    = isset( $_GET['sort'] ) ? sanitize_text_field( wp_unslash( $_GET['sort'] ) ) : 'latest';
+$current_page    = max( 1, (int) get_query_var( 'paged' ), (int) get_query_var( 'page' ) );
+$search_keywords = isset( $_GET['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) ) : '';
+$search_location = isset( $_GET['search_location'] ) ? sanitize_text_field( wp_unslash( $_GET['search_location'] ) ) : '';
 
-$query_args = array(
-    'post_type'      => 'job_listing',
-    'post_status'    => 'publish',
-    'posts_per_page' => 6,
-    'paged'          => $current_page,
-);
+$query_args = pds_get_jobs_query_args( array(
+    'posts_per_page'  => 6,
+    'paged'           => $current_page,
+    'sort'            => $current_sort,
+    'search_keywords' => $search_keywords,
+    'search_location' => $search_location,
+) );
 
-switch ( $current_sort ) {
-    case 'oldest':
-        $query_args['orderby'] = 'date';
-        $query_args['order']   = 'ASC';
-        break;
-    case 'title_asc':
-        $query_args['orderby'] = 'title';
-        $query_args['order']   = 'ASC';
-        break;
-    case 'title_desc':
-        $query_args['orderby'] = 'title';
-        $query_args['order']   = 'DESC';
-        break;
-    case 'latest':
-    default:
-        $query_args['orderby'] = 'date';
-        $query_args['order']   = 'DESC';
-        break;
-}
-
-$jobs_query = new WP_Query( $query_args );
+$jobs_query  = new WP_Query( $query_args );
 $total_pages = $jobs_query->max_num_pages;
 
 // -----------------------------------------------------------------------------
@@ -114,7 +80,7 @@ add_filter( 'body_class', function( $classes ) {
     return $classes;
 } );
 
-add_action( 'wp_enqueue_scripts', function() use ( $total_pages, $current_sort ) {
+add_action( 'wp_enqueue_scripts', function() use ( $total_pages, $current_sort, $search_keywords, $search_location ) {
     wp_enqueue_style(
         'pds-all-jobs-style',
         get_template_directory_uri() . '/assets/css/all-jobs.css',
@@ -137,6 +103,8 @@ add_action( 'wp_enqueue_scripts', function() use ( $total_pages, $current_sort )
             'endpoint' => esc_url( get_permalink() ),
             'maxPages' => $total_pages,
             'sort'     => $current_sort,
+            'keywords' => $search_keywords,
+            'location' => $search_location,
             'noMore'   => __( 'NO MORE JOBS', 'jobscout' ),
             'loading'  => __( 'LOADING...', 'jobscout' ),
             'loadMore' => __( 'LOAD MORE JOBS', 'jobscout' ),
@@ -208,6 +176,24 @@ get_header();
                 </div>
             </div>
 
+            <?php if ( ! empty( $search_keywords ) || ! empty( $search_location ) ) : ?>
+                <div class="pds-all-jobs-filter-status" style="margin-bottom: 24px; font-size: 14px; color: #555; background: #fff8f2; border: 1px solid #ffd8b8; padding: 12px 18px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <strong><?php esc_html_e( 'Search results for:', 'jobscout' ); ?></strong>
+                        <?php if ( ! empty( $search_keywords ) ) : ?>
+                            <span style="color: #f2761b; font-weight: 600;">"<?php echo esc_html( $search_keywords ); ?>"</span>
+                        <?php endif; ?>
+                        <?php if ( ! empty( $search_location ) ) : ?>
+                            <?php esc_html_e( 'in', 'jobscout' ); ?> <span style="color: #f2761b; font-weight: 600;">"<?php echo esc_html( $search_location ); ?>"</span>
+                        <?php endif; ?>
+                        <span>(<?php printf( esc_html( _n( '%d job found', '%d jobs found', $jobs_query->found_posts, 'jobscout' ) ), (int) $jobs_query->found_posts ); ?>)</span>
+                    </div>
+                    <a href="<?php echo esc_url( get_permalink() ); ?>" style="color: #d9534f; font-weight: 600; text-decoration: underline; font-size: 13px;">
+                        <?php esc_html_e( 'Clear Filter', 'jobscout' ); ?>
+                    </a>
+                </div>
+            <?php endif; ?>
+
             <!-- JOBS GRID -->
             <?php if ( $jobs_query->have_posts() ) : ?>
 
@@ -237,6 +223,13 @@ get_header();
 
                 <div class="pds-all-jobs-empty">
                     <p><?php esc_html_e( 'No job openings found matching your criteria.', 'jobscout' ); ?></p>
+                    <?php if ( ! empty( $search_keywords ) || ! empty( $search_location ) ) : ?>
+                        <p style="margin-top: 14px;">
+                            <a href="<?php echo esc_url( get_permalink() ); ?>" style="display: inline-block; background: #f2761b; color: #fff; padding: 10px 20px; font-weight: 700; text-transform: uppercase; border-radius: 3px; text-decoration: none; font-size: 13px;">
+                                <?php esc_html_e( 'VIEW ALL JOBS', 'jobscout' ); ?>
+                            </a>
+                        </p>
+                    <?php endif; ?>
                 </div>
 
             <?php endif; ?>
