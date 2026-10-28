@@ -63,12 +63,14 @@ get_header();
             </h2>
 
             <div class="pds-contact-hq-address-wrapper">
-                <button type="button"
-                        class="pds-contact-hq-address-btn"
-                        id="pds-contact-map-trigger"
-                        aria-expanded="false"
-                        aria-controls="pds-contact-map-card"
-                        title="<?php esc_attr_e( 'Click to view map', 'jobscout' ); ?>">
+                <a href="https://www.google.com/maps/search/?api=1&amp;query=60+Nguyen+Van+Thu%2C+Ward+Da+Kao%2C+District+1%2C+Ho+Chi+Minh+City%2C+Viet+Nam"
+                   class="pds-contact-hq-address-link pds-contact-hq-address-btn"
+                   id="pds-contact-map-trigger"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-expanded="false"
+                   aria-controls="pds-contact-map-card"
+                   title="<?php esc_attr_e( 'Click to view map', 'jobscout' ); ?>">
                     <span class="pds-contact-pin-icon" aria-hidden="true">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5-2.5 2.5-2.5 2.5z"/>
@@ -85,7 +87,7 @@ get_header();
                         </svg>
                         <span class="pds-contact-badge-label"><?php esc_html_e( 'Bấm để xem bản đồ', 'jobscout' ); ?></span>
                     </span>
-                </button>
+                </a>
             </div>
 
             <!-- INTERACTIVE MAP CONTAINER -->
