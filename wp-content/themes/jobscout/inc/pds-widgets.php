@@ -1684,6 +1684,12 @@ class PDS_About_Company_Stats_Widget extends WP_Widget {
             return;
         }
 
+        $label_established = ! empty( $instance['label_established'] ) ? $instance['label_established'] : __( 'Established since', 'jobscout' );
+        $label_head_office = ! empty( $instance['label_head_office'] ) ? $instance['label_head_office'] : __( 'Head Office', 'jobscout' );
+        $label_capital     = ! empty( $instance['label_capital'] ) ? $instance['label_capital'] : __( 'Capital', 'jobscout' );
+        $label_ceo         = ! empty( $instance['label_ceo'] ) ? $instance['label_ceo'] : __( 'CEO', 'jobscout' );
+        $label_employees   = ! empty( $instance['label_employees'] ) ? $instance['label_employees'] : __( 'Number of Employees', 'jobscout' );
+
         $established = ! empty( $instance['established'] ) ? $instance['established'] : 'April 1993';
         $head_office = ! empty( $instance['head_office'] ) ? $instance['head_office'] : 'Marunouchi 2-1-1, Chiyoda, Tokyo';
         $capital     = ! empty( $instance['capital'] ) ? $instance['capital'] : '100,000,000 JPY';
@@ -1699,35 +1705,35 @@ class PDS_About_Company_Stats_Widget extends WP_Widget {
             <div class="pds-about-col pds-about-col-facts">
                 <?php if ( $established ) : ?>
                     <div class="pds-about-fact-item">
-                        <h3 class="pds-about-fact-label"><?php esc_html_e( 'Established since', 'jobscout' ); ?></h3>
+                        <h3 class="pds-about-fact-label"><?php echo esc_html( $label_established ); ?></h3>
                         <p class="pds-about-fact-value"><?php echo esc_html( $established ); ?></p>
                     </div>
                 <?php endif; ?>
 
                 <?php if ( $head_office ) : ?>
                     <div class="pds-about-fact-item">
-                        <h3 class="pds-about-fact-label"><?php esc_html_e( 'Head Office', 'jobscout' ); ?></h3>
+                        <h3 class="pds-about-fact-label"><?php echo esc_html( $label_head_office ); ?></h3>
                         <p class="pds-about-fact-value"><?php echo esc_html( $head_office ); ?></p>
                     </div>
                 <?php endif; ?>
 
                 <?php if ( $capital ) : ?>
                     <div class="pds-about-fact-item">
-                        <h3 class="pds-about-fact-label"><?php esc_html_e( 'Capital', 'jobscout' ); ?></h3>
+                        <h3 class="pds-about-fact-label"><?php echo esc_html( $label_capital ); ?></h3>
                         <p class="pds-about-fact-value"><?php echo esc_html( $capital ); ?></p>
                     </div>
                 <?php endif; ?>
 
                 <?php if ( $ceo ) : ?>
                     <div class="pds-about-fact-item">
-                        <h3 class="pds-about-fact-label"><?php esc_html_e( 'CEO', 'jobscout' ); ?></h3>
+                        <h3 class="pds-about-fact-label"><?php echo esc_html( $label_ceo ); ?></h3>
                         <p class="pds-about-fact-value"><?php echo esc_html( $ceo ); ?></p>
                     </div>
                 <?php endif; ?>
 
                 <?php if ( $employees ) : ?>
                     <div class="pds-about-fact-item">
-                        <h3 class="pds-about-fact-label"><?php esc_html_e( 'Number of Employees', 'jobscout' ); ?></h3>
+                        <h3 class="pds-about-fact-label"><?php echo esc_html( $label_employees ); ?></h3>
                         <p class="pds-about-fact-value"><?php echo esc_html( $employees ); ?></p>
                     </div>
                 <?php endif; ?>
@@ -1745,6 +1751,12 @@ class PDS_About_Company_Stats_Widget extends WP_Widget {
     }
 
     public function form( $instance ) {
+        $label_established = isset( $instance['label_established'] ) ? $instance['label_established'] : __( 'Established since', 'jobscout' );
+        $label_head_office = isset( $instance['label_head_office'] ) ? $instance['label_head_office'] : __( 'Head Office', 'jobscout' );
+        $label_capital     = isset( $instance['label_capital'] ) ? $instance['label_capital'] : __( 'Capital', 'jobscout' );
+        $label_ceo         = isset( $instance['label_ceo'] ) ? $instance['label_ceo'] : __( 'CEO', 'jobscout' );
+        $label_employees   = isset( $instance['label_employees'] ) ? $instance['label_employees'] : __( 'Number of Employees', 'jobscout' );
+
         $established = isset( $instance['established'] ) ? $instance['established'] : 'April 1993';
         $head_office = isset( $instance['head_office'] ) ? $instance['head_office'] : 'Marunouchi 2-1-1, Chiyoda, Tokyo';
         $capital     = isset( $instance['capital'] ) ? $instance['capital'] : '100,000,000 JPY';
@@ -1785,26 +1797,66 @@ class PDS_About_Company_Stats_Widget extends WP_Widget {
 </div>
 HTML;
         ?>
-        <p>
-            <label for="<?php echo esc_attr( $this->get_field_id( 'established' ) ); ?>"><?php esc_html_e( 'Established since:', 'jobscout' ); ?></label>
-            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'established' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'established' ) ); ?>" type="text" value="<?php echo esc_attr( $established ); ?>">
-        </p>
-        <p>
-            <label for="<?php echo esc_attr( $this->get_field_id( 'head_office' ) ); ?>"><?php esc_html_e( 'Head Office:', 'jobscout' ); ?></label>
-            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'head_office' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'head_office' ) ); ?>" type="text" value="<?php echo esc_attr( $head_office ); ?>">
-        </p>
-        <p>
-            <label for="<?php echo esc_attr( $this->get_field_id( 'capital' ) ); ?>"><?php esc_html_e( 'Capital:', 'jobscout' ); ?></label>
-            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'capital' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'capital' ) ); ?>" type="text" value="<?php echo esc_attr( $capital ); ?>">
-        </p>
-        <p>
-            <label for="<?php echo esc_attr( $this->get_field_id( 'ceo' ) ); ?>"><?php esc_html_e( 'CEO:', 'jobscout' ); ?></label>
-            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'ceo' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'ceo' ) ); ?>" type="text" value="<?php echo esc_attr( $ceo ); ?>">
-        </p>
-        <p>
-            <label for="<?php echo esc_attr( $this->get_field_id( 'employees' ) ); ?>"><?php esc_html_e( 'Number of Employees:', 'jobscout' ); ?></label>
-            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'employees' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'employees' ) ); ?>" type="text" value="<?php echo esc_attr( $employees ); ?>">
-        </p>
+        <div style="background: #fdfaf6; padding: 10px; border-radius: 6px; margin-bottom: 12px; border: 1px solid #fae1cc;">
+            <p style="margin-top: 0; font-weight: 700; color: #ef741b;">1. Established since</p>
+            <p>
+                <label for="<?php echo esc_attr( $this->get_field_id( 'label_established' ) ); ?>"><?php esc_html_e( 'Nhãn:', 'jobscout' ); ?></label>
+                <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'label_established' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'label_established' ) ); ?>" type="text" value="<?php echo esc_attr( $label_established ); ?>">
+            </p>
+            <p>
+                <label for="<?php echo esc_attr( $this->get_field_id( 'established' ) ); ?>"><?php esc_html_e( 'Giá trị:', 'jobscout' ); ?></label>
+                <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'established' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'established' ) ); ?>" type="text" value="<?php echo esc_attr( $established ); ?>">
+            </p>
+        </div>
+
+        <div style="background: #fdfaf6; padding: 10px; border-radius: 6px; margin-bottom: 12px; border: 1px solid #fae1cc;">
+            <p style="margin-top: 0; font-weight: 700; color: #ef741b;">2. Head Office</p>
+            <p>
+                <label for="<?php echo esc_attr( $this->get_field_id( 'label_head_office' ) ); ?>"><?php esc_html_e( 'Nhãn:', 'jobscout' ); ?></label>
+                <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'label_head_office' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'label_head_office' ) ); ?>" type="text" value="<?php echo esc_attr( $label_head_office ); ?>">
+            </p>
+            <p>
+                <label for="<?php echo esc_attr( $this->get_field_id( 'head_office' ) ); ?>"><?php esc_html_e( 'Giá trị:', 'jobscout' ); ?></label>
+                <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'head_office' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'head_office' ) ); ?>" type="text" value="<?php echo esc_attr( $head_office ); ?>">
+            </p>
+        </div>
+
+        <div style="background: #fdfaf6; padding: 10px; border-radius: 6px; margin-bottom: 12px; border: 1px solid #fae1cc;">
+            <p style="margin-top: 0; font-weight: 700; color: #ef741b;">3. Capital</p>
+            <p>
+                <label for="<?php echo esc_attr( $this->get_field_id( 'label_capital' ) ); ?>"><?php esc_html_e( 'Nhãn:', 'jobscout' ); ?></label>
+                <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'label_capital' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'label_capital' ) ); ?>" type="text" value="<?php echo esc_attr( $label_capital ); ?>">
+            </p>
+            <p>
+                <label for="<?php echo esc_attr( $this->get_field_id( 'capital' ) ); ?>"><?php esc_html_e( 'Giá trị:', 'jobscout' ); ?></label>
+                <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'capital' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'capital' ) ); ?>" type="text" value="<?php echo esc_attr( $capital ); ?>">
+            </p>
+        </div>
+
+        <div style="background: #fdfaf6; padding: 10px; border-radius: 6px; margin-bottom: 12px; border: 1px solid #fae1cc;">
+            <p style="margin-top: 0; font-weight: 700; color: #ef741b;">4. CEO</p>
+            <p>
+                <label for="<?php echo esc_attr( $this->get_field_id( 'label_ceo' ) ); ?>"><?php esc_html_e( 'Nhãn:', 'jobscout' ); ?></label>
+                <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'label_ceo' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'label_ceo' ) ); ?>" type="text" value="<?php echo esc_attr( $label_ceo ); ?>">
+            </p>
+            <p>
+                <label for="<?php echo esc_attr( $this->get_field_id( 'ceo' ) ); ?>"><?php esc_html_e( 'Giá trị:', 'jobscout' ); ?></label>
+                <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'ceo' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'ceo' ) ); ?>" type="text" value="<?php echo esc_attr( $ceo ); ?>">
+            </p>
+        </div>
+
+        <div style="background: #fdfaf6; padding: 10px; border-radius: 6px; margin-bottom: 12px; border: 1px solid #fae1cc;">
+            <p style="margin-top: 0; font-weight: 700; color: #ef741b;">5. Number of Employees</p>
+            <p>
+                <label for="<?php echo esc_attr( $this->get_field_id( 'label_employees' ) ); ?>"><?php esc_html_e( 'Nhãn:', 'jobscout' ); ?></label>
+                <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'label_employees' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'label_employees' ) ); ?>" type="text" value="<?php echo esc_attr( $label_employees ); ?>">
+            </p>
+            <p>
+                <label for="<?php echo esc_attr( $this->get_field_id( 'employees' ) ); ?>"><?php esc_html_e( 'Giá trị:', 'jobscout' ); ?></label>
+                <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'employees' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'employees' ) ); ?>" type="text" value="<?php echo esc_attr( $employees ); ?>">
+            </p>
+        </div>
+
         <?php
         pds_render_image_field( $this, 'image_url', __( 'Ảnh Tokyo Tower cột phải (Tokyo Tower Photo):', 'jobscout' ), $image_url );
         ?>
@@ -1817,15 +1869,20 @@ HTML;
     }
 
     public function update( $new_instance, $old_instance ) {
-        $instance                = array();
-        $instance['established'] = sanitize_text_field( $new_instance['established'] ?? '' );
-        $instance['head_office'] = sanitize_text_field( $new_instance['head_office'] ?? '' );
-        $instance['capital']     = sanitize_text_field( $new_instance['capital'] ?? '' );
-        $instance['ceo']         = sanitize_text_field( $new_instance['ceo'] ?? '' );
-        $instance['employees']   = sanitize_text_field( $new_instance['employees'] ?? '' );
-        $instance['image_url']   = esc_url_raw( $new_instance['image_url'] ?? '' );
-        $instance['image_alt']   = sanitize_text_field( $new_instance['image_alt'] ?? '' );
-        $instance['custom_html'] = ! empty( $new_instance['custom_html'] ) ? wp_unslash( $new_instance['custom_html'] ) : '';
+        $instance                      = array();
+        $instance['label_established'] = sanitize_text_field( $new_instance['label_established'] ?? '' );
+        $instance['label_head_office'] = sanitize_text_field( $new_instance['label_head_office'] ?? '' );
+        $instance['label_capital']     = sanitize_text_field( $new_instance['label_capital'] ?? '' );
+        $instance['label_ceo']         = sanitize_text_field( $new_instance['label_ceo'] ?? '' );
+        $instance['label_employees']   = sanitize_text_field( $new_instance['label_employees'] ?? '' );
+        $instance['established']       = sanitize_text_field( $new_instance['established'] ?? '' );
+        $instance['head_office']       = sanitize_text_field( $new_instance['head_office'] ?? '' );
+        $instance['capital']           = sanitize_text_field( $new_instance['capital'] ?? '' );
+        $instance['ceo']               = sanitize_text_field( $new_instance['ceo'] ?? '' );
+        $instance['employees']         = sanitize_text_field( $new_instance['employees'] ?? '' );
+        $instance['image_url']         = esc_url_raw( $new_instance['image_url'] ?? '' );
+        $instance['image_alt']         = sanitize_text_field( $new_instance['image_alt'] ?? '' );
+        $instance['custom_html']       = ! empty( $new_instance['custom_html'] ) ? wp_unslash( $new_instance['custom_html'] ) : '';
         return $instance;
     }
 }
@@ -2001,15 +2058,20 @@ class PDS_Contact_Hotline_Info_Widget extends WP_Widget {
         // Employers
         $emp_title     = ! empty( $instance['emp_title'] ) ? $instance['emp_title'] : __( 'For Employers', 'jobscout' );
         $emp_subtitle  = ! empty( $instance['emp_subtitle'] ) ? $instance['emp_subtitle'] : __( 'Call our Sales Hotline', 'jobscout' );
+        $emp_hcm_label = ! empty( $instance['emp_hcm_label'] ) ? $instance['emp_hcm_label'] : __( 'Ho Chi Minh', 'jobscout' );
         $emp_hcm_phone = ! empty( $instance['emp_hcm_phone'] ) ? $instance['emp_hcm_phone'] : '+84 (0) 28 3911 5828';
+        $emp_hn_label  = ! empty( $instance['emp_hn_label'] ) ? $instance['emp_hn_label'] : __( 'Ha Noi', 'jobscout' );
         $emp_hn_phone  = ! empty( $instance['emp_hn_phone'] ) ? $instance['emp_hn_phone'] : '+84 (0) 24 3936 8899';
         $emp_note      = ! empty( $instance['emp_note'] ) ? $instance['emp_note'] : "Request a call from one of our\nCustomer Love Account Managers\nWe're ready to help you grow!";
 
         // Jobseekers
-        $seeker_title  = ! empty( $instance['seeker_title'] ) ? $instance['seeker_title'] : __( 'For Jobseekers', 'jobscout' );
-        $seeker_fb     = ! empty( $instance['seeker_fb'] ) ? $instance['seeker_fb'] : 'https://facebook.com';
-        $seeker_news   = ! empty( $instance['seeker_news'] ) ? $instance['seeker_news'] : '';
-        $seeker_phone  = ! empty( $instance['seeker_phone'] ) ? $instance['seeker_phone'] : '+84 (0) 28 3911 5828';
+        $seeker_title      = ! empty( $instance['seeker_title'] ) ? $instance['seeker_title'] : __( 'For Jobseekers', 'jobscout' );
+        $seeker_fb_text    = ! empty( $instance['seeker_fb_text'] ) ? $instance['seeker_fb_text'] : __( 'Ask a question on our {Facebook} page', 'jobscout' );
+        $seeker_fb         = ! empty( $instance['seeker_fb'] ) ? $instance['seeker_fb'] : 'https://facebook.com';
+        $seeker_news_text  = ! empty( $instance['seeker_news_text'] ) ? $instance['seeker_news_text'] : __( 'Read our {blog posts} on interview and CV tips', 'jobscout' );
+        $seeker_news       = ! empty( $instance['seeker_news'] ) ? $instance['seeker_news'] : '';
+        $seeker_call_label = ! empty( $instance['seeker_call_label'] ) ? $instance['seeker_call_label'] : __( 'Call us at', 'jobscout' );
+        $seeker_phone      = ! empty( $instance['seeker_phone'] ) ? $instance['seeker_phone'] : '+84 (0) 28 3911 5828';
 
         if ( empty( $seeker_news ) ) {
             $news_page   = get_page_by_path( 'news' );
@@ -2028,21 +2090,25 @@ class PDS_Contact_Hotline_Info_Widget extends WP_Widget {
                     <p class="pds-contact-col-subtitle"><?php echo esc_html( $emp_subtitle ); ?></p>
                 <?php endif; ?>
 
-                <?php if ( $emp_hcm_phone ) : ?>
+                <?php if ( $emp_hcm_phone || $emp_hcm_label ) : ?>
                     <div class="pds-contact-city-group">
-                        <h4 class="pds-contact-city-name"><?php esc_html_e( 'Ho Chi Minh', 'jobscout' ); ?></h4>
-                        <p class="pds-contact-phone">
-                            <a href="tel:<?php echo esc_attr( preg_replace( '/[^\+0-9]/', '', $emp_hcm_phone ) ); ?>"><?php echo esc_html( $emp_hcm_phone ); ?></a>
-                        </p>
+                        <h4 class="pds-contact-city-name"><?php echo esc_html( $emp_hcm_label ); ?></h4>
+                        <?php if ( $emp_hcm_phone ) : ?>
+                            <p class="pds-contact-phone">
+                                <a href="tel:<?php echo esc_attr( preg_replace( '/[^\+0-9]/', '', $emp_hcm_phone ) ); ?>"><?php echo esc_html( $emp_hcm_phone ); ?></a>
+                            </p>
+                        <?php endif; ?>
                     </div>
                 <?php endif; ?>
 
-                <?php if ( $emp_hn_phone ) : ?>
+                <?php if ( $emp_hn_phone || $emp_hn_label ) : ?>
                     <div class="pds-contact-city-group">
-                        <h4 class="pds-contact-city-name"><?php esc_html_e( 'Ha Noi', 'jobscout' ); ?></h4>
-                        <p class="pds-contact-phone">
-                            <a href="tel:<?php echo esc_attr( preg_replace( '/[^\+0-9]/', '', $emp_hn_phone ) ); ?>"><?php echo esc_html( $emp_hn_phone ); ?></a>
-                        </p>
+                        <h4 class="pds-contact-city-name"><?php echo esc_html( $emp_hn_label ); ?></h4>
+                        <?php if ( $emp_hn_phone ) : ?>
+                            <p class="pds-contact-phone">
+                                <a href="tel:<?php echo esc_attr( preg_replace( '/[^\+0-9]/', '', $emp_hn_phone ) ); ?>"><?php echo esc_html( $emp_hn_phone ); ?></a>
+                            </p>
+                        <?php endif; ?>
                     </div>
                 <?php endif; ?>
 
@@ -2060,37 +2126,47 @@ class PDS_Contact_Hotline_Info_Widget extends WP_Widget {
                 <?php endif; ?>
 
                 <div class="pds-contact-seeker-actions">
-                    <?php if ( $seeker_fb ) : ?>
+                    <?php if ( $seeker_fb && $seeker_fb_text ) : ?>
                         <p class="pds-contact-action-item">
                             <?php
-                            printf(
-                                /* translators: %s: Facebook page link */
-                                esc_html__( 'Ask a question on our %s page', 'jobscout' ),
-                                '<a href="' . esc_url( $seeker_fb ) . '" class="pds-contact-link-orange" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Facebook', 'jobscout' ) . '</a>'
-                            );
+                            $fb_anchor = '<a href="' . esc_url( $seeker_fb ) . '" class="pds-contact-link-orange" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Facebook', 'jobscout' ) . '</a>';
+                            if ( preg_match( '/\{([^}]+)\}/', $seeker_fb_text, $m ) ) {
+                                $custom_anchor = '<a href="' . esc_url( $seeker_fb ) . '" class="pds-contact-link-orange" target="_blank" rel="noopener noreferrer">' . esc_html( $m[1] ) . '</a>';
+                                echo str_replace( $m[0], $custom_anchor, esc_html( $seeker_fb_text ) );
+                            } elseif ( stripos( $seeker_fb_text, 'Facebook' ) !== false ) {
+                                echo preg_replace( '/Facebook/i', $fb_anchor, esc_html( $seeker_fb_text ), 1 );
+                            } else {
+                                echo esc_html( $seeker_fb_text ) . ' ' . $fb_anchor;
+                            }
                             ?>
                         </p>
                     <?php endif; ?>
 
-                    <?php if ( $seeker_news ) : ?>
+                    <?php if ( $seeker_news && $seeker_news_text ) : ?>
                         <p class="pds-contact-action-item">
                             <?php
-                            printf(
-                                /* translators: %s: blog posts link */
-                                esc_html__( 'Read our %s on interview and CV tips', 'jobscout' ),
-                                '<a href="' . esc_url( $seeker_news ) . '" class="pds-contact-link-orange">' . esc_html__( 'blog posts', 'jobscout' ) . '</a>'
-                            );
+                            $news_anchor = '<a href="' . esc_url( $seeker_news ) . '" class="pds-contact-link-orange">' . esc_html__( 'blog posts', 'jobscout' ) . '</a>';
+                            if ( preg_match( '/\{([^}]+)\}/', $seeker_news_text, $m ) ) {
+                                $custom_anchor = '<a href="' . esc_url( $seeker_news ) . '" class="pds-contact-link-orange">' . esc_html( $m[1] ) . '</a>';
+                                echo str_replace( $m[0], $custom_anchor, esc_html( $seeker_news_text ) );
+                            } elseif ( stripos( $seeker_news_text, 'blog posts' ) !== false ) {
+                                echo preg_replace( '/blog posts/i', $news_anchor, esc_html( $seeker_news_text ), 1 );
+                            } else {
+                                echo esc_html( $seeker_news_text ) . ' ' . $news_anchor;
+                            }
                             ?>
                         </p>
                     <?php endif; ?>
                 </div>
 
-                <?php if ( $seeker_phone ) : ?>
+                <?php if ( $seeker_phone || $seeker_call_label ) : ?>
                     <div class="pds-contact-city-group pds-contact-seeker-call">
-                        <h4 class="pds-contact-city-name"><?php esc_html_e( 'Call us at', 'jobscout' ); ?></h4>
-                        <p class="pds-contact-phone">
-                            <a href="tel:<?php echo esc_attr( preg_replace( '/[^\+0-9]/', '', $seeker_phone ) ); ?>"><?php echo esc_html( $seeker_phone ); ?></a>
-                        </p>
+                        <h4 class="pds-contact-city-name"><?php echo esc_html( $seeker_call_label ); ?></h4>
+                        <?php if ( $seeker_phone ) : ?>
+                            <p class="pds-contact-phone">
+                                <a href="tel:<?php echo esc_attr( preg_replace( '/[^\+0-9]/', '', $seeker_phone ) ); ?>"><?php echo esc_html( $seeker_phone ); ?></a>
+                            </p>
+                        <?php endif; ?>
                     </div>
                 <?php endif; ?>
             </div>
@@ -2100,15 +2176,20 @@ class PDS_Contact_Hotline_Info_Widget extends WP_Widget {
     }
 
     public function form( $instance ) {
-        $emp_title     = isset( $instance['emp_title'] ) ? $instance['emp_title'] : __( 'For Employers', 'jobscout' );
-        $emp_subtitle  = isset( $instance['emp_subtitle'] ) ? $instance['emp_subtitle'] : __( 'Call our Sales Hotline', 'jobscout' );
-        $emp_hcm_phone = isset( $instance['emp_hcm_phone'] ) ? $instance['emp_hcm_phone'] : '+84 (0) 28 3911 5828';
-        $emp_hn_phone  = isset( $instance['emp_hn_phone'] ) ? $instance['emp_hn_phone'] : '+84 (0) 24 3936 8899';
-        $emp_note      = isset( $instance['emp_note'] ) ? $instance['emp_note'] : "Request a call from one of our\nCustomer Love Account Managers\nWe're ready to help you grow!";
-        $seeker_title  = isset( $instance['seeker_title'] ) ? $instance['seeker_title'] : __( 'For Jobseekers', 'jobscout' );
-        $seeker_fb     = isset( $instance['seeker_fb'] ) ? $instance['seeker_fb'] : 'https://facebook.com';
-        $seeker_news   = isset( $instance['seeker_news'] ) ? $instance['seeker_news'] : '';
-        $seeker_phone  = isset( $instance['seeker_phone'] ) ? $instance['seeker_phone'] : '+84 (0) 28 3911 5828';
+        $emp_title         = isset( $instance['emp_title'] ) ? $instance['emp_title'] : __( 'For Employers', 'jobscout' );
+        $emp_subtitle      = isset( $instance['emp_subtitle'] ) ? $instance['emp_subtitle'] : __( 'Call our Sales Hotline', 'jobscout' );
+        $emp_hcm_label     = isset( $instance['emp_hcm_label'] ) ? $instance['emp_hcm_label'] : __( 'Ho Chi Minh', 'jobscout' );
+        $emp_hcm_phone     = isset( $instance['emp_hcm_phone'] ) ? $instance['emp_hcm_phone'] : '+84 (0) 28 3911 5828';
+        $emp_hn_label      = isset( $instance['emp_hn_label'] ) ? $instance['emp_hn_label'] : __( 'Ha Noi', 'jobscout' );
+        $emp_hn_phone      = isset( $instance['emp_hn_phone'] ) ? $instance['emp_hn_phone'] : '+84 (0) 24 3936 8899';
+        $emp_note          = isset( $instance['emp_note'] ) ? $instance['emp_note'] : "Request a call from one of our\nCustomer Love Account Managers\nWe're ready to help you grow!";
+        $seeker_title      = isset( $instance['seeker_title'] ) ? $instance['seeker_title'] : __( 'For Jobseekers', 'jobscout' );
+        $seeker_fb_text    = isset( $instance['seeker_fb_text'] ) ? $instance['seeker_fb_text'] : __( 'Ask a question on our {Facebook} page', 'jobscout' );
+        $seeker_fb         = isset( $instance['seeker_fb'] ) ? $instance['seeker_fb'] : 'https://facebook.com';
+        $seeker_news_text  = isset( $instance['seeker_news_text'] ) ? $instance['seeker_news_text'] : __( 'Read our {blog posts} on interview and CV tips', 'jobscout' );
+        $seeker_news       = isset( $instance['seeker_news'] ) ? $instance['seeker_news'] : '';
+        $seeker_call_label = isset( $instance['seeker_call_label'] ) ? $instance['seeker_call_label'] : __( 'Call us at', 'jobscout' );
+        $seeker_phone      = isset( $instance['seeker_phone'] ) ? $instance['seeker_phone'] : '+84 (0) 28 3911 5828';
 
         $snippet = <<<HTML
 <div class="pds-contact-grid">
@@ -2151,8 +2232,16 @@ HTML;
             <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'emp_subtitle' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'emp_subtitle' ) ); ?>" type="text" value="<?php echo esc_attr( $emp_subtitle ); ?>">
         </p>
         <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'emp_hcm_label' ) ); ?>"><?php esc_html_e( 'Tên thành phố 1 (Mặc định: Ho Chi Minh):', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'emp_hcm_label' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'emp_hcm_label' ) ); ?>" type="text" value="<?php echo esc_attr( $emp_hcm_label ); ?>">
+        </p>
+        <p>
             <label for="<?php echo esc_attr( $this->get_field_id( 'emp_hcm_phone' ) ); ?>"><?php esc_html_e( 'Hotline HCM:', 'jobscout' ); ?></label>
             <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'emp_hcm_phone' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'emp_hcm_phone' ) ); ?>" type="text" value="<?php echo esc_attr( $emp_hcm_phone ); ?>">
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'emp_hn_label' ) ); ?>"><?php esc_html_e( 'Tên thành phố 2 (Mặc định: Ha Noi):', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'emp_hn_label' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'emp_hn_label' ) ); ?>" type="text" value="<?php echo esc_attr( $emp_hn_label ); ?>">
         </p>
         <p>
             <label for="<?php echo esc_attr( $this->get_field_id( 'emp_hn_phone' ) ); ?>"><?php esc_html_e( 'Hotline HN:', 'jobscout' ); ?></label>
@@ -2169,12 +2258,24 @@ HTML;
             <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'seeker_title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'seeker_title' ) ); ?>" type="text" value="<?php echo esc_attr( $seeker_title ); ?>">
         </p>
         <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'seeker_fb_text' ) ); ?>"><?php esc_html_e( 'Văn bản Facebook (đặt trong { } để gắn link):', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'seeker_fb_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'seeker_fb_text' ) ); ?>" type="text" value="<?php echo esc_attr( $seeker_fb_text ); ?>" placeholder="Ask a question on our {Facebook} page">
+        </p>
+        <p>
             <label for="<?php echo esc_attr( $this->get_field_id( 'seeker_fb' ) ); ?>"><?php esc_html_e( 'Link Facebook page:', 'jobscout' ); ?></label>
             <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'seeker_fb' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'seeker_fb' ) ); ?>" type="url" value="<?php echo esc_attr( $seeker_fb ); ?>">
         </p>
         <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'seeker_news_text' ) ); ?>"><?php esc_html_e( 'Văn bản Blog tips (đặt trong { } để gắn link):', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'seeker_news_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'seeker_news_text' ) ); ?>" type="text" value="<?php echo esc_attr( $seeker_news_text ); ?>" placeholder="Read our {blog posts} on interview and CV tips">
+        </p>
+        <p>
             <label for="<?php echo esc_attr( $this->get_field_id( 'seeker_news' ) ); ?>"><?php esc_html_e( 'Link Blog/Tips (để trống = tự động trang News):', 'jobscout' ); ?></label>
             <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'seeker_news' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'seeker_news' ) ); ?>" type="url" value="<?php echo esc_attr( $seeker_news ); ?>">
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'seeker_call_label' ) ); ?>"><?php esc_html_e( 'Nhãn tiêu đề gọi điện (Mặc định: Call us at):', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'seeker_call_label' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'seeker_call_label' ) ); ?>" type="text" value="<?php echo esc_attr( $seeker_call_label ); ?>">
         </p>
         <p>
             <label for="<?php echo esc_attr( $this->get_field_id( 'seeker_phone' ) ); ?>"><?php esc_html_e( 'Số điện thoại hỗ trợ Ứng viên:', 'jobscout' ); ?></label>
@@ -2185,17 +2286,22 @@ HTML;
     }
 
     public function update( $new_instance, $old_instance ) {
-        $instance                  = array();
-        $instance['emp_title']     = sanitize_text_field( $new_instance['emp_title'] ?? '' );
-        $instance['emp_subtitle']  = sanitize_text_field( $new_instance['emp_subtitle'] ?? '' );
-        $instance['emp_hcm_phone'] = sanitize_text_field( $new_instance['emp_hcm_phone'] ?? '' );
-        $instance['emp_hn_phone']  = sanitize_text_field( $new_instance['emp_hn_phone'] ?? '' );
-        $instance['emp_note']      = sanitize_textarea_field( $new_instance['emp_note'] ?? '' );
-        $instance['seeker_title']  = sanitize_text_field( $new_instance['seeker_title'] ?? '' );
-        $instance['seeker_fb']     = esc_url_raw( $new_instance['seeker_fb'] ?? '' );
-        $instance['seeker_news']   = esc_url_raw( $new_instance['seeker_news'] ?? '' );
-        $instance['seeker_phone']  = sanitize_text_field( $new_instance['seeker_phone'] ?? '' );
-        $instance['custom_html']   = ! empty( $new_instance['custom_html'] ) ? wp_unslash( $new_instance['custom_html'] ) : '';
+        $instance                      = array();
+        $instance['emp_title']         = sanitize_text_field( $new_instance['emp_title'] ?? '' );
+        $instance['emp_subtitle']      = sanitize_text_field( $new_instance['emp_subtitle'] ?? '' );
+        $instance['emp_hcm_label']     = sanitize_text_field( $new_instance['emp_hcm_label'] ?? '' );
+        $instance['emp_hcm_phone']     = sanitize_text_field( $new_instance['emp_hcm_phone'] ?? '' );
+        $instance['emp_hn_label']      = sanitize_text_field( $new_instance['emp_hn_label'] ?? '' );
+        $instance['emp_hn_phone']      = sanitize_text_field( $new_instance['emp_hn_phone'] ?? '' );
+        $instance['emp_note']          = sanitize_textarea_field( $new_instance['emp_note'] ?? '' );
+        $instance['seeker_title']      = sanitize_text_field( $new_instance['seeker_title'] ?? '' );
+        $instance['seeker_fb_text']    = sanitize_text_field( $new_instance['seeker_fb_text'] ?? '' );
+        $instance['seeker_fb']         = esc_url_raw( $new_instance['seeker_fb'] ?? '' );
+        $instance['seeker_news_text']  = sanitize_text_field( $new_instance['seeker_news_text'] ?? '' );
+        $instance['seeker_news']       = esc_url_raw( $new_instance['seeker_news'] ?? '' );
+        $instance['seeker_call_label'] = sanitize_text_field( $new_instance['seeker_call_label'] ?? '' );
+        $instance['seeker_phone']      = sanitize_text_field( $new_instance['seeker_phone'] ?? '' );
+        $instance['custom_html']       = ! empty( $new_instance['custom_html'] ) ? wp_unslash( $new_instance['custom_html'] ) : '';
         return $instance;
     }
 }
@@ -2568,6 +2674,285 @@ HTML;
     }
 }
 
+/**
+ * 8.4 Footer Copyright Bar Widget (Phần màu đen)
+ */
+class PDS_Footer_Copyright_Widget extends WP_Widget {
+
+    public function __construct() {
+        parent::__construct(
+            'pds_footer_copyright',
+            __( '[Footer] Copyright Bar (Phần màu đen)', 'jobscout' ),
+            array(
+                'description'                 => __( 'Tùy biến dải đen cuối cùng của Footer (Copyright text, Privacy Policy, Terms of Service).', 'jobscout' ),
+                'customize_selective_refresh' => true,
+            )
+        );
+    }
+
+    public function widget( $args, $instance ) {
+        if ( ! empty( trim( $instance['custom_html'] ?? '' ) ) ) {
+            echo $args['before_widget'];
+            echo do_shortcode( wp_unslash( $instance['custom_html'] ) );
+            echo $args['after_widget'];
+            return;
+        }
+
+        $copyright_text = ! empty( $instance['copyright_text'] ) ? $instance['copyright_text'] : __( 'Plan Do See Global Inc. All rights reserved.', 'jobscout' );
+        $link1_text     = ! empty( $instance['link1_text'] ) ? $instance['link1_text'] : __( 'Privacy Policy', 'jobscout' );
+        $link1_url      = ! empty( $instance['link1_url'] ) ? $instance['link1_url'] : home_url( '/privacy-policy/' );
+        $link2_text     = ! empty( $instance['link2_text'] ) ? $instance['link2_text'] : __( 'Terms of Service', 'jobscout' );
+        $link2_url      = ! empty( $instance['link2_url'] ) ? $instance['link2_url'] : home_url( '/terms-of-service/' );
+        $bg_color       = ! empty( $instance['bg_color'] ) ? $instance['bg_color'] : '#000000';
+        $text_color     = ! empty( $instance['text_color'] ) ? $instance['text_color'] : '#ffffff';
+
+        echo $args['before_widget'];
+        ?>
+        <div class="footer-b" style="display:flex; justify-content:space-between; align-items:center; background:<?php echo esc_attr( $bg_color ); ?>; color:<?php echo esc_attr( $text_color ); ?>; padding:15px 40px; font-size:12px; font-weight:600;">
+            <div class="site-info" style="color:<?php echo esc_attr( $text_color ); ?>;">
+                <?php echo esc_html( $copyright_text ); ?>
+            </div>
+            <div class="footer-b-links">
+                <?php if ( $link1_text && $link1_url ) : ?>
+                    <a href="<?php echo esc_url( $link1_url ); ?>" style="color:<?php echo esc_attr( $text_color ); ?>; margin-left:15px; text-decoration:none;"><?php echo esc_html( $link1_text ); ?></a>
+                <?php endif; ?>
+                <?php if ( $link2_text && $link2_url ) : ?>
+                    <a href="<?php echo esc_url( $link2_url ); ?>" style="color:<?php echo esc_attr( $text_color ); ?>; margin-left:15px; text-decoration:none;"><?php echo esc_html( $link2_text ); ?></a>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+        echo $args['after_widget'];
+    }
+
+    public function form( $instance ) {
+        $copyright_text = isset( $instance['copyright_text'] ) ? $instance['copyright_text'] : __( 'Plan Do See Global Inc. All rights reserved.', 'jobscout' );
+        $link1_text     = isset( $instance['link1_text'] ) ? $instance['link1_text'] : __( 'Privacy Policy', 'jobscout' );
+        $link1_url      = isset( $instance['link1_url'] ) ? $instance['link1_url'] : home_url( '/privacy-policy/' );
+        $link2_text     = isset( $instance['link2_text'] ) ? $instance['link2_text'] : __( 'Terms of Service', 'jobscout' );
+        $link2_url      = isset( $instance['link2_url'] ) ? $instance['link2_url'] : home_url( '/terms-of-service/' );
+        $bg_color       = isset( $instance['bg_color'] ) ? $instance['bg_color'] : '#000000';
+        $text_color     = isset( $instance['text_color'] ) ? $instance['text_color'] : '#ffffff';
+
+        $snippet = <<<HTML
+<div class="footer-b" style="display:flex; justify-content:space-between; align-items:center; background:#000; color:#fff; padding:15px 40px; font-size:12px; font-weight:600;">
+    <div class="site-info" style="color:#fff;">
+        Plan Do See Global Inc. All rights reserved.
+    </div>
+    <div class="footer-b-links">
+        <a href="/privacy-policy/" style="color:#fff; margin-left:15px; text-decoration:none;">Privacy Policy</a>
+        <a href="/terms-of-service/" style="color:#fff; margin-left:15px; text-decoration:none;">Terms of Service</a>
+    </div>
+</div>
+HTML;
+        ?>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'copyright_text' ) ); ?>"><?php esc_html_e( 'Văn bản bản quyền (Copyright text):', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'copyright_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'copyright_text' ) ); ?>" type="text" value="<?php echo esc_attr( $copyright_text ); ?>">
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'link1_text' ) ); ?>"><?php esc_html_e( 'Tên liên kết 1 (Link 1 text):', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'link1_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'link1_text' ) ); ?>" type="text" value="<?php echo esc_attr( $link1_text ); ?>">
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'link1_url' ) ); ?>"><?php esc_html_e( 'URL liên kết 1 (Link 1 URL):', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'link1_url' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'link1_url' ) ); ?>" type="url" value="<?php echo esc_attr( $link1_url ); ?>">
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'link2_text' ) ); ?>"><?php esc_html_e( 'Tên liên kết 2 (Link 2 text):', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'link2_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'link2_text' ) ); ?>" type="text" value="<?php echo esc_attr( $link2_text ); ?>">
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'link2_url' ) ); ?>"><?php esc_html_e( 'URL liên kết 2 (Link 2 URL):', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'link2_url' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'link2_url' ) ); ?>" type="url" value="<?php echo esc_attr( $link2_url ); ?>">
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'bg_color' ) ); ?>"><?php esc_html_e( 'Màu nền dải footer (Mặc định #000000):', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'bg_color' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'bg_color' ) ); ?>" type="text" value="<?php echo esc_attr( $bg_color ); ?>" placeholder="#000000">
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'text_color' ) ); ?>"><?php esc_html_e( 'Màu chữ & liên kết (Mặc định #ffffff):', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'text_color' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'text_color' ) ); ?>" type="text" value="<?php echo esc_attr( $text_color ); ?>" placeholder="#ffffff">
+        </p>
+        <?php
+        pds_render_custom_html_field( $this, $instance, $snippet );
+    }
+
+    public function update( $new_instance, $old_instance ) {
+        $instance                   = array();
+        $instance['copyright_text'] = sanitize_text_field( $new_instance['copyright_text'] ?? '' );
+        $instance['link1_text']     = sanitize_text_field( $new_instance['link1_text'] ?? '' );
+        $instance['link1_url']      = esc_url_raw( $new_instance['link1_url'] ?? '' );
+        $instance['link2_text']     = sanitize_text_field( $new_instance['link2_text'] ?? '' );
+        $instance['link2_url']      = esc_url_raw( $new_instance['link2_url'] ?? '' );
+        $instance['bg_color']       = sanitize_hex_color( $new_instance['bg_color'] ?? '' ) ?: '#000000';
+        $instance['text_color']     = sanitize_hex_color( $new_instance['text_color'] ?? '' ) ?: '#ffffff';
+        $instance['custom_html']    = ! empty( $new_instance['custom_html'] ) ? wp_unslash( $new_instance['custom_html'] ) : '';
+        return $instance;
+    }
+}
+
+/**
+ * 8.5 Submit Job (Post a Job) Hero Header Widget
+ */
+class PDS_Submit_Job_Header_Widget extends WP_Widget {
+
+    public function __construct() {
+        parent::__construct(
+            'pds_submit_job_header',
+            __( '[Submit Job] Hero Banner Header', 'jobscout' ),
+            array(
+                'description'                 => __( 'Banner đầu trang đăng tin tuyển dụng POST A JOB.', 'jobscout' ),
+                'customize_selective_refresh' => true,
+            )
+        );
+    }
+
+    public function widget( $args, $instance ) {
+        if ( ! empty( trim( $instance['custom_html'] ?? '' ) ) ) {
+            echo $args['before_widget'];
+            echo do_shortcode( wp_unslash( $instance['custom_html'] ) );
+            echo $args['after_widget'];
+            return;
+        }
+
+        $title        = ! empty( $instance['title'] ) ? $instance['title'] : __( 'POST A JOB', 'jobscout' );
+        $subtitle     = ! empty( $instance['subtitle'] ) ? $instance['subtitle'] : __( 'Find the best talent for your hospitality team worldwide', 'jobscout' );
+        $bg_image_url = ! empty( $instance['bg_image_url'] ) ? $instance['bg_image_url'] : '';
+        $bg_style     = $bg_image_url ? 'style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(\'' . esc_url( $bg_image_url ) . '\') center/cover no-repeat;"' : '';
+
+        echo $args['before_widget'];
+        ?>
+        <div class="post-job-hero" <?php echo $bg_style; ?>>
+            <div class="container">
+                <h1 class="post-job-title"><?php echo esc_html( $title ); ?></h1>
+                <?php if ( $subtitle ) : ?>
+                    <p class="post-job-subtitle"><?php echo esc_html( $subtitle ); ?></p>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+        echo $args['after_widget'];
+    }
+
+    public function form( $instance ) {
+        $title        = isset( $instance['title'] ) ? $instance['title'] : __( 'POST A JOB', 'jobscout' );
+        $subtitle     = isset( $instance['subtitle'] ) ? $instance['subtitle'] : __( 'Find the best talent for your hospitality team worldwide', 'jobscout' );
+        $bg_image_url = isset( $instance['bg_image_url'] ) ? $instance['bg_image_url'] : '';
+
+        $snippet = <<<HTML
+<div class="post-job-hero">
+    <div class="container">
+        <h1 class="post-job-title">POST A JOB</h1>
+        <p class="post-job-subtitle">Find the best talent for your hospitality team worldwide</p>
+    </div>
+</div>
+HTML;
+        ?>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_html_e( 'Tiêu đề trang (Heading):', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'subtitle' ) ); ?>"><?php esc_html_e( 'Mô tả phụ (Subtitle):', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'subtitle' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'subtitle' ) ); ?>" type="text" value="<?php echo esc_attr( $subtitle ); ?>">
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'bg_image_url' ) ); ?>"><?php esc_html_e( 'Ảnh nền Banner (tùy chọn):', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'bg_image_url' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'bg_image_url' ) ); ?>" type="url" value="<?php echo esc_attr( $bg_image_url ); ?>">
+            <button type="button" class="button pds-media-upload-btn" data-target="<?php echo esc_attr( $this->get_field_id( 'bg_image_url' ) ); ?>" style="margin-top: 5px;">
+                <?php esc_html_e( 'Chọn/Tải ảnh lên', 'jobscout' ); ?>
+            </button>
+        </p>
+        <?php
+        pds_render_custom_html_field( $this, $instance, $snippet );
+    }
+
+    public function update( $new_instance, $old_instance ) {
+        $instance                 = array();
+        $instance['title']        = sanitize_text_field( $new_instance['title'] ?? '' );
+        $instance['subtitle']     = sanitize_text_field( $new_instance['subtitle'] ?? '' );
+        $instance['bg_image_url'] = esc_url_raw( $new_instance['bg_image_url'] ?? '' );
+        $instance['custom_html']  = ! empty( $new_instance['custom_html'] ) ? wp_unslash( $new_instance['custom_html'] ) : '';
+        return $instance;
+    }
+}
+
+/**
+ * 8.6 Submit Job Form Content Widget
+ */
+class PDS_Submit_Job_Content_Widget extends WP_Widget {
+
+    public function __construct() {
+        parent::__construct(
+            'pds_submit_job_content',
+            __( '[Submit Job] Form Content & Shortcode', 'jobscout' ),
+            array(
+                'description'                 => __( 'Khung nội dung Form Đăng Tuyển Dụng trang Submit Job.', 'jobscout' ),
+                'customize_selective_refresh' => true,
+            )
+        );
+    }
+
+    public function widget( $args, $instance ) {
+        if ( ! empty( trim( $instance['custom_html'] ?? '' ) ) ) {
+            echo $args['before_widget'];
+            echo do_shortcode( wp_unslash( $instance['custom_html'] ) );
+            echo $args['after_widget'];
+            return;
+        }
+
+        $heading   = ! empty( $instance['heading'] ) ? $instance['heading'] : __( 'JOB DETAILS', 'jobscout' );
+        $shortcode = ! empty( $instance['shortcode'] ) ? $instance['shortcode'] : '[submit_job_form]';
+
+        echo $args['before_widget'];
+        ?>
+        <div class="post-job-form-wrapper">
+            <?php if ( $heading ) : ?>
+                <h2 class="post-job-form-heading"><?php echo esc_html( $heading ); ?></h2>
+            <?php endif; ?>
+            <div class="post-job-form-body">
+                <?php echo do_shortcode( $shortcode ); ?>
+            </div>
+        </div>
+        <?php
+        echo $args['after_widget'];
+    }
+
+    public function form( $instance ) {
+        $heading   = isset( $instance['heading'] ) ? $instance['heading'] : __( 'JOB DETAILS', 'jobscout' );
+        $shortcode = isset( $instance['shortcode'] ) ? $instance['shortcode'] : '[submit_job_form]';
+
+        $snippet = <<<HTML
+<div class="post-job-form-wrapper">
+    <h2 class="post-job-form-heading">JOB DETAILS</h2>
+    <div class="post-job-form-body">
+        [submit_job_form]
+    </div>
+</div>
+HTML;
+        ?>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'heading' ) ); ?>"><?php esc_html_e( 'Tiêu đề biểu mẫu (Form heading):', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'heading' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'heading' ) ); ?>" type="text" value="<?php echo esc_attr( $heading ); ?>">
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'shortcode' ) ); ?>"><?php esc_html_e( 'Mã Shortcode Form (mặc định [submit_job_form]):', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'shortcode' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'shortcode' ) ); ?>" type="text" value="<?php echo esc_attr( $shortcode ); ?>">
+        </p>
+        <?php
+        pds_render_custom_html_field( $this, $instance, $snippet );
+    }
+
+    public function update( $new_instance, $old_instance ) {
+        $instance                = array();
+        $instance['heading']     = sanitize_text_field( $new_instance['heading'] ?? '' );
+        $instance['shortcode']   = sanitize_text_field( $new_instance['shortcode'] ?? '' );
+        $instance['custom_html'] = ! empty( $new_instance['custom_html'] ) ? wp_unslash( $new_instance['custom_html'] ) : '';
+        return $instance;
+    }
+}
+
 
 /* ==========================================================================
    9. REGISTER ALL CUSTOM WIDGETS
@@ -2623,6 +3008,11 @@ function pds_register_all_cms_widgets() {
     register_widget( 'PDS_Header_CTA_Widget' );
     register_widget( 'PDS_Footer_Newsletter_Widget' );
     register_widget( 'PDS_Footer_Bottom_Widget' );
+    register_widget( 'PDS_Footer_Copyright_Widget' );
+
+    // 9. Submit Job (Post a Job)
+    register_widget( 'PDS_Submit_Job_Header_Widget' );
+    register_widget( 'PDS_Submit_Job_Content_Widget' );
 }
 add_action( 'widgets_init', 'pds_register_all_cms_widgets' );
 
@@ -2640,6 +3030,9 @@ function pds_auto_populate_default_widgets() {
     // Helper macro to ensure a widget instance and attach to sidebar
     $ensure_widget = function( $sidebar_id, $base_id, $opt_key, $default_data ) use ( &$sidebars_widgets, &$updated ) {
         $instances = get_option( $opt_key, array() );
+        if ( ! is_array( $instances ) ) {
+            $instances = array();
+        }
         $num       = 2;
         if ( empty( $instances[ $num ] ) ) {
             $instances[ $num ]         = $default_data;
@@ -2677,7 +3070,29 @@ function pds_auto_populate_default_widgets() {
         'twitter_link'   => 'https://twitter.com',
     ) );
 
-    // 4. Home Widgets
+    // 4. Shared Footer Copyright (Phần màu đen)
+    $ensure_widget( 'footer-copyright', 'pds_footer_copyright', 'widget_pds_footer_copyright', array(
+        'copyright_text' => 'Plan Do See Global Inc. All rights reserved.',
+        'link1_text'     => 'Privacy Policy',
+        'link1_url'      => home_url( '/privacy-policy/' ),
+        'link2_text'     => 'Terms of Service',
+        'link2_url'      => home_url( '/terms-of-service/' ),
+        'bg_color'       => '#000000',
+        'text_color'     => '#ffffff',
+    ) );
+
+    // 5. Submit Job Page (Post a Job)
+    $ensure_widget( 'submit-job-header', 'pds_submit_job_header', 'widget_pds_submit_job_header', array(
+        'title'        => 'POST A JOB',
+        'subtitle'     => 'Find the best talent for your hospitality team worldwide',
+        'bg_image_url' => '',
+    ) );
+    $ensure_widget( 'submit-job-content', 'pds_submit_job_content', 'widget_pds_submit_job_content', array(
+        'heading'   => 'JOB DETAILS',
+        'shortcode' => '[submit_job_form]',
+    ) );
+
+    // 6. Home Widgets
     $ensure_widget( 'home-hero-search', 'pds_home_hero_search', 'widget_pds_home_hero_search', array(
         'title'        => 'Find Your Dream Job Today',
         'subtitle'     => 'Connecting exceptional talent with world-class hospitality opportunities.',
@@ -2698,7 +3113,7 @@ function pds_auto_populate_default_widgets() {
         'count' => 4,
     ) );
 
-    // 5. Jobs / All Jobs
+    // 7. Jobs / All Jobs
     $ensure_widget( 'jobs-hero-banner', 'pds_jobs_hero_banner', 'widget_pds_jobs_hero_banner', array(
         'title'        => 'CAREER WITH US',
         'bg_image_url' => get_template_directory_uri() . '/assets/images/all-jobs-hero.png',
@@ -2711,7 +3126,7 @@ function pds_auto_populate_default_widgets() {
         'show_loadmore' => 1,
     ) );
 
-    // 6. About Page
+    // 8. About Page
     $ensure_widget( 'about-hero-banner', 'pds_about_hero_banner', 'widget_pds_about_hero_banner', array(
         'title_line1'  => 'SHARE “OMOTENASHI”',
         'title_line2'  => 'WITH THE WORLD',
@@ -2729,14 +3144,19 @@ function pds_auto_populate_default_widgets() {
         'desc_2' => 'Each venue carries its own concept and design. Many of them are originally historical landmarks that were loved by the local people.',
     ) );
     $ensure_widget( 'about-company-stats', 'pds_about_company_stats', 'widget_pds_about_company_stats', array(
-        'established' => 'April 1993',
-        'head_office' => 'Marunouchi 2-1-1, Chiyoda, Tokyo',
-        'capital'     => '100,000,000 JPY',
-        'ceo'         => 'Yutaka Noda',
-        'employees'   => 'Full time: 830 / Total: 1,600',
+        'established'       => 'April 1993',
+        'label_established' => 'Established since',
+        'head_office'       => 'Marunouchi 2-1-1, Chiyoda, Tokyo',
+        'label_head_office' => 'Head Office',
+        'capital'           => '100,000,000 JPY',
+        'label_capital'     => 'Capital',
+        'ceo'               => 'Yutaka Noda',
+        'label_ceo'         => 'CEO',
+        'employees'         => 'Full time: 830 / Total: 1,600',
+        'label_employees'   => 'Number of Employees',
     ) );
 
-    // 7. Job Detail
+    // 9. Job Detail
     $ensure_widget( 'job-detail-hero', 'pds_job_detail_hero', 'widget_pds_job_detail_hero', array(
         'bg_image_url' => get_header_image() ?: get_template_directory_uri() . '/assets/images/job-detail-hero.png',
     ) );
@@ -2774,7 +3194,7 @@ function pds_auto_populate_default_widgets() {
         $updated = true;
     }
 
-    // 8. News Page
+    // 10. News Page
     $ensure_widget( 'news-hero-banner', 'pds_news_hero_banner', 'widget_pds_news_hero_banner', array(
         'title'        => 'PDS NEWS',
         'bg_image_url' => get_template_directory_uri() . '/assets/images/news-hero.png',
@@ -2784,7 +3204,7 @@ function pds_auto_populate_default_widgets() {
         'count' => 8,
     ) );
 
-    // 9. News Detail
+    // 11. News Detail
     $ensure_widget( 'news-detail-header', 'pds_news_detail_header', 'widget_pds_news_detail_header', array(
         'share_text' => 'SHARE',
         'back_text'  => 'BACK TO NEWS',
@@ -2802,7 +3222,7 @@ function pds_auto_populate_default_widgets() {
         'count' => 6,
     ) );
 
-    // 10. Contact Page
+    // 12. Contact Page
     $ensure_widget( 'contact-hero-banner', 'pds_contact_hero_banner', 'widget_pds_contact_hero_banner', array(
         'title'        => 'CONTACT US',
         'bg_image_url' => get_template_directory_uri() . '/assets/images/contact-hero.png',
@@ -2812,13 +3232,18 @@ function pds_auto_populate_default_widgets() {
         'address' => '60 Nguyen Van Thu, Ward Da Kao, District 1, Ho Chi Minh City, Viet Nam',
     ) );
     $ensure_widget( 'contact-hotline-info', 'pds_contact_hotline_info', 'widget_pds_contact_hotline_info', array(
-        'emp_title'     => 'For Employers',
-        'emp_subtitle'  => 'Call our Sales Hotline',
-        'emp_hcm_phone' => '+84 (0) 28 3911 5828',
-        'emp_hn_phone'  => '+84 (0) 24 3936 8899',
-        'seeker_title'  => 'For Jobseekers',
-        'seeker_fb'     => 'https://facebook.com',
-        'seeker_phone'  => '+84 (0) 28 3911 5828',
+        'emp_title'          => 'For Employers',
+        'emp_subtitle'       => 'Call our Sales Hotline',
+        'emp_hcm_label'      => 'Ho Chi Minh',
+        'emp_hcm_phone'      => '+84 (0) 28 3911 5828',
+        'emp_hn_label'       => 'Ha Noi',
+        'emp_hn_phone'       => '+84 (0) 24 3936 8899',
+        'seeker_title'       => 'For Jobseekers',
+        'seeker_fb_text'     => 'Ask a question on our {Facebook} page',
+        'seeker_fb'          => 'https://facebook.com',
+        'seeker_news_text'   => 'Read our {blog posts} on interview and CV tips',
+        'seeker_call_label'  => 'Call us at',
+        'seeker_phone'       => '+84 (0) 28 3911 5828',
     ) );
     if ( ! empty( $sidebars_widgets['contact-form-area'] ) ) {
         $sidebars_widgets['contact-form-area'] = array();
