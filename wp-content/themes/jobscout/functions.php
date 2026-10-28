@@ -120,3 +120,11 @@ function pds_register_news_widgets() {
 }
 add_action('widgets_init', 'pds_register_news_widgets');
 
+require_once get_template_directory()
+    . '/pds-detail-register-areas.php';
+
+require_once get_template_directory()
+    . '/pds-detail-summary-widget.php';
+
+require_once get_template_directory()
+    . '/pds-detail-section-widgets.php';
