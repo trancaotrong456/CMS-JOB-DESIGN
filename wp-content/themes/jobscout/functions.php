@@ -102,6 +102,13 @@ add_action('wp_enqueue_scripts', function () {
             array( 'jobscout' ),
             defined( 'JOBSCOUT_THEME_VERSION' ) ? JOBSCOUT_THEME_VERSION : '1.0.0'
         );
+        wp_enqueue_script(
+            'pds-home-search-script',
+            get_template_directory_uri() . '/assets/js/home-search.js',
+            array(),
+            defined( 'JOBSCOUT_THEME_VERSION' ) ? JOBSCOUT_THEME_VERSION : '1.0.0',
+            true
+        );
     }
 }, 99);
 

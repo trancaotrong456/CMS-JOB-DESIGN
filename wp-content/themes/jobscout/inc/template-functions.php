@@ -602,21 +602,152 @@ add_action( 'jobscout_after_footer', 'jobscout_page_end', 20 );
  */
 if ( ! function_exists( 'pds_filter_job_listing_search' ) ) :
 function pds_filter_job_listing_search( $clauses, $query ) {
-    $keywords = $query->get( 'pds_job_keywords' );
-    if ( ! empty( $keywords ) ) {
+    $keywords  = $query->get( 'pds_job_keywords' );
+    $post_type = $query->get( 'post_type' );
+    $is_job    = ( 'job_listing' === $post_type || ( is_array( $post_type ) && in_array( 'job_listing', $post_type, true ) ) );
+
+    if ( ! empty( $keywords ) && $is_job ) {
         global $wpdb;
-        $kw = '%' . $wpdb->esc_like( $keywords ) . '%';
+
+        // Sinh danh sách các biến thể từ khóa thông minh
+        $variants = array( $keywords );
+        $lower_kw = mb_strtolower( trim( $keywords ) );
+
+        // Xử lý biến thể Full time / Fulltime / Full-time
+        if ( false !== strpos( $lower_kw, 'full time' ) || false !== strpos( $lower_kw, 'full-time' ) || false !== strpos( $lower_kw, 'fulltime' ) ) {
+            $variants[] = 'full time';
+            $variants[] = 'fulltime';
+            $variants[] = 'full-time';
+        }
+        // Xử lý biến thể Part time / Parttime / Part-time
+        if ( false !== strpos( $lower_kw, 'part time' ) || false !== strpos( $lower_kw, 'part-time' ) || false !== strpos( $lower_kw, 'parttime' ) ) {
+            $variants[] = 'part time';
+            $variants[] = 'parttime';
+            $variants[] = 'part-time';
+        }
+        // Ánh xạ đồng nghĩa thông dụng ngành hospitality
+        if ( 'khach san' === $lower_kw || 'khách sạn' === $lower_kw ) {
+            $variants[] = 'hotel';
+        }
+        if ( 'quan ly' === $lower_kw || 'quản lý' === $lower_kw ) {
+            $variants[] = 'manager';
+        }
+        if ( 'dau bep' === $lower_kw || 'đầu bếp' === $lower_kw ) {
+            $variants[] = 'chef';
+            $variants[] = 'cook';
+        }
+        $variants = array_values( array_unique( $variants ) );
+
+        // Nối bảng postmeta để lấy tên công ty
         $clauses['join'] .= " LEFT JOIN {$wpdb->postmeta} AS pds_comp ON ({$wpdb->posts}.ID = pds_comp.post_id AND pds_comp.meta_key = '_company_name') ";
-        $clauses['where'] .= $wpdb->prepare(
-            " AND ({$wpdb->posts}.post_title LIKE %s OR {$wpdb->posts}.post_content LIKE %s OR {$wpdb->posts}.post_excerpt LIKE %s OR pds_comp.meta_value LIKE %s) ",
-            $kw, $kw, $kw, $kw
-        );
+
+        // Nối các bảng taxonomy (job_listing_type, job_listing_category, job_listing_tag)
+        $clauses['join'] .= " LEFT JOIN {$wpdb->term_relationships} AS pds_tr ON ({$wpdb->posts}.ID = pds_tr.object_id) ";
+        $clauses['join'] .= " LEFT JOIN {$wpdb->term_taxonomy} AS pds_tt ON (pds_tr.term_taxonomy_id = pds_tt.term_taxonomy_id AND pds_tt.taxonomy IN ('job_listing_type', 'job_listing_category', 'job_listing_tag')) ";
+        $clauses['join'] .= " LEFT JOIN {$wpdb->terms} AS pds_terms ON (pds_tt.term_id = pds_terms.term_id) ";
+
+        // Xây dựng điều kiện WHERE cho tất cả các biến thể
+        $where_conditions = array();
+        foreach ( $variants as $v ) {
+            $kw = '%' . $wpdb->esc_like( $v ) . '%';
+            $where_conditions[] = $wpdb->prepare(
+                "({$wpdb->posts}.post_title LIKE %s OR {$wpdb->posts}.post_content LIKE %s OR {$wpdb->posts}.post_excerpt LIKE %s OR pds_comp.meta_value LIKE %s OR pds_terms.name LIKE %s OR pds_terms.slug LIKE %s)",
+                $kw, $kw, $kw, $kw, $kw, $kw
+            );
+        }
+        $clauses['where'] .= ' AND (' . implode( ' OR ', $where_conditions ) . ') ';
+
+        // Relevance ordering:
+        // Mức 1: Khớp trong post_title hoặc _company_name (ưu tiên cao nhất)
+        // Mức 2: Khớp trong taxonomy (job type, category)
+        // Mức 3: Khớp trong post_content hoặc post_excerpt
+        $title_conditions = array();
+        $term_conditions  = array();
+        foreach ( $variants as $v ) {
+            $kw_v = '%' . $wpdb->esc_like( $v ) . '%';
+            $title_conditions[] = $wpdb->prepare( "({$wpdb->posts}.post_title LIKE %s OR pds_comp.meta_value LIKE %s)", $kw_v, $kw_v );
+            $term_conditions[]  = $wpdb->prepare( "(pds_terms.name LIKE %s OR pds_terms.slug LIKE %s)", $kw_v, $kw_v );
+        }
+        $title_sql = implode( ' OR ', $title_conditions );
+        $term_sql  = implode( ' OR ', $term_conditions );
+
+        $relevance_order = " (CASE WHEN ({$title_sql}) THEN 0 WHEN ({$term_sql}) THEN 1 ELSE 2 END) ASC ";
+
+        if ( ! empty( trim( $clauses['orderby'] ?? '' ) ) ) {
+            $clauses['orderby'] = $relevance_order . ', ' . $clauses['orderby'];
+        } else {
+            $clauses['orderby'] = $relevance_order;
+        }
+
         $clauses['distinct'] = 'DISTINCT';
     }
     return $clauses;
 }
 add_filter( 'posts_clauses', 'pds_filter_job_listing_search', 10, 2 );
 endif;
+
+/**
+ * Handle AJAX Live Search Suggestions for Home page
+ */
+add_action( 'template_redirect', 'pds_handle_live_search_suggest' );
+function pds_handle_live_search_suggest() {
+    if ( ! isset( $_GET['pds_ajax_search_suggest'] ) ) {
+        return;
+    }
+
+    $keyword  = isset( $_GET['keyword'] ) ? sanitize_text_field( wp_unslash( $_GET['keyword'] ) ) : '';
+    $location = isset( $_GET['location'] ) ? sanitize_text_field( wp_unslash( $_GET['location'] ) ) : '';
+
+    if ( mb_strlen( trim( $keyword ) ) < 2 ) {
+        wp_send_json_success( array( 'jobs' => array(), 'total' => 0 ) );
+    }
+
+    $args = pds_get_jobs_query_args( array(
+        'posts_per_page'  => 5,
+        'search_keywords' => $keyword,
+        'search_location' => $location,
+        'sort'            => 'latest',
+    ) );
+
+    $query = new WP_Query( $args );
+    $jobs  = array();
+
+    if ( $query->have_posts() ) {
+        while ( $query->have_posts() ) {
+            $query->the_post();
+            $job_id = get_the_ID();
+
+            $types = wp_get_post_terms( $job_id, 'job_listing_type' );
+            $job_type = ( ! empty( $types ) && ! is_wp_error( $types ) ) ? $types[0]->name : 'Fulltime';
+
+            $company = get_post_meta( $job_id, '_company_name', true );
+            $loc     = get_post_meta( $job_id, '_job_location', true );
+
+            $jobs[] = array(
+                'id'       => $job_id,
+                'title'    => get_the_title(),
+                'company'  => $company ? $company : 'Plan Do See',
+                'location' => $loc ? $loc : 'Ho Chi Minh City',
+                'type'     => $job_type,
+                'url'      => get_permalink(),
+            );
+        }
+    }
+    wp_reset_postdata();
+
+    // URL chuyển sang trang Jobs khi người dùng chọn xem toàn bộ kết quả
+    $jobs_page_url = home_url( '/jobs/?search_keywords=' . urlencode( $keyword ) );
+    if ( ! empty( $location ) ) {
+        $jobs_page_url .= '&search_location=' . urlencode( $location );
+    }
+
+    wp_send_json_success( array(
+        'jobs'          => $jobs,
+        'total'         => $query->found_posts,
+        'jobs_page_url' => $jobs_page_url,
+        'keyword'       => $keyword,
+    ) );
+}
 
 /**
  * Build unified WP_Query args for job listings with search keywords, location and sorting.
