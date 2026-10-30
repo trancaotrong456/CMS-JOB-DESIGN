@@ -267,11 +267,128 @@ body.single-job_listing .page-header {
     line-height: 1.6;
 }
 
-.pds-job-detail-application-area {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px dashed #e5e7eb;
+/* Company Information Box inside Entry */
+.single_job_listing .company,
+.pds-job-detail-entry .company,
+div.company.pds-single-job-company,
+div.company {
+    display: flex !important;
+    align-items: center !important;
+    gap: 24px !important;
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 8px !important;
+    padding: 18px 24px !important;
+    margin: 24px 0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+    position: relative !important;
+    clear: both !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
 }
+
+.pds-company-logo-wrap {
+    flex: 0 0 64px !important;
+    width: 64px !important;
+    height: 64px !important;
+    min-width: 64px !important;
+    max-width: 64px !important;
+    margin: 0 24px 0 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    padding: 6px !important;
+    box-sizing: border-box !important;
+}
+
+.single_job_listing .company .company_logo,
+.single_job_listing .company img,
+.pds-job-detail-entry .company img,
+div.company .company_logo,
+div.company img,
+.pds-company-logo-wrap img {
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 52px !important;
+    height: 52px !important;
+    max-width: 52px !important;
+    max-height: 52px !important;
+    min-width: 52px !important;
+    object-fit: contain !important;
+    border-radius: 6px !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    float: none !important;
+    flex-shrink: 0 !important;
+    box-shadow: none !important;
+}
+
+.single_job_listing .company .company_header,
+.pds-job-detail-entry .company .company_header,
+div.company .company_header {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: auto !important;
+    flex: 1 1 auto !important;
+}
+
+.single_job_listing .company .company_header .name,
+.single_job_listing .company .name,
+.pds-job-detail-entry .company .name,
+div.company .name {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: auto !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #1a1f26 !important;
+    line-height: 1.3 !important;
+}
+
+.single_job_listing .company .company_header .name strong,
+.single_job_listing .company .name strong,
+.pds-job-detail-entry .company .name strong {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #1a1f26 !important;
+    display: inline-block !important;
+    margin-right: 12px !important;
+}
+
+.single_job_listing .company .company_header .tagline,
+.single_job_listing .company .tagline,
+.pds-job-detail-entry .company .tagline {
+    margin: 6px 0 0 !important;
+    padding: 0 !important;
+    font-size: 14px !important;
+    color: #6b7280 !important;
+    line-height: 1.4 !important;
+}
+
+.single_job_listing .company .company_header .website,
+.single_job_listing .company .website,
+.pds-job-detail-entry .company .website {
+    display: inline-block !important;
+    margin-right: 12px !important;
+    color: #f2761b !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+}
+
+.single_job_listing .company .company_header .website:hover,
+.pds-job-detail-entry .company .website:hover {
+    text-decoration: underline !important;
+}
+
 
 .pds-job-detail-application-area .application_button {
     background: #f2761b;
@@ -772,12 +889,456 @@ body.single-job_listing .page-header {
 }
 
 /* --------------------------------------------------------------------------
-   APPLICATION FORM SECTION (#pds-job-apply)
+   SOCIAL MEDIA SHARE POPUP MODAL (#pds-social-share-modal)
+   Matches YouTube modern share dialog (Reference: media_1793364687635_8c2ffb0b.png)
    -------------------------------------------------------------------------- */
-.pds-job-detail-application-area {
-    margin-top: 36px;
-    padding-top: 28px;
-    border-top: 1px solid #e5e7eb;
+.pds-share-modal {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 999999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(0, 0, 0, 0.72) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-sizing: border-box !important;
+}
+
+.pds-share-modal.is-active {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+}
+
+.pds-share-modal-backdrop {
+    position: absolute !important;
+    inset: 0 !important;
+    background: transparent !important;
+    cursor: pointer !important;
+    pointer-events: none !important;
+}
+
+.pds-share-modal.is-active .pds-share-modal-backdrop {
+    pointer-events: auto !important;
+}
+
+.pds-share-modal-dialog {
+    position: relative !important;
+    z-index: 10 !important;
+    width: 100% !important;
+    max-width: 520px !important;
+    padding: 0 16px !important;
+    box-sizing: border-box !important;
+}
+
+.pds-share-card {
+    background: #ffffff !important;
+    border-radius: 16px !important;
+    padding: 22px 24px 24px !important;
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.22) !important;
+    transform: scale(0.95) !important;
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    box-sizing: border-box !important;
+}
+
+.pds-share-modal.is-active .pds-share-card {
+    transform: scale(1) !important;
+}
+
+/* Header */
+.pds-share-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 22px !important;
+    padding: 0 !important;
+    border: none !important;
+}
+
+.pds-share-title {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    margin: 0 !important;
+    line-height: 1.2 !important;
+    font-family: inherit !important;
+}
+
+.pds-share-close-btn {
+    background: transparent !important;
+    border: none !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #5f6368 !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    transition: background 0.15s, color 0.15s !important;
+}
+
+.pds-share-close-btn:hover {
+    background: #f1f3f4 !important;
+    color: #111827 !important;
+}
+
+/* Carousel wrapper */
+.pds-share-carousel-wrapper {
+    position: relative !important;
+    width: 100% !important;
+    margin-bottom: 24px !important;
+}
+
+.pds-share-platforms {
+    display: flex !important;
+    gap: 16px !important;
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    scroll-behavior: smooth !important;
+    padding: 6px 2px 8px !important;
+}
+
+.pds-share-platforms::-webkit-scrollbar {
+    display: none !important;
+}
+
+/* Carousel navigation arrows */
+.pds-share-carousel-nav {
+    position: absolute !important;
+    top: 20px !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    background: #ffffff !important;
+    border: 1px solid #dadce0 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #3c4043 !important;
+    cursor: pointer !important;
+    z-index: 5 !important;
+    padding: 0 !important;
+    transition: background 0.15s, transform 0.15s, opacity 0.15s !important;
+}
+
+.pds-share-carousel-nav.is-hidden {
+    display: none !important;
+}
+
+.pds-share-carousel-nav:hover {
+    background: #f8fafc !important;
+    transform: scale(1.06) !important;
+    color: #111827 !important;
+}
+
+.pds-share-carousel-prev {
+    left: -12px !important;
+}
+
+.pds-share-carousel-next {
+    right: -12px !important;
+}
+
+/* Platform item */
+.pds-share-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+    flex: 0 0 68px !important;
+    min-width: 68px !important;
+    outline: none !important;
+    transition: transform 0.18s ease !important;
+}
+
+.pds-share-item:hover {
+    transform: translateY(-2px) !important;
+}
+
+.pds-share-item:focus-visible .pds-share-icon {
+    outline: 2px solid #1a73e8 !important;
+    outline-offset: 2px !important;
+}
+
+/* Icon circles */
+.pds-share-icon {
+    width: 58px !important;
+    height: 58px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+    transition: transform 0.18s ease, box-shadow 0.18s ease !important;
+}
+
+.pds-share-item:hover .pds-share-icon {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.pds-share-icon--facebook  { background: #1877F2 !important; }
+.pds-share-icon--x         { background: #000000 !important; }
+.pds-share-icon--email     { background: #65676B !important; }
+.pds-share-icon--reddit    { background: #FF4500 !important; }
+.pds-share-icon--pinterest { background: #BD081C !important; }
+.pds-share-icon--linkedin  { background: #0A66C2 !important; }
+.pds-share-icon--whatsapp  { background: #25D366 !important; }
+
+/* Labels */
+.pds-share-label {
+    margin-top: 8px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #3c4043 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    line-height: 1.2 !important;
+}
+
+/* Link Box & Copy Button */
+.pds-share-link-box {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: #ffffff !important;
+    border: 1px solid #dadce0 !important;
+    border-radius: 28px !important;
+    padding: 5px 6px 5px 18px !important;
+    gap: 12px !important;
+    transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+
+.pds-share-link-box:focus-within {
+    border-color: #1a73e8 !important;
+    box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.15) !important;
+}
+
+.pds-share-link-input {
+    flex: 1 1 auto !important;
+    border: none !important;
+    background: transparent !important;
+    font-size: 14px !important;
+    color: #202124 !important;
+    outline: none !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-family: inherit !important;
+    box-shadow: none !important;
+}
+
+.pds-share-copy-btn {
+    flex-shrink: 0 !important;
+    border: 1px solid #dadce0 !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    border-radius: 20px !important;
+    padding: 8px 22px !important;
+    cursor: pointer !important;
+    transition: all 0.18s ease !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+}
+
+.pds-share-copy-btn:hover {
+    background: #f1f5f9 !important;
+    border-color: #cbd5e1 !important;
+}
+
+.pds-share-copy-btn.is-copied {
+    background: #e6f4ea !important;
+    color: #137333 !important;
+    border-color: #34a853 !important;
+}
+
+/* Body lock */
+body.pds-share-modal-open {
+    overflow: hidden !important;
+}
+
+/* Mobile responsive */
+@media (max-width: 600px) {
+    .pds-share-card {
+        padding: 18px 16px 20px !important;
+        border-radius: 14px !important;
+    }
+    .pds-share-title {
+        font-size: 18px !important;
+    }
+    .pds-share-icon {
+        width: 52px !important;
+        height: 52px !important;
+    }
+    .pds-share-item {
+        flex: 0 0 62px !important;
+        min-width: 62px !important;
+    }
+    .pds-share-link-box {
+        padding: 4px 4px 4px 14px !important;
+    }
+    .pds-share-copy-btn {
+        padding: 7px 16px !important;
+        font-size: 13px !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   APPLY JOB MODAL POPUP (#pds-job-apply)
+   Fullscreen overlay modal matching Company Photos Lightbox visual behavior
+   -------------------------------------------------------------------------- */
+.pds-apply-modal,
+#pds-job-apply {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 999999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(0, 0, 0, 0.85) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-sizing: border-box !important;
+}
+
+.pds-apply-modal:not(.is-active),
+#pds-job-apply:not(.is-active) {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+.pds-apply-modal.is-active,
+#pds-job-apply.is-active {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+}
+
+/* Modal Backdrop */
+.pds-apply-modal-backdrop {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    cursor: pointer !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+}
+
+.pds-apply-modal.is-active .pds-apply-modal-backdrop,
+#pds-job-apply.is-active .pds-apply-modal-backdrop {
+    pointer-events: auto !important;
+}
+
+/* Modal Dialog */
+.pds-apply-modal-dialog {
+    position: relative !important;
+    z-index: 2 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 30px 20px !important;
+    box-sizing: border-box !important;
+    pointer-events: none !important;
+}
+
+/* White Modal Box */
+.pds-apply-modal .pds-application-card {
+    position: relative !important;
+    pointer-events: auto !important;
+    background: #ffffff !important;
+    border-radius: 8px !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45) !important;
+    width: 100% !important;
+    max-width: 680px !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    padding: 36px 40px 32px !important;
+    box-sizing: border-box !important;
+    transform: scale(0.95) translateY(10px) !important;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.pds-apply-modal.is-active .pds-application-card {
+    transform: scale(1) translateY(0) !important;
+}
+
+/* Close Button (X) */
+.pds-apply-modal-close-btn {
+    position: absolute !important;
+    top: 20px !important;
+    right: 20px !important;
+    z-index: 10 !important;
+    width: 36px !important;
+    height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #f3f4f6 !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 50% !important;
+    color: #4b5563 !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease, border-color 0.18s ease !important;
+}
+
+.pds-apply-modal-close-btn:hover {
+    background: #fee2e2 !important;
+    border-color: #fca5a5 !important;
+    color: #dc2626 !important;
+    transform: scale(1.08) !important;
+}
+
+.pds-apply-modal-close-btn:focus-visible {
+    outline: 2px solid #f2761b !important;
+    outline-offset: 2px !important;
+}
+
+/* Background scrolling lock */
+html.pds-apply-modal-open,
+body.pds-apply-modal-open {
+    overflow: hidden !important;
+}
+
+.pds-job-detail-application-area .pds-job-apply-title {
+    display: none !important;
 }
 
 .pds-application-card {
@@ -1083,206 +1644,300 @@ body.single-job_listing .page-header {
 /* --------------------------------------------------------------------------
    COMPANY PHOTOS LIGHTBOX MODAL
    -------------------------------------------------------------------------- */
-body.pds-lightbox-active {
+body.pds-lightbox-open,
+body.pds-lightbox-active,
+html.pds-lightbox-open,
+html.pds-lightbox-active {
     overflow: hidden !important;
 }
 
 .pds-company-photo-wrap {
     cursor: pointer;
-    outline: none;
+    user-select: none;
+    -webkit-user-select: none;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .pds-company-photo-wrap:focus-visible {
-    box-shadow: 0 0 0 3px #f2761b;
-    border-radius: 2px;
+    outline: 2px solid #f2761b;
+    outline-offset: 2px;
+}
+
+.pds-company-photo-wrap:hover .pds-company-photo-img {
+    transform: scale(1.02);
+}
+
+.pds-company-photo-overlay {
+    transition: background-color 0.2s ease;
+}
+
+.pds-company-photo-wrap:hover .pds-company-photo-overlay {
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.pds-photo-more-badge {
+    pointer-events: none;
 }
 
 .pds-lightbox-modal {
     position: fixed;
     inset: 0;
+    width: 100%;
+    height: 100%;
     z-index: 999999;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: rgba(0, 0, 0, 0.85);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.25s ease, visibility 0.25s ease;
+    pointer-events: none;
+    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.pds-lightbox-modal.is-active,
 .pds-lightbox-modal.is-open {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
 }
 
+.pds-lightbox-backdrop,
 .pds-lightbox-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
+    width: 100%;
+    height: 100%;
+    cursor: zoom-out;
 }
 
 .pds-lightbox-dialog {
     position: relative;
     z-index: 2;
-    max-width: 94vw;
-    width: 1040px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 16px;
+    width: 100%;
+    height: 100%;
+    padding: 60px 80px 40px;
     box-sizing: border-box;
+    pointer-events: none;
 }
 
+.pds-lightbox-close-btn,
 .pds-lightbox-btn-close {
     position: absolute;
-    top: -12px;
-    right: 12px;
+    top: 24px;
+    right: 24px;
     z-index: 10;
-    background: rgba(255, 255, 255, 0.15);
-    border: none;
-    color: #ffffff;
-    font-size: 28px;
     width: 44px;
     height: 44px;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    line-height: 1;
-    transition: background 0.15s ease, transform 0.15s ease;
-}
-
-.pds-lightbox-btn-close:hover {
-    background: #f2761b;
-    transform: scale(1.1);
-}
-
-.pds-lightbox-stage {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    position: relative;
-    gap: 16px;
-}
-
-.pds-lightbox-viewport {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 320px;
-}
-
-.pds-lightbox-image {
-    max-width: 82vw;
-    max-height: 70vh;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    border-radius: 3px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.55);
-    opacity: 0;
-    transform: scale(0.96);
-    transition: opacity 0.25s ease, transform 0.25s ease;
-    display: block;
-}
-
-.pds-lightbox-image.is-loaded {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.pds-lightbox-caption {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-top: 14px;
-    color: #ffffff;
-    font-size: 13.5px;
-}
-
-.pds-lightbox-counter {
-    background: rgba(255, 255, 255, 0.2);
-    padding: 3px 12px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-}
-
-.pds-lightbox-title {
-    color: #e5e7eb;
-    font-weight: 500;
-}
-
-.pds-lightbox-nav {
     background: rgba(255, 255, 255, 0.12);
-    border: none;
-    color: #ffffff;
-    width: 48px;
-    height: 48px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
+    color: #ffffff;
     cursor: pointer;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
+    pointer-events: auto;
+    transition: background-color 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+    padding: 0;
+    font-size: 26px;
+    line-height: 1;
 }
 
-.pds-lightbox-nav:hover {
-    background: #f2761b;
+.pds-lightbox-close-btn:hover,
+.pds-lightbox-btn-close:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
     transform: scale(1.08);
 }
 
-.pds-lightbox-thumbs {
-    display: flex;
-    gap: 10px;
-    margin-top: 18px;
-    max-width: 80vw;
-    overflow-x: auto;
-    padding: 4px 6px;
-    scrollbar-width: thin;
-    scrollbar-color: #f2761b rgba(255, 255, 255, 0.1);
+.pds-lightbox-close-btn:focus-visible,
+.pds-lightbox-btn-close:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
 }
 
-.pds-lightbox-thumb-btn {
-    border: 2px solid transparent;
-    border-radius: 3px;
-    padding: 0;
-    width: 68px;
-    height: 48px;
-    overflow: hidden;
-    background: transparent;
-    cursor: pointer;
-    opacity: 0.5;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-}
-
-.pds-lightbox-thumb-btn:hover {
-    opacity: 0.9;
-    border-color: rgba(255, 255, 255, 0.6);
-}
-
-.pds-lightbox-thumb-btn.is-active {
-    opacity: 1;
-    border-color: #f2761b;
-    transform: scale(1.06);
-}
-
-.pds-lightbox-thumb-btn img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.pds-lightbox-close-icon {
     display: block;
+    width: 22px;
+    height: 22px;
+}
+
+.pds-lightbox-nav-btn,
+.pds-lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: #ffffff;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    padding: 0;
+}
+
+.pds-lightbox-prev-btn,
+.pds-lightbox-nav--prev {
+    left: 24px;
+}
+
+.pds-lightbox-next-btn,
+.pds-lightbox-nav--next {
+    right: 24px;
+}
+
+.pds-lightbox-nav-btn:hover,
+.pds-lightbox-nav:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-50%) scale(1.08);
+}
+
+.pds-lightbox-nav-btn:focus-visible,
+.pds-lightbox-nav:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+
+.pds-lightbox-nav-icon {
+    display: block;
+    width: 26px;
+    height: 26px;
+}
+
+.pds-lightbox-content,
+.pds-lightbox-viewport {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 90vw;
+    max-height: 85vh;
+    pointer-events: auto;
+}
+
+.pds-lightbox-figure {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.pds-lightbox-image-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+.pds-lightbox-img,
+.pds-lightbox-image {
+    display: block;
+    max-width: 90vw;
+    max-height: 80vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 4px;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: transform 0.25s ease;
+}
+
+.pds-lightbox-modal.is-active .pds-lightbox-img,
+.pds-lightbox-modal.is-open .pds-lightbox-img,
+.pds-lightbox-modal.is-active .pds-lightbox-image,
+.pds-lightbox-modal.is-open .pds-lightbox-image {
+    animation: pdsLightboxZoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes pdsLightboxZoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.94);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.pds-lightbox-caption {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    color: #f3f4f6;
+    font-size: 14px;
+    font-weight: 500;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    width: 100%;
+}
+
+.pds-lightbox-counter {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 768px) {
+    .pds-lightbox-dialog {
+        padding: 50px 20px 24px;
+    }
+
+    .pds-lightbox-close-btn,
+    .pds-lightbox-btn-close {
+        top: 14px;
+        right: 14px;
+        width: 38px;
+        height: 38px;
+    }
+
+    .pds-lightbox-close-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .pds-lightbox-nav-btn,
+    .pds-lightbox-nav {
+        width: 40px;
+        height: 40px;
+    }
+
+    .pds-lightbox-prev-btn,
+    .pds-lightbox-nav--prev {
+        left: 10px;
+    }
+
+    .pds-lightbox-next-btn,
+    .pds-lightbox-nav--next {
+        right: 10px;
+    }
+
+    .pds-lightbox-img,
+    .pds-lightbox-image {
+        max-width: 94vw;
+        max-height: 75vh;
+    }
 }
 
 /* --------------------------------------------------------------------------
@@ -1342,6 +1997,27 @@ body.pds-lightbox-active {
     .pds-lightbox-image {
         max-height: 55vh;
         max-width: 86vw;
+    }
+}
+
+@media (max-width: 768px) {
+    .pds-apply-modal-dialog {
+        padding: 16px 12px !important;
+    }
+    .pds-apply-modal .pds-application-card {
+        padding: 24px 20px 22px !important;
+        max-height: 94vh !important;
+        border-radius: 6px !important;
+    }
+    .pds-apply-modal-close-btn {
+        top: 14px !important;
+        right: 14px !important;
+        width: 32px !important;
+        height: 32px !important;
+    }
+    .pds-application-title {
+        font-size: 16px !important;
+        padding-right: 36px !important;
     }
 }
 

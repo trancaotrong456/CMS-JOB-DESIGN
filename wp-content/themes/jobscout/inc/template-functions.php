@@ -664,9 +664,8 @@ function pds_filter_job_listing_search( $clauses, $query ) {
         }
         $variants = array_values( array_unique( $variants ) );
 
-        // Nối bảng postmeta để lấy tên công ty và địa điểm
+        // Nối bảng postmeta để lấy tên công ty
         $clauses['join'] .= " LEFT JOIN {$wpdb->postmeta} AS pds_comp ON ({$wpdb->posts}.ID = pds_comp.post_id AND pds_comp.meta_key = '_company_name') ";
-        $clauses['join'] .= " LEFT JOIN {$wpdb->postmeta} AS pds_loc ON ({$wpdb->posts}.ID = pds_loc.post_id AND pds_loc.meta_key = '_job_location') ";
 
         // Nối các bảng taxonomy (job_listing_type, job_listing_category, job_listing_tag)
         $clauses['join'] .= " LEFT JOIN {$wpdb->term_relationships} AS pds_tr ON ({$wpdb->posts}.ID = pds_tr.object_id) ";
@@ -678,31 +677,27 @@ function pds_filter_job_listing_search( $clauses, $query ) {
         foreach ( $variants as $v ) {
             $kw = '%' . $wpdb->esc_like( $v ) . '%';
             $where_conditions[] = $wpdb->prepare(
-                "({$wpdb->posts}.post_title LIKE %s OR {$wpdb->posts}.post_content LIKE %s OR {$wpdb->posts}.post_excerpt LIKE %s OR pds_comp.meta_value LIKE %s OR pds_loc.meta_value LIKE %s OR pds_terms.name LIKE %s OR pds_terms.slug LIKE %s)",
-                $kw, $kw, $kw, $kw, $kw, $kw, $kw
+                "({$wpdb->posts}.post_title LIKE %s OR {$wpdb->posts}.post_content LIKE %s OR {$wpdb->posts}.post_excerpt LIKE %s OR pds_comp.meta_value LIKE %s OR pds_terms.name LIKE %s OR pds_terms.slug LIKE %s)",
+                $kw, $kw, $kw, $kw, $kw, $kw
             );
         }
         $clauses['where'] .= ' AND (' . implode( ' OR ', $where_conditions ) . ') ';
 
         // Relevance ordering:
-        // Mức 0: Khớp trong post_title hoặc _company_name (ưu tiên cao nhất)
-        // Mức 1: Khớp trong địa điểm _job_location
+        // Mức 1: Khớp trong post_title hoặc _company_name (ưu tiên cao nhất)
         // Mức 2: Khớp trong taxonomy (job type, category)
         // Mức 3: Khớp trong post_content hoặc post_excerpt
         $title_conditions = array();
-        $loc_conditions   = array();
         $term_conditions  = array();
         foreach ( $variants as $v ) {
             $kw_v = '%' . $wpdb->esc_like( $v ) . '%';
             $title_conditions[] = $wpdb->prepare( "({$wpdb->posts}.post_title LIKE %s OR pds_comp.meta_value LIKE %s)", $kw_v, $kw_v );
-            $loc_conditions[]   = $wpdb->prepare( "pds_loc.meta_value LIKE %s", $kw_v );
             $term_conditions[]  = $wpdb->prepare( "(pds_terms.name LIKE %s OR pds_terms.slug LIKE %s)", $kw_v, $kw_v );
         }
         $title_sql = implode( ' OR ', $title_conditions );
-        $loc_sql   = implode( ' OR ', $loc_conditions );
         $term_sql  = implode( ' OR ', $term_conditions );
 
-        $relevance_order = " (CASE WHEN ({$title_sql}) THEN 0 WHEN ({$loc_sql}) THEN 1 WHEN ({$term_sql}) THEN 2 ELSE 3 END) ASC ";
+        $relevance_order = " (CASE WHEN ({$title_sql}) THEN 0 WHEN ({$term_sql}) THEN 1 ELSE 2 END) ASC ";
 
         if ( ! empty( trim( $clauses['orderby'] ?? '' ) ) ) {
             $clauses['orderby'] = $relevance_order . ', ' . $clauses['orderby'];
@@ -781,9 +776,9 @@ function pds_handle_live_search_suggest() {
 }
 
 /**
- * Build unified WP_Query args for job listings with search keywords, location, category, type and sorting.
+ * Build unified WP_Query args for job listings with search keywords, location and sorting.
  *
- * @param array $params Custom overrides (posts_per_page, paged, sort, search_keywords, search_location, search_category, search_type)
+ * @param array $params Custom overrides (posts_per_page, paged, sort, search_keywords, search_location)
  * @return array Sanitized WP_Query arguments
  */
 if ( ! function_exists( 'pds_get_jobs_query_args' ) ) :
@@ -793,8 +788,6 @@ function pds_get_jobs_query_args( $params = array() ) {
     $sort      = isset( $params['sort'] ) ? sanitize_text_field( $params['sort'] ) : 'latest';
     $keywords  = isset( $params['search_keywords'] ) ? trim( sanitize_text_field( $params['search_keywords'] ) ) : '';
     $location  = isset( $params['search_location'] ) ? trim( sanitize_text_field( $params['search_location'] ) ) : '';
-    $category  = isset( $params['search_category'] ) ? trim( sanitize_text_field( $params['search_category'] ) ) : '';
-    $type      = isset( $params['search_type'] ) ? trim( sanitize_text_field( $params['search_type'] ) ) : '';
 
     $query_args = array(
         'post_type'      => 'job_listing',
@@ -824,7 +817,7 @@ function pds_get_jobs_query_args( $params = array() ) {
             break;
     }
 
-    // Search keywords (matches post_title, post_content, post_excerpt, _company_name, _job_location, taxonomy)
+    // Search keywords (matches post_title, post_content, post_excerpt, _company_name)
     if ( ! empty( $keywords ) ) {
         $query_args['pds_job_keywords'] = $keywords;
     }
@@ -840,194 +833,6 @@ function pds_get_jobs_query_args( $params = array() ) {
         );
     }
 
-    // Tax Query for Category & Type Filters
-    $tax_query = array();
-
-    if ( ! empty( $category ) && 'all' !== strtolower( $category ) && 'all categories' !== strtolower( $category ) ) {
-        $tax_query[] = array(
-            'taxonomy' => 'job_listing_category',
-            'field'    => is_numeric( $category ) ? 'term_id' : 'slug',
-            'terms'    => $category,
-        );
-    }
-
-    if ( ! empty( $type ) && 'all' !== strtolower( $type ) ) {
-        $tax_query[] = array(
-            'taxonomy' => 'job_listing_type',
-            'field'    => is_numeric( $type ) ? 'term_id' : 'slug',
-            'terms'    => $type,
-        );
-    }
-
-    if ( ! empty( $tax_query ) ) {
-        if ( count( $tax_query ) > 1 ) {
-            $tax_query['relation'] = 'AND';
-        }
-        $query_args['tax_query'] = $tax_query;
-    }
-
     return $query_args;
 }
 endif;
-
-/**
- * Retrieve real company photos gallery for a job listing
- *
- * @param int $job_id
- * @return array Array of image data: [ ['full' => url, 'thumb' => url, 'title' => title], ... ]
- */
-if ( ! function_exists( 'pds_get_job_company_photos' ) ) :
-function pds_get_job_company_photos( $job_id ) {
-    $photos = array();
-    $company_name = get_post_meta( $job_id, '_company_name', true );
-    if ( empty( $company_name ) ) {
-        $company_name = get_the_title( $job_id );
-    }
-
-    // 1. Check custom meta _company_photos (attachment IDs or URLs)
-    $meta_photos = get_post_meta( $job_id, '_company_photos', true );
-    if ( ! empty( $meta_photos ) && is_array( $meta_photos ) ) {
-        foreach ( $meta_photos as $item ) {
-            if ( is_numeric( $item ) ) {
-                $full  = wp_get_attachment_image_url( $item, 'full' );
-                $thumb = wp_get_attachment_image_url( $item, 'medium' );
-                if ( $full ) {
-                    $photos[] = array( 'full' => $full, 'thumb' => $thumb ?: $full, 'title' => $company_name );
-                }
-            } elseif ( is_string( $item ) && filter_var( $item, FILTER_VALIDATE_URL ) ) {
-                $photos[] = array( 'full' => $item, 'thumb' => $item, 'title' => $company_name );
-            }
-        }
-    }
-
-    // 2. Check attached media in WordPress
-    if ( empty( $photos ) ) {
-        $attachments = get_attached_media( 'image', $job_id );
-        foreach ( $attachments as $att ) {
-            $full  = wp_get_attachment_image_url( $att->ID, 'full' );
-            $thumb = wp_get_attachment_image_url( $att->ID, 'medium' );
-            if ( $full ) {
-                $photos[] = array(
-                    'full'  => $full,
-                    'thumb' => $thumb ?: $full,
-                    'title' => get_the_title( $att->ID ) ?: $company_name,
-                );
-            }
-        }
-    }
-
-    // 3. Fallback to real seed gallery photos from uploads/seed-cms-content
-    if ( empty( $photos ) ) {
-        $seed_files = array(
-            array(
-                'file'  => 'news-restaurant-hotel-operations.png',
-                'title' => __( 'Operations & Main Venue', 'jobscout' ),
-            ),
-            array(
-                'file'  => 'news-venue-interior.png',
-                'title' => __( 'Interior Design & Dining Hall', 'jobscout' ),
-            ),
-            array(
-                'file'  => 'news-hospitality-consulting.png',
-                'title' => __( 'Hospitality & Guest Reception', 'jobscout' ),
-            ),
-            array(
-                'file'  => 'news-project-development.png',
-                'title' => __( 'Project Development & Facilities', 'jobscout' ),
-            ),
-            array(
-                'file'  => 'contact-japanese-street.png',
-                'title' => __( 'Exterior & Neighborhood', 'jobscout' ),
-            ),
-            array(
-                'file'  => 'about-tokyo-tower.png',
-                'title' => __( 'Tokyo Tower View & Headquarters', 'jobscout' ),
-            ),
-        );
-
-        $upload_dir = wp_upload_dir();
-        $seed_base_url = content_url( '/uploads/seed-cms-content/' );
-        $seed_base_dir = trailingslashit( $upload_dir['basedir'] ) . 'seed-cms-content/';
-
-        foreach ( $seed_files as $seed ) {
-            $full_url = $seed_base_url . $seed['file'];
-            $ext = pathinfo( $seed['file'], PATHINFO_EXTENSION );
-            $base = pathinfo( $seed['file'], PATHINFO_FILENAME );
-            $thumb_file = $base . '-600x450.' . $ext;
-            $thumb_url = file_exists( $seed_base_dir . $thumb_file ) ? ( $seed_base_url . $thumb_file ) : $full_url;
-
-            $photos[] = array(
-                'full'  => $full_url,
-                'thumb' => $thumb_url,
-                'title' => sprintf( '%s - %s', $company_name, $seed['title'] ),
-            );
-        }
-    }
-
-    return $photos;
-}
-endif;
-
-/**
- * Handle AJAX requests for All Jobs page (Load More, Sorting, Filtering)
- */
-add_action( 'template_redirect', 'pds_handle_all_jobs_ajax', 1 );
-add_action( 'wp_ajax_pds_ajax_jobs', 'pds_handle_all_jobs_ajax' );
-add_action( 'wp_ajax_nopriv_pds_ajax_jobs', 'pds_handle_all_jobs_ajax' );
-
-function pds_handle_all_jobs_ajax() {
-    if ( ! isset( $_REQUEST['pds_ajax_jobs'] ) && ( ! isset( $_REQUEST['action'] ) || 'pds_ajax_jobs' !== $_REQUEST['action'] ) ) {
-        return;
-    }
-
-    $paged    = isset( $_REQUEST['page'] ) ? max( 1, (int) $_REQUEST['page'] ) : 1;
-    $sort     = isset( $_REQUEST['sort'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['sort'] ) ) : 'latest';
-    $keywords = isset( $_REQUEST['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['search_keywords'] ) ) : '';
-    $location = isset( $_REQUEST['search_location'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['search_location'] ) ) : '';
-    $category = isset( $_REQUEST['search_category'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['search_category'] ) ) : '';
-    $type     = isset( $_REQUEST['search_type'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['search_type'] ) ) : '';
-
-    $args = pds_get_jobs_query_args( array(
-        'posts_per_page'  => 6,
-        'paged'           => $paged,
-        'sort'            => $sort,
-        'search_keywords' => $keywords,
-        'search_location' => $location,
-        'search_category' => $category,
-        'search_type'     => $type,
-    ) );
-
-    $ajax_query = new WP_Query( $args );
-
-    ob_start();
-    if ( $ajax_query->have_posts() ) {
-        while ( $ajax_query->have_posts() ) {
-            $ajax_query->the_post();
-            get_template_part( 'template-parts/all-jobs-card' );
-        }
-    }
-    $rendered_html = ob_get_clean();
-    $max_num_pages = $ajax_query->max_num_pages;
-    wp_reset_postdata();
-
-    wp_send_json_success( array(
-        'html'         => $rendered_html,
-        'has_more'     => ( $paged < $max_num_pages ),
-        'max_pages'    => $max_num_pages,
-        'current_page' => $paged,
-        'total'        => $ajax_query->found_posts,
-    ) );
-    exit;
-}
-
-/**
- * Prevent canonical redirect from intercepting AJAX requests with page=1
- */
-add_filter( 'redirect_canonical', function( $redirect_url ) {
-    if ( isset( $_REQUEST['pds_ajax_jobs'] ) ) {
-        return false;
-    }
-    return $redirect_url;
-} );
-
-

@@ -751,47 +751,27 @@ class PDS_Jobs_List_Widget extends WP_Widget {
 
         $search_keywords = isset( $_GET['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) ) : '';
         $search_location = isset( $_GET['search_location'] ) ? sanitize_text_field( wp_unslash( $_GET['search_location'] ) ) : '';
-        $search_category = isset( $_GET['search_category'] ) ? sanitize_text_field( wp_unslash( $_GET['search_category'] ) ) : '';
         $current_sort    = isset( $_GET['sort'] ) ? sanitize_text_field( wp_unslash( $_GET['sort'] ) ) : 'latest';
-        $current_paged   = max( 1, (int) get_query_var( 'paged' ), (int) get_query_var( 'page' ), isset( $_GET['page'] ) ? (int) $_GET['page'] : 1 );
 
         $jobs_query = new WP_Query( pds_get_jobs_query_args( array(
             'posts_per_page'  => $count,
-            'paged'           => $current_paged,
+            'paged'           => 1,
             'sort'            => $current_sort,
             'search_keywords' => $search_keywords,
             'search_location' => $search_location,
-            'search_category' => $search_category,
         ) ) );
         $total_pages = $jobs_query->max_num_pages;
-
-        $categories = get_terms( array(
-            'taxonomy'   => 'job_listing_category',
-            'hide_empty' => false,
-        ) );
 
         echo $args['before_widget'];
         ?>
         <?php if ( $show_filter ) : ?>
             <div class="pds-all-jobs-filter-bar" style="margin-bottom: 24px; background: #fbf9f7; padding: 18px 20px; border: 1px solid #ebdcd0; border-radius: 4px;">
                 <form class="pds-all-jobs-filter-form" method="get" action="<?php echo esc_url( home_url( '/jobs/' ) ); ?>" style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
-                    <div style="flex: 2; min-width: 180px;">
+                    <div style="flex: 2; min-width: 200px;">
                         <input type="text" name="search_keywords" placeholder="<?php esc_attr_e( 'Keywords (e.g. Hotel Manager, Chef)...', 'jobscout' ); ?>" value="<?php echo esc_attr( $search_keywords ); ?>" style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 2px;">
                     </div>
-                    <div style="flex: 1.5; min-width: 150px;">
+                    <div style="flex: 1.5; min-width: 160px;">
                         <input type="text" name="search_location" placeholder="<?php esc_attr_e( 'Location (e.g. Ho Chi Minh, Tokyo)...', 'jobscout' ); ?>" value="<?php echo esc_attr( $search_location ); ?>" style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 2px;">
-                    </div>
-                    <div style="flex: 1.5; min-width: 150px;">
-                        <select name="search_category" style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 2px; height: 42px; background: #fff; color: #333;">
-                            <option value=""><?php esc_html_e( 'All Categories', 'jobscout' ); ?></option>
-                            <?php if ( ! empty( $categories ) && ! is_wp_error( $categories ) ) : ?>
-                                <?php foreach ( $categories as $cat ) : ?>
-                                    <option value="<?php echo esc_attr( $cat->slug ); ?>" <?php selected( $search_category, $cat->slug ); ?>>
-                                        <?php echo esc_html( $cat->name ); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </select>
                     </div>
                     <?php if ( ! empty( $current_sort ) && 'latest' !== $current_sort ) : ?>
                         <input type="hidden" name="sort" value="<?php echo esc_attr( $current_sort ); ?>">
@@ -800,7 +780,7 @@ class PDS_Jobs_List_Widget extends WP_Widget {
                         <button type="submit" style="flex: 1; background: #f2761b; color: #fff; font-weight: 700; padding: 10px 16px; border: none; cursor: pointer; text-transform: uppercase; border-radius: 2px; font-size: 13px;">
                             <?php esc_html_e( 'FILTER JOBS', 'jobscout' ); ?>
                         </button>
-                        <?php if ( ! empty( $search_keywords ) || ! empty( $search_location ) || ! empty( $search_category ) ) : ?>
+                        <?php if ( ! empty( $search_keywords ) || ! empty( $search_location ) ) : ?>
                             <a href="<?php echo esc_url( home_url( '/jobs/' ) ); ?>" style="display: inline-flex; align-items: center; justify-content: center; background: #eceae8; color: #555; font-weight: 600; padding: 10px 14px; text-decoration: none; border-radius: 2px; font-size: 13px;" title="<?php esc_attr_e( 'Clear filters', 'jobscout' ); ?>">✕</a>
                         <?php endif; ?>
                     </div>
@@ -808,7 +788,7 @@ class PDS_Jobs_List_Widget extends WP_Widget {
             </div>
         <?php endif; ?>
 
-        <?php if ( ! empty( $search_keywords ) || ! empty( $search_location ) || ! empty( $search_category ) ) : ?>
+        <?php if ( ! empty( $search_keywords ) || ! empty( $search_location ) ) : ?>
             <div class="pds-all-jobs-filter-status" style="margin-bottom: 24px; font-size: 14px; color: #555; background: #fff8f2; border: 1px solid #ffd8b8; padding: 12px 18px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                 <div>
                     <strong><?php esc_html_e( 'Search results for:', 'jobscout' ); ?></strong>
@@ -817,13 +797,6 @@ class PDS_Jobs_List_Widget extends WP_Widget {
                     <?php endif; ?>
                     <?php if ( ! empty( $search_location ) ) : ?>
                         <?php esc_html_e( 'in', 'jobscout' ); ?> <span style="color: #f2761b; font-weight: 600;">"<?php echo esc_html( $search_location ); ?>"</span>
-                    <?php endif; ?>
-                    <?php if ( ! empty( $search_category ) ) : ?>
-                        <?php
-                        $cat_obj = get_term_by( 'slug', $search_category, 'job_listing_category' );
-                        $cat_name = $cat_obj ? $cat_obj->name : $search_category;
-                        ?>
-                        <?php esc_html_e( 'category', 'jobscout' ); ?> <span style="color: #f2761b; font-weight: 600;">"<?php echo esc_html( $cat_name ); ?>"</span>
                     <?php endif; ?>
                     <span>(<?php printf( esc_html( _n( '%d job found', '%d jobs found', $jobs_query->found_posts, 'jobscout' ) ), (int) $jobs_query->found_posts ); ?>)</span>
                 </div>
@@ -861,46 +834,16 @@ class PDS_Jobs_List_Widget extends WP_Widget {
 
             <?php if ( $show_loadmore && $total_pages > 1 ) : ?>
                 <div class="pds-all-jobs-loadmore-wrap">
-                    <button type="button" id="pds-all-jobs-load-more" class="pds-all-jobs-loadmore-btn" data-page="<?php echo esc_attr( $current_paged ); ?>" data-max="<?php echo esc_attr( $total_pages ); ?>">
+                    <button type="button" id="pds-all-jobs-load-more" class="pds-all-jobs-loadmore-btn" data-page="1" data-max="<?php echo esc_attr( $total_pages ); ?>">
                         <?php esc_html_e( 'LOAD MORE JOBS', 'jobscout' ); ?>
                     </button>
-                </div>
-            <?php endif; ?>
-
-            <?php if ( $total_pages > 1 ) : ?>
-                <div class="pds-all-jobs-pagination" style="margin-top: 30px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
-                    <?php
-                    $pagination_args = array();
-                    if ( ! empty( $search_keywords ) ) {
-                        $pagination_args['search_keywords'] = $search_keywords;
-                    }
-                    if ( ! empty( $search_location ) ) {
-                        $pagination_args['search_location'] = $search_location;
-                    }
-                    if ( ! empty( $search_category ) ) {
-                        $pagination_args['search_category'] = $search_category;
-                    }
-                    if ( ! empty( $current_sort ) && 'latest' !== $current_sort ) {
-                        $pagination_args['sort'] = $current_sort;
-                    }
-
-                    echo paginate_links( array(
-                        'base'      => add_query_arg( 'page', '%#%' ),
-                        'format'    => '',
-                        'current'   => $current_paged,
-                        'total'     => $total_pages,
-                        'prev_text' => __( '&laquo; Prev', 'jobscout' ),
-                        'next_text' => __( 'Next &raquo;', 'jobscout' ),
-                        'add_args'  => $pagination_args,
-                    ) );
-                    ?>
                 </div>
             <?php endif; ?>
 
         <?php else : ?>
             <div class="pds-all-jobs-empty">
                 <p><?php esc_html_e( 'No job openings found matching your criteria.', 'jobscout' ); ?></p>
-                <?php if ( ! empty( $search_keywords ) || ! empty( $search_location ) || ! empty( $search_category ) ) : ?>
+                <?php if ( ! empty( $search_keywords ) || ! empty( $search_location ) ) : ?>
                     <p style="margin-top: 14px;">
                         <a href="<?php echo esc_url( home_url( '/jobs/' ) ); ?>" style="display: inline-block; background: #f2761b; color: #fff; padding: 10px 20px; font-weight: 700; text-transform: uppercase; border-radius: 3px; text-decoration: none; font-size: 13px;">
                             <?php esc_html_e( 'VIEW ALL JOBS', 'jobscout' ); ?>
@@ -1120,18 +1063,44 @@ class PDS_Job_Company_Photos_Widget extends WP_Widget {
         }
 
         $title       = ! empty( $instance['title'] ) ? $instance['title'] : __( 'Company Photos', 'jobscout' );
-        $extra_count = isset( $instance['extra_count'] ) ? absint( $instance['extra_count'] ) : 5;
-        $photo_url   = ! empty( $instance['photo_url'] ) ? $instance['photo_url'] : content_url( '/uploads/seed-cms-content/news-restaurant-hotel-operations-600x450.png' );
+        $job_id      = is_singular( 'job_listing' ) ? get_the_ID() : get_the_ID();
+        $photos      = function_exists( 'pds_get_company_photos' ) && $job_id ? pds_get_company_photos( $job_id ) : array();
 
-        $job_id      = get_the_ID();
-        $gallery     = function_exists( 'pds_get_job_company_photos' ) ? pds_get_job_company_photos( $job_id ) : array();
-        if ( ! empty( $gallery ) ) {
-            if ( empty( $instance['photo_url'] ) && ! empty( $gallery[0]['thumb'] ) ) {
-                $photo_url = $gallery[0]['thumb'];
+        if ( ! empty( $photos ) ) {
+            $primary_thumb   = $photos[0]['thumb'];
+            $large_photo_url = $photos[0]['full'];
+            $photo_count     = count( $photos );
+            $extra_count     = max( 0, $photo_count - 1 );
+            $gallery_json    = wp_json_encode( array_map( function( $p ) {
+                return array(
+                    'src'     => $p['full'],
+                    'thumb'   => $p['thumb'],
+                    'caption' => $p['title'] ?: $p['caption'],
+                );
+            }, $photos ) );
+        } else {
+            $primary_thumb   = ! empty( $instance['photo_url'] ) ? $instance['photo_url'] : content_url( '/uploads/seed-cms-content/news-restaurant-hotel-operations-600x450.png' );
+            $large_photo_url = $primary_thumb;
+            $clean_full      = preg_replace( '/-\d+x\d+(?=\.[a-zA-Z0-9]+$)/', '', $primary_thumb );
+            if ( ! empty( $clean_full ) ) {
+                $att_id = attachment_url_to_postid( $clean_full );
+                if ( $att_id ) {
+                    $large_src = wp_get_attachment_image_url( $att_id, 'full' );
+                    if ( $large_src ) {
+                        $large_photo_url = $large_src;
+                    }
+                } else {
+                    $large_photo_url = $clean_full;
+                }
             }
-            if ( count( $gallery ) > 1 ) {
-                $extra_count = count( $gallery ) - 1;
-            }
+            $extra_count  = 0;
+            $gallery_json = wp_json_encode( array(
+                array(
+                    'src'     => $large_photo_url,
+                    'thumb'   => $primary_thumb,
+                    'caption' => $title,
+                ),
+            ) );
         }
 
         echo $args['before_widget'];
@@ -1140,14 +1109,8 @@ class PDS_Job_Company_Photos_Widget extends WP_Widget {
             <?php if ( $title ) : ?>
                 <h3 class="pds-job-detail-widget-title"><?php echo esc_html( $title ); ?></h3>
             <?php endif; ?>
-            <div
-                class="pds-company-photo-wrap"
-                role="button"
-                tabindex="0"
-                aria-label="<?php esc_attr_e( 'View Company Photos in Lightbox', 'jobscout' ); ?>"
-                data-gallery="<?php echo esc_attr( wp_json_encode( $gallery ) ); ?>"
-            >
-                <img src="<?php echo esc_url( $photo_url ); ?>" alt="<?php echo esc_attr( $title ); ?>" class="pds-company-photo-img" loading="lazy">
+            <div class="pds-company-photo-wrap" role="button" tabindex="0" aria-label="<?php esc_attr_e( 'View company photos in fullscreen', 'jobscout' ); ?>" data-full-src="<?php echo esc_url( $large_photo_url ); ?>" data-gallery="<?php echo esc_attr( $gallery_json ); ?>" data-caption="<?php echo esc_attr( $title ); ?>">
+                <img src="<?php echo esc_url( $primary_thumb ); ?>" alt="<?php echo esc_attr( $title ); ?>" class="pds-company-photo-img" loading="lazy">
                 <?php if ( $extra_count > 0 ) : ?>
                     <div class="pds-company-photo-overlay">
                         <span class="pds-photo-more-badge">+<?php echo esc_html( $extra_count ); ?></span>

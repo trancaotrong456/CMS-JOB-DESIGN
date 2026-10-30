@@ -68,18 +68,21 @@ add_action( 'wp_enqueue_scripts', function() {
         defined( 'JOBSCOUT_THEME_VERSION' ) ? JOBSCOUT_THEME_VERSION : '1.0.0'
     );
 
+    $detail_css = get_template_directory() . '/assets/css/job-detail.css';
+    $detail_js  = get_template_directory() . '/assets/js/job-detail.js';
+
     wp_enqueue_style(
         'pds-job-detail-style',
         get_template_directory_uri() . '/assets/css/job-detail.css',
         array( 'jobscout', 'pds-all-jobs-style' ),
-        defined( 'JOBSCOUT_THEME_VERSION' ) ? JOBSCOUT_THEME_VERSION : '1.0.0'
+        file_exists( $detail_css ) ? filemtime( $detail_css ) : '1.0.0'
     );
 
     wp_enqueue_script(
         'pds-job-detail-script',
         get_template_directory_uri() . '/assets/js/job-detail.js',
         array(),
-        defined( 'JOBSCOUT_THEME_VERSION' ) ? JOBSCOUT_THEME_VERSION : '1.0.0',
+        file_exists( $detail_js ) ? filemtime( $detail_js ) : '1.0.0',
         true
     );
 
@@ -94,7 +97,8 @@ add_action( 'wp_enqueue_scripts', function() {
                 'submit'         => __( 'SUBMIT APPLICATION', 'jobscout' ),
                 'invalid_file'   => __( 'Invalid file format. Only .pdf, .doc, and .docx are supported.', 'jobscout' ),
                 'file_too_large' => __( 'File size exceeds the 10MB limit.', 'jobscout' ),
-                'copied'         => __( 'COPIED!', 'jobscout' ),
+                'copied'         => __( 'Copied!', 'jobscout' ),
+                'copy'           => __( 'Copy', 'jobscout' ),
                 'share'          => __( 'SHARE', 'jobscout' ),
                 'lightbox_prev'  => __( 'Previous photo', 'jobscout' ),
                 'lightbox_next'  => __( 'Next photo', 'jobscout' ),
@@ -135,10 +139,9 @@ while ( have_posts() ) :
     $rating_num = (float) $staff_rating;
 
     // Company Photos
-    $company_photos = function_exists( 'pds_get_job_company_photos' ) ? pds_get_job_company_photos( $job_id ) : array();
+    $company_photos = function_exists( 'pds_get_company_photos' ) ? pds_get_company_photos( $job_id ) : array();
     $photo_count    = count( $company_photos );
     $extra_photos   = max( 0, $photo_count - 1 );
-    $primary_photo  = ! empty( $company_photos[0]['thumb'] ) ? $company_photos[0]['thumb'] : content_url( '/uploads/seed-cms-content/news-restaurant-hotel-operations-600x450.png' );
 
     // Logo
     $logo_url = '';
@@ -269,11 +272,11 @@ while ( have_posts() ) :
 
             <!-- Action Buttons -->
             <div class="pds-job-detail-header-actions">
-                <button type="button" class="pds-job-detail-btn-share" data-share-url="<?php echo esc_url( $permalink ); ?>">
+                <button type="button" class="pds-job-detail-btn-share" data-share-url="<?php echo esc_url( $permalink ); ?>" data-share-title="<?php echo esc_attr( $title ); ?>" data-share-company="<?php echo esc_attr( $company ); ?>" aria-haspopup="dialog" aria-expanded="false">
                     <?php esc_html_e( 'SHARE', 'jobscout' ); ?>
                 </button>
 
-                <a href="#pds-job-apply" class="pds-job-detail-btn-apply">
+                <a href="#pds-job-apply" class="pds-job-detail-btn-apply" role="button" aria-controls="pds-job-apply" aria-expanded="false">
                     <?php esc_html_e( 'APPLY JOB', 'jobscout' ); ?>
                 </a>
             </div>
@@ -294,13 +297,11 @@ while ( have_posts() ) :
                         <?php echo apply_filters( 'the_content', $clean_content ); ?>
                     </div>
 
-                    <!-- Application Section -->
-                    <div id="pds-job-apply" class="pds-job-detail-application-area">
+                    <!-- Application Modal -->
+                    <div id="pds-job-apply" class="pds-apply-modal" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1">
                         <?php
-                        if ( function_exists( 'get_job_manager_template' ) ) {
+                        if ( function_exists( 'candidates_can_apply' ) && candidates_can_apply() ) {
                             get_job_manager_template( 'job-application.php' );
-                        } else {
-                            get_template_part( 'job_manager/job-application' );
                         }
                         ?>
                     </div>
@@ -348,16 +349,32 @@ while ( have_posts() ) :
                     <h3 class="pds-job-detail-widget-title">
                         <?php esc_html_e( 'Company Photos', 'jobscout' ); ?>
                     </h3>
-                    <div
-                        class="pds-company-photo-wrap"
-                        id="pds-company-photos-trigger"
-                        role="button"
-                        tabindex="0"
-                        aria-label="<?php esc_attr_e( 'View Company Photos in Lightbox', 'jobscout' ); ?>"
-                        data-gallery="<?php echo esc_attr( wp_json_encode( $company_photos ) ); ?>"
-                    >
+                    <?php
+                    if ( ! empty( $company_photos ) ) {
+                        $primary_thumb = $company_photos[0]['thumb'];
+                        $primary_full  = $company_photos[0]['full'];
+                        $gallery_json  = wp_json_encode( array_map( function( $p ) {
+                            return array(
+                                'src'     => $p['full'],
+                                'thumb'   => $p['thumb'],
+                                'caption' => $p['title'] ?: $p['caption'],
+                            );
+                        }, $company_photos ) );
+                    } else {
+                        $primary_thumb = content_url( '/uploads/seed-cms-content/news-restaurant-hotel-operations-600x450.png' );
+                        $primary_full  = content_url( '/uploads/seed-cms-content/news-restaurant-hotel-operations.png' );
+                        $gallery_json  = wp_json_encode( array(
+                            array(
+                                'src'     => $primary_full,
+                                'thumb'   => $primary_thumb,
+                                'caption' => $company ?: $title,
+                            ),
+                        ) );
+                    }
+                    ?>
+                    <div class="pds-company-photo-wrap" role="button" tabindex="0" aria-label="<?php esc_attr_e( 'View company photos in fullscreen', 'jobscout' ); ?>" data-full-src="<?php echo esc_url( $primary_full ); ?>" data-gallery="<?php echo esc_attr( $gallery_json ); ?>" data-caption="<?php echo esc_attr( $company ?: $title ); ?>">
                         <img
-                            src="<?php echo esc_url( $primary_photo ); ?>"
+                            src="<?php echo esc_url( $primary_thumb ); ?>"
                             alt="<?php echo esc_attr( $company ?: $title ); ?>"
                             class="pds-company-photo-img"
                             loading="lazy"
@@ -416,6 +433,51 @@ while ( have_posts() ) :
 
     <!-- NEWSLETTER BANNER -->
     <?php get_template_part( 'template-parts/pds-newsletter' ); ?>
+
+    <!-- COMPANY PHOTOS LIGHTBOX MODAL -->
+    <div id="pds-company-photos-lightbox" class="pds-lightbox-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-label="<?php esc_attr_e( 'Company Photo Lightbox', 'jobscout' ); ?>">
+        <div class="pds-lightbox-backdrop" data-pds-lightbox-close></div>
+
+        <div class="pds-lightbox-dialog">
+            <!-- Close Button -->
+            <button type="button" class="pds-lightbox-close-btn" aria-label="<?php esc_attr_e( 'Close lightbox', 'jobscout' ); ?>" data-pds-lightbox-close>
+                <svg class="pds-lightbox-close-icon" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+
+            <!-- Gallery Navigation Prev (Shown if multiple photos) -->
+            <button type="button" class="pds-lightbox-nav-btn pds-lightbox-prev-btn" aria-label="<?php esc_attr_e( 'Previous photo', 'jobscout' ); ?>" style="display: none;">
+                <svg class="pds-lightbox-nav-icon" viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+
+            <!-- Lightbox Main Content -->
+            <div class="pds-lightbox-content">
+                <figure class="pds-lightbox-figure">
+                    <div class="pds-lightbox-image-wrap">
+                        <img class="pds-lightbox-img" src="" alt="<?php esc_attr_e( 'Company photo preview', 'jobscout' ); ?>">
+                    </div>
+                    <figcaption class="pds-lightbox-caption" style="display: none;">
+                        <span class="pds-lightbox-title"></span>
+                        <span class="pds-lightbox-counter"></span>
+                    </figcaption>
+                </figure>
+            </div>
+
+            <!-- Gallery Navigation Next (Shown if multiple photos) -->
+            <button type="button" class="pds-lightbox-nav-btn pds-lightbox-next-btn" aria-label="<?php esc_attr_e( 'Next photo', 'jobscout' ); ?>" style="display: none;">
+                <svg class="pds-lightbox-nav-icon" viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- SOCIAL MEDIA SHARE POPUP MODAL -->
+    <?php get_template_part( 'template-parts/social-share-modal' ); ?>
 
 </div>
 

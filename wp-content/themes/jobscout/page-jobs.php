@@ -58,8 +58,6 @@ if ( isset( $_REQUEST['pds_ajax_jobs'] ) ) {
     $sort     = isset( $_REQUEST['sort'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['sort'] ) ) : 'latest';
     $keywords = isset( $_REQUEST['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['search_keywords'] ) ) : '';
     $location = isset( $_REQUEST['search_location'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['search_location'] ) ) : '';
-    $category = isset( $_REQUEST['search_category'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['search_category'] ) ) : '';
-    $type     = isset( $_REQUEST['search_type'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['search_type'] ) ) : '';
 
     $args = pds_get_jobs_query_args( array(
         'posts_per_page'  => 6,
@@ -67,8 +65,6 @@ if ( isset( $_REQUEST['pds_ajax_jobs'] ) ) {
         'sort'            => $sort,
         'search_keywords' => $keywords,
         'search_location' => $location,
-        'search_category' => $category,
-        'search_type'     => $type,
     ) );
 
     $ajax_query = new WP_Query( $args );
@@ -98,10 +94,9 @@ if ( isset( $_REQUEST['pds_ajax_jobs'] ) ) {
 // 2. Initial Page Query
 // -----------------------------------------------------------------------------
 $current_sort    = isset( $_GET['sort'] ) ? sanitize_text_field( wp_unslash( $_GET['sort'] ) ) : 'latest';
-$current_page    = max( 1, (int) get_query_var( 'paged' ), (int) get_query_var( 'page' ), isset( $_GET['page'] ) ? (int) $_GET['page'] : 1 );
+$current_page    = max( 1, (int) get_query_var( 'paged' ), (int) get_query_var( 'page' ) );
 $search_keywords = isset( $_GET['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) ) : '';
 $search_location = isset( $_GET['search_location'] ) ? sanitize_text_field( wp_unslash( $_GET['search_location'] ) ) : '';
-$search_category = isset( $_GET['search_category'] ) ? sanitize_text_field( wp_unslash( $_GET['search_category'] ) ) : '';
 
 $query_args = pds_get_jobs_query_args( array(
     'posts_per_page'  => 6,
@@ -109,7 +104,6 @@ $query_args = pds_get_jobs_query_args( array(
     'sort'            => $current_sort,
     'search_keywords' => $search_keywords,
     'search_location' => $search_location,
-    'search_category' => $search_category,
 ) );
 
 $jobs_query  = new WP_Query( $query_args );
@@ -123,7 +117,7 @@ add_filter( 'body_class', function( $classes ) {
     return $classes;
 } );
 
-add_action( 'wp_enqueue_scripts', function() use ( $total_pages, $current_sort, $search_keywords, $search_location, $search_category ) {
+add_action( 'wp_enqueue_scripts', function() use ( $total_pages, $current_sort, $search_keywords, $search_location ) {
     wp_enqueue_style(
         'pds-all-jobs-style',
         get_template_directory_uri() . '/assets/css/all-jobs.css',
@@ -148,7 +142,6 @@ add_action( 'wp_enqueue_scripts', function() use ( $total_pages, $current_sort, 
             'sort'     => $current_sort,
             'keywords' => $search_keywords,
             'location' => $search_location,
-            'category' => $search_category,
             'noMore'   => __( 'NO MORE JOBS', 'jobscout' ),
             'loading'  => __( 'LOADING...', 'jobscout' ),
             'loadMore' => __( 'LOAD MORE JOBS', 'jobscout' ),
@@ -220,47 +213,7 @@ get_header();
                 </div>
             </div>
 
-            <?php
-            $categories = get_terms( array(
-                'taxonomy'   => 'job_listing_category',
-                'hide_empty' => false,
-            ) );
-            ?>
-            <div class="pds-all-jobs-filter-bar" style="margin-bottom: 24px; background: #fbf9f7; padding: 18px 20px; border: 1px solid #ebdcd0; border-radius: 4px;">
-                <form class="pds-all-jobs-filter-form" method="get" action="<?php echo esc_url( get_permalink() ); ?>" style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
-                    <div style="flex: 2; min-width: 180px;">
-                        <input type="text" name="search_keywords" placeholder="<?php esc_attr_e( 'Keywords (e.g. Hotel Manager, Chef)...', 'jobscout' ); ?>" value="<?php echo esc_attr( $search_keywords ); ?>" style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 2px;">
-                    </div>
-                    <div style="flex: 1.5; min-width: 150px;">
-                        <input type="text" name="search_location" placeholder="<?php esc_attr_e( 'Location (e.g. Ho Chi Minh, Tokyo)...', 'jobscout' ); ?>" value="<?php echo esc_attr( $search_location ); ?>" style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 2px;">
-                    </div>
-                    <div style="flex: 1.5; min-width: 150px;">
-                        <select name="search_category" style="width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 2px; height: 42px; background: #fff; color: #333;">
-                            <option value=""><?php esc_html_e( 'All Categories', 'jobscout' ); ?></option>
-                            <?php if ( ! empty( $categories ) && ! is_wp_error( $categories ) ) : ?>
-                                <?php foreach ( $categories as $cat ) : ?>
-                                    <option value="<?php echo esc_attr( $cat->slug ); ?>" <?php selected( $search_category, $cat->slug ); ?>>
-                                        <?php echo esc_html( $cat->name ); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </select>
-                    </div>
-                    <?php if ( ! empty( $current_sort ) && 'latest' !== $current_sort ) : ?>
-                        <input type="hidden" name="sort" value="<?php echo esc_attr( $current_sort ); ?>">
-                    <?php endif; ?>
-                    <div style="flex: 1; min-width: 130px; display: flex; gap: 8px;">
-                        <button type="submit" style="flex: 1; background: #f2761b; color: #fff; font-weight: 700; padding: 10px 16px; border: none; cursor: pointer; text-transform: uppercase; border-radius: 2px; font-size: 13px;">
-                            <?php esc_html_e( 'FILTER JOBS', 'jobscout' ); ?>
-                        </button>
-                        <?php if ( ! empty( $search_keywords ) || ! empty( $search_location ) || ! empty( $search_category ) ) : ?>
-                            <a href="<?php echo esc_url( get_permalink() ); ?>" style="display: inline-flex; align-items: center; justify-content: center; background: #eceae8; color: #555; font-weight: 600; padding: 10px 14px; text-decoration: none; border-radius: 2px; font-size: 13px;" title="<?php esc_attr_e( 'Clear filters', 'jobscout' ); ?>">✕</a>
-                        <?php endif; ?>
-                    </div>
-                </form>
-            </div>
-
-            <?php if ( ! empty( $search_keywords ) || ! empty( $search_location ) || ! empty( $search_category ) ) : ?>
+            <?php if ( ! empty( $search_keywords ) || ! empty( $search_location ) ) : ?>
                 <div class="pds-all-jobs-filter-status" style="margin-bottom: 24px; font-size: 14px; color: #555; background: #fff8f2; border: 1px solid #ffd8b8; padding: 12px 18px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                     <div>
                         <strong><?php esc_html_e( 'Search results for:', 'jobscout' ); ?></strong>
@@ -269,13 +222,6 @@ get_header();
                         <?php endif; ?>
                         <?php if ( ! empty( $search_location ) ) : ?>
                             <?php esc_html_e( 'in', 'jobscout' ); ?> <span style="color: #f2761b; font-weight: 600;">"<?php echo esc_html( $search_location ); ?>"</span>
-                        <?php endif; ?>
-                        <?php if ( ! empty( $search_category ) ) : ?>
-                            <?php
-                            $cat_obj = get_term_by( 'slug', $search_category, 'job_listing_category' );
-                            $cat_name = $cat_obj ? $cat_obj->name : $search_category;
-                            ?>
-                            <?php esc_html_e( 'category', 'jobscout' ); ?> <span style="color: #f2761b; font-weight: 600;">"<?php echo esc_html( $cat_name ); ?>"</span>
                         <?php endif; ?>
                         <span>(<?php printf( esc_html( _n( '%d job found', '%d jobs found', $jobs_query->found_posts, 'jobscout' ) ), (int) $jobs_query->found_posts ); ?>)</span>
                     </div>
@@ -303,48 +249,18 @@ get_header();
                         type="button"
                         id="pds-all-jobs-load-more"
                         class="pds-all-jobs-loadmore-btn"
-                        data-page="<?php echo esc_attr( $current_page ); ?>"
+                        data-page="1"
                         data-max="<?php echo esc_attr( $total_pages ); ?>"
                     >
                         <?php esc_html_e( 'LOAD MORE JOBS', 'jobscout' ); ?>
                     </button>
                 </div>
 
-                <?php if ( $total_pages > 1 ) : ?>
-                    <div class="pds-all-jobs-pagination" style="margin-top: 30px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
-                        <?php
-                        $pagination_args = array();
-                        if ( ! empty( $search_keywords ) ) {
-                            $pagination_args['search_keywords'] = $search_keywords;
-                        }
-                        if ( ! empty( $search_location ) ) {
-                            $pagination_args['search_location'] = $search_location;
-                        }
-                        if ( ! empty( $search_category ) ) {
-                            $pagination_args['search_category'] = $search_category;
-                        }
-                        if ( ! empty( $current_sort ) && 'latest' !== $current_sort ) {
-                            $pagination_args['sort'] = $current_sort;
-                        }
-
-                        echo paginate_links( array(
-                            'base'      => add_query_arg( 'page', '%#%' ),
-                            'format'    => '',
-                            'current'   => $current_page,
-                            'total'     => $total_pages,
-                            'prev_text' => __( '&laquo; Prev', 'jobscout' ),
-                            'next_text' => __( 'Next &raquo;', 'jobscout' ),
-                            'add_args'  => $pagination_args,
-                        ) );
-                        ?>
-                    </div>
-                <?php endif; ?>
-
             <?php else : ?>
 
                 <div class="pds-all-jobs-empty">
                     <p><?php esc_html_e( 'No job openings found matching your criteria.', 'jobscout' ); ?></p>
-                    <?php if ( ! empty( $search_keywords ) || ! empty( $search_location ) || ! empty( $search_category ) ) : ?>
+                    <?php if ( ! empty( $search_keywords ) || ! empty( $search_location ) ) : ?>
                         <p style="margin-top: 14px;">
                             <a href="<?php echo esc_url( get_permalink() ); ?>" style="display: inline-block; background: #f2761b; color: #fff; padding: 10px 20px; font-weight: 700; text-transform: uppercase; border-radius: 3px; text-decoration: none; font-size: 13px;">
                                 <?php esc_html_e( 'VIEW ALL JOBS', 'jobscout' ); ?>

@@ -24,15 +24,29 @@ $apply  = get_the_job_application_method();
         <?php do_action( 'job_application_start', $apply ); ?>
     <?php endif; ?>
 
-    <div class="pds-application-card" id="pds-application-card">
-        <div class="pds-application-header">
-            <h3 class="pds-application-title">
-                <?php esc_html_e( 'Apply For This Position', 'jobscout' ); ?>
-            </h3>
-            <p class="pds-application-subtitle">
-                <?php esc_html_e( 'Please complete the form below and attach your CV to apply.', 'jobscout' ); ?>
-            </p>
-        </div>
+    <!-- Modal Backdrop -->
+    <div class="pds-apply-modal-backdrop" data-pds-apply-close></div>
+
+    <!-- Modal Dialog -->
+    <div class="pds-apply-modal-dialog" role="document">
+        <div class="pds-application-card" id="pds-application-card">
+
+            <!-- Close Button (X) -->
+            <button type="button" class="pds-apply-modal-close-btn" id="pds-apply-modal-close-btn" aria-label="<?php esc_attr_e( 'Close application modal', 'jobscout' ); ?>" data-pds-apply-close>
+                <svg class="pds-apply-close-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+
+            <div class="pds-application-header">
+                <h3 class="pds-application-title" id="pds-application-title">
+                    <?php esc_html_e( 'Apply For This Position', 'jobscout' ); ?>
+                </h3>
+                <p class="pds-application-subtitle">
+                    <?php esc_html_e( 'Please complete the form below and attach your CV to apply.', 'jobscout' ); ?>
+                </p>
+            </div>
 
         <!-- Alert messages container -->
         <div class="pds-app-alert pds-app-alert--error" id="pds-app-alert-error" style="display: none;" role="alert">
@@ -193,6 +207,7 @@ $apply  = get_the_job_application_method();
             </div>
 
         </form>
+    </div>
     </div>
 
     <?php if ( $apply ) : ?>

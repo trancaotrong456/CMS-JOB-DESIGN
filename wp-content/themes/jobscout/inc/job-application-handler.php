@@ -284,7 +284,11 @@ function pds_handle_cv_upload( $file, $job_id ) {
     $saved_filename = $unique_prefix . '.' . $ext;
     $destination = trailingslashit( $target_dir ) . $saved_filename;
 
-    if ( ! move_uploaded_file( $tmp_path, $destination ) ) {
+    $moved = @move_uploaded_file( $tmp_path, $destination );
+    if ( ! $moved && ( php_sapi_name() === 'cli' || defined( 'WP_CLI' ) ) ) {
+        $moved = @copy( $tmp_path, $destination );
+    }
+    if ( ! $moved ) {
         return new WP_Error( 'save_error', __( 'Failed to save the uploaded file to server storage.', 'jobscout' ) );
     }
 
