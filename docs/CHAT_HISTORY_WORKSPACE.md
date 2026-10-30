@@ -14,6 +14,10 @@
 3. **Khắc phục lỗi bộ lọc tìm kiếm**: Nhận từ khóa và địa điểm từ trang chủ hiển thị kết quả lọc trên trang Jobs (`page-jobs.php` và widget `PDS_Jobs_List_Widget`).
 4. **Bảo toàn và gửi kèm bộ lọc khi tương tác AJAX** (`LOAD MORE JOBS` và sắp xếp sort).
 5. **Đồng bộ hóa tùy chọn địa điểm trang chủ** (Bổ sung `Ho Chi Minh City` và đặt `All Locations` làm mặc định).
+6. **Kiểm thử toàn diện hệ thống tìm kiếm**: Chạy thực nghiệm 15 ca kiểm thử (T1 đến T15), phân tích cơ chế SQL LIKE, Dropdown tĩnh và tính năng sắp xếp AJAX.
+7. **Ưu tiên mức độ liên quan (Relevance Ranking)**: Đưa các job có từ khóa trong tiêu đề/công ty lên trước các job chỉ khớp mô tả.
+8. **Tìm kiếm thông minh & Gợi ý tức thì (Live Suggestions)**: Mở rộng tìm kiếm sang Taxonomy `job_listing_type` (`full time` ⇄ `fulltime` ⇄ `full-time`), `job_listing_category`, bổ sung Live Search Suggestions ở Trang chủ và chuyển hướng sang trang Jobs.
+9. **Rà soát tính năng các trang News, News Detail & Job Detail**: Xác nhận News & News Detail hoàn thiện 100%, ghi nhận 2 chi tiết mở rộng trên Job Detail (Form Upload CV & Lightbox Company Photos).
 
 ---
 
@@ -842,3 +846,118 @@ lưu cuộc chat này thành 1 file md đi
 
 lưu cuộc chat workspace này thành 1 file md đi
 
+
+### 👤 Lượt 17: Yêu Cầu Của Người Dùng
+
+hãy đọc lại file CHAT_HISTORY_WORKSPACE.md
+vậy còn các chức năng của các trang ?
+hãy push hết code lên đi (đọc file AGENTS_CMS-JOB-DESIGN.md)
+những nhánh khác không có cập nhật gì mới hả ?
+
+
+### 🤖 Phản Hồi Của Trợ Lý (AI Assistant)
+
+- Đã đọc lại toàn bộ nhật ký workspace và tóm tắt tiến trình dự án.
+- Tổng hợp đầy đủ bảng đối soát chức năng 8 trang giao diện.
+- Rà soát toàn bộ các nhánh trên GitHub: đối chiếu tất cả nhánh thành viên (`nguyen-huu-phong/contact`, `nguyen-huu-chuc/news`, `nguyen-huu-chuc/news-detail`, `ho-hoang-duc-huy/about`, `tran-van-trong/all-jobs`, `tran-van-trong/job-detail`, `tran-cao-trong/home`), xác nhận 100% đã được tích hợp an toàn vào `main`.
+- Đã hoàn thành commit và push file nhật ký `docs/CHAT_HISTORY_WORKSPACE.md` lên nhánh `tran-cao-trong/home` và merge vào `main` (commit `12b7f19`).
+
+---
+
+### 👤 Lượt 18: Yêu Cầu Của Người Dùng
+
+trang jobs chưa có tìm kiếm ?
+câu trả lời của tôi :không nhé , bạn chỉ cần đề xuất thôi
+theo bạn thì tìm kiếm của jobs đã ổn chưa chứ tôi thấy chưa lắm tôi muốn nó phải tìm kiếm thông minh và có gợi ý (cả home nữa).Không code chỉ nói thôi
+
+
+### 🤖 Phản Hồi Của Trợ Lý (AI Assistant)
+
+- Phân tích hiện trạng: trang Jobs đã có tìm kiếm nhận từ Home chuyển sang, và trong Widget có thanh filter.
+- Đánh giá chuyên môn về điểm hạn chế của tìm kiếm SQL LIKE thông thường (không có autocomplete, không nhận diện biến thể, không có gợi ý từ khóa).
+- Đề xuất định hướng "Tìm kiếm thông minh & Gợi ý tức thì (Live Autocomplete / Instant Suggestions)".
+
+---
+
+### 👤 Lượt 19: Yêu Cầu Của Người Dùng
+
+Chạy kiểm thử toàn diện hệ thống tìm kiếm hiện tại (T1 đến T15), trả lời 5 câu hỏi đọc code (không sửa) và lập bảng báo cáo trung thực.
+
+
+### 🤖 Phản Hồi Của Trợ Lý (AI Assistant)
+
+1. **Kết quả đọc code:**
+   - Form trang chủ gửi GET với tham số `search_keywords` và `search_location` tới `/jobs/` (`template-parts/home-content.php` dòng 38-61).
+   - Trang Jobs truy vấn qua `WP_Query` chuẩn, can thiệp SQL WHERE bằng hook `posts_clauses` (`inc/template-functions.php` dòng 604-618), có dùng `LIKE '%...%'`.
+   - Dropdown địa điểm trang chủ: Viết cứng (hardcoded HTML) 5 lựa chọn tĩnh (`Ho Chi Minh City`, `Tokyo`, `Kyoto`, `Osaka`).
+   - Dropdown sắp xếp "Latest Jobs": Hoạt động THẬT bằng AJAX không tải lại trang (`assets/js/all-jobs.js`).
+   - JavaScript/AJAX: `all-jobs.js` xử lý Load More và Sorting.
+2. **Thực nghiệm 15 ca kiểm thử (T1-T15):**
+   - T1-T3 (manager, MANAGER, spaces): Ra đúng 3 job.
+   - T4 (managr - sai chính tả): 0 job (chưa có fuzzy search).
+   - T5-T7 (khách sạn, chef, đầu bếp): 0 job (chưa có từ điển đồng nghĩa).
+   - T8 (abcxyz): 0 job, xử lý empty state tốt.
+   - T9 (địa điểm): Dropdown tĩnh hiển thị cả địa điểm không có việc làm.
+   - T10 (kết hợp keyword + location): Ra 3 job chính xác.
+   - T11 (Filter Jobs): Tải lại toàn bộ trang (Full Page Reload), không dùng AJAX.
+   - T12 (Sắp xếp Sort): Đạt xuất sắc bằng AJAX, thứ tự đổi thật 100%.
+   - T13 (Ký tự đặc biệt): An toàn, không lỗi PHP, không trắng trang.
+   - T14 (Để trống): Ra đầy đủ 6 job.
+   - T15 (Thêm job Da Nang): Dropdown trang chủ KHÔNG tự cập nhật (xác nhận dropdown tĩnh). Đã xóa sạch job tạm sau khi thử.
+
+---
+
+### 👤 Lượt 20: Yêu Cầu Của Người Dùng
+
+Thêm sắp xếp mức độ liên quan: job có từ khóa nằm trong TIÊU ĐỀ hoặc TÊN CÔNG TY phải xếp lên trước job chỉ khớp ở mô tả hay meta.
+
+
+### 🤖 Phản Hồi Của Trợ Lý (AI Assistant)
+
+- Sao lưu file `inc/template-functions.php.bak`.
+- Thêm điều kiện chặn an toàn `$is_job` cho hook `posts_clauses`.
+- Thêm biểu thức SQL ưu tiên: `(CASE WHEN (post_title LIKE %s OR meta_value LIKE %s) THEN 0 ELSE 1 END) ASC` đặt trước `orderby`.
+- Kiểm thử thực tế:
+  + Tìm `hotel`: Ra 6 job, 3 job có "Hotel" trong tiêu đề đứng đầu (`Hotel Manager`, `General Manager`, `COO Hotel/Resort`), 3 job còn lại đứng sau.
+  + Phân trang `posts_per_page = 2`: 3 trang kết hợp ra đúng 6 job duy nhất, không lặp, không sót.
+  + Thử job tiếng Việt tạm "Quản lý khách sạn": Tìm thấy chính xác ở cả có dấu và không dấu, đã xóa sạch sau thử nghiệm.
+
+---
+
+### 👤 Lượt 21: Yêu Cầu Của Người Dùng
+
+ví dụ tôi gõ full time thì không có kết quả nên tôi muốn tìm kiếm thông minh hơn
+có plugin cho cái này không ,không có thì sửa tìm kiếm ở phần home trước
+được và khi trả kết quả thì nhảy sang trang jobs
+
+
+### 🤖 Phản Hồi Của Trợ Lý (AI Assistant)
+
+1. **Phân tích nguyên nhân:** Tìm kiếm cũ bỏ sót taxonomy `job_listing_type` và câu lệnh `LIKE '%full time%'` không khớp được với chuỗi `Fulltime` hoặc `Full-time`.
+2. **Triển khai tìm kiếm thông minh:**
+   - Mở rộng nối bảng taxonomy `job_listing_type` và `job_listing_category` trong hook `posts_clauses`.
+   - Chuẩn hóa biến thể thông minh: Gõ `full time` ⇄ tự động tìm cả `fulltime` và `full-time`. Ánh xạ từ đồng nghĩa phổ biến (`khách sạn` -> `hotel`, `quản lý` -> `manager`).
+   - Xây dựng file [`assets/js/home-search.js`](file:///c:/wamp64/www/CMS-JOB-DESIGN/wp-content/themes/jobscout/assets/js/home-search.js) và endpoint AJAX gợi ý Live Search Suggestions tại Trang Chủ.
+   - Khi gõ từ 2 ký tự: Đổ dropdown gợi ý danh sách việc làm phù hợp kèm thông tin công ty, địa điểm, badge `Fulltime`.
+   - Khi click vào việc làm -> vào trang chi tiết; khi bấm Search/Enter/Xem tất cả -> tự động nhảy sang trang Jobs (`/jobs/?search_keywords=...&search_location=...`).
+3. **Kết quả kiểm thử:**
+   - Tìm `full time`: Ra đúng 6 job Fulltime (trước đây là 0 job).
+   - Tìm `fulltime` & `full-time`: Ra đúng 6 job.
+   - Tìm `khách sạn` / `khach san`: Ra đúng 6 job.
+   - Tìm `quản lý`: Ra đúng 3 job Manager.
+   - Đã commit lên nhánh `tran-cao-trong/home` (`5d64ed9`), merge vào `main` và push lên GitHub.
+
+---
+
+### 👤 Lượt 22: Yêu Cầu Của Người Dùng
+
+còn phần của jobs detail thiếu phần nào mà trước đó bạn đã liệt kê ấy
+còn trang new và new detail?
+đẩy code mới nhất lên github đi nhé (hãy đọc file AGENTS_CMS-JOB-DESIGN.md và tuân thủ làm theo)
+
+
+### 🤖 Phản Hồi Của Trợ Lý (AI Assistant)
+
+- **Job Detail:** Xác nhận 2 chi tiết còn thiếu là Form ứng tuyển có upload file CV (`Upload CV`) và Popup Lightbox phóng to ảnh cho Company Photos.
+- **News & News Detail:** Xác nhận đã hoàn thiện 100% đầy đủ chức năng theo yêu cầu đề bài.
+- Tuân thủ quy trình giao nhận Git [AGENTS_CMS-JOB-DESIGN.md](file:///c:/wamp64/www/CMS-JOB-DESIGN/rule/AGENTS_CMS-JOB-DESIGN.md), cập nhật nhật ký workspace, kiểm tra `php -l`, commit và push đồng bộ toàn bộ mã nguồn lên GitHub.
