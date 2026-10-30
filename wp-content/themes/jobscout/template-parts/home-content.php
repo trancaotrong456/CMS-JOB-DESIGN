@@ -85,10 +85,15 @@ $jobs_query   = new WP_Query( array(
                             </span>
                             <select name="search_location" class="home-search-location-select" style="width: 100%; height: 100%; border: 0; outline: 0; color: #3b3837; font-size: 14px; background: transparent; cursor: pointer; -webkit-appearance: none; -moz-appearance: none; appearance: none; padding-right: 18px;">
                                 <option value=""><?php esc_html_e( 'All Locations', 'jobscout' ); ?></option>
-                                <option value="Ho Chi Minh City"><?php esc_html_e( 'Ho Chi Minh City', 'jobscout' ); ?></option>
-                                <option value="Tokyo"><?php esc_html_e( 'Tokyo', 'jobscout' ); ?></option>
-                                <option value="Kyoto"><?php esc_html_e( 'Kyoto', 'jobscout' ); ?></option>
-                                <option value="Osaka"><?php esc_html_e( 'Osaka', 'jobscout' ); ?></option>
+                                <?php
+                                $all_locations = function_exists( 'pds_get_job_locations' ) ? pds_get_job_locations() : array( 'Ho Chi Minh City', 'Ha Noi', 'Da Nang', 'Tokyo', 'Kyoto', 'Osaka' );
+                                $current_loc   = isset( $_GET['search_location'] ) ? sanitize_text_field( wp_unslash( $_GET['search_location'] ) ) : '';
+                                foreach ( $all_locations as $loc ) :
+                                ?>
+                                    <option value="<?php echo esc_attr( $loc ); ?>" <?php selected( $current_loc, $loc ); ?>>
+                                        <?php echo esc_html( $loc ); ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                             <span class="home-dropdown-arrow" style="pointer-events: none; margin-left: -12px; color: #696461; font-size: 10px;">▼</span>
                         </label>

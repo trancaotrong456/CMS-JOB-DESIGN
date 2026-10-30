@@ -836,3 +836,72 @@ function pds_get_jobs_query_args( $params = array() ) {
     return $query_args;
 }
 endif;
+
+/**
+ * =============================================================================
+ * LẤY DANH SÁCH ĐỊA ĐIỂM TUYỂN DỤNG ĐA DẠNG (GET JOB LOCATIONS LIST)
+ * =============================================================================
+ *
+ * @author            Trần Cao Trọng (Lead)
+ * @git_branch        tran-cao-trong/home
+ *
+ * Lấy danh sách địa điểm kết hợp giữa dữ liệu thực tế từ Database và các
+ * thành phố trọng điểm của Plan Do See (Việt Nam, Nhật Bản, Quốc tế).
+ *
+ * @return array Danh sách tên địa điểm chuẩn hóa không trùng lặp
+ */
+if ( ! function_exists( 'pds_get_job_locations' ) ) :
+function pds_get_job_locations() {
+    global $wpdb;
+
+    // Danh sách các thành phố trọng điểm tuyển dụng ngành Khách sạn - Nghỉ dưỡng - F&B
+    $preset_locations = array(
+        'Ho Chi Minh City',
+        'Ha Noi',
+        'Da Nang',
+        'Nha Trang',
+        'Phu Quoc',
+        'Hoi An',
+        'Vung Tau',
+        'Binh Duong',
+        'Tokyo',
+        'Kyoto',
+        'Osaka',
+        'Fukuoka',
+        'Nagoya',
+        'Kobe',
+        'Sapporo',
+        'Okinawa',
+        'Bali (Indonesia)',
+        'New York (USA)',
+    );
+
+    // Truy vấn các địa điểm thực tế đang có trong cơ sở dữ liệu
+    if ( isset( $wpdb ) && $wpdb instanceof wpdb ) {
+        $db_locations = $wpdb->get_col(
+            "SELECT DISTINCT pm.meta_value"
+            . " FROM {$wpdb->postmeta} pm"
+            . " JOIN {$wpdb->posts} p ON p.ID = pm.post_id"
+            . " WHERE pm.meta_key = '_job_location'"
+            . " AND p.post_type = 'job_listing'"
+            . " AND p.post_status = 'publish'"
+            . " AND pm.meta_value != ''"
+        );
+
+        if ( ! empty( $db_locations ) && is_array( $db_locations ) ) {
+            $preset_locations = array_merge( $preset_locations, $db_locations );
+        }
+    }
+
+    // Loại bỏ khoảng trắng thừa và phần tử trùng lặp
+    $clean_locations = array();
+    foreach ( $preset_locations as $loc ) {
+        $loc = trim( (string) $loc );
+        if ( ! empty( $loc ) && ! in_array( $loc, $clean_locations, true ) ) {
+            $clean_locations[] = $loc;
+        }
+    }
+
+    return $clean_locations;
+}
+endif;

@@ -991,3 +991,30 @@ hãy comment tất cả các phần code chi tiết nhé (từ chức năng ho�
    - Chạy `php -l` kiểm tra cú pháp toàn bộ 11 file PHP: 100% không có lỗi.
    - Chạy `git diff --check`: Đã làm sạch toàn bộ trailing whitespace và blank line at EOF, đạt chuẩn sạch 100%.
    - Commit lên nhánh `tran-cao-trong/home`, đồng bộ vào `main` và đẩy lên GitHub.
+
+---
+
+### 👤 Lượt 24: Yêu Cầu Của Người Dùng
+
+tôi muốn nhiều địa điểm hơn nhé (kèm ảnh chụp dropdown đang chỉ có Ho Chi Minh City, Tokyo, Kyoto, Osaka)
+
+
+### 🤖 Phản Hồi Của Trợ Lý (AI Assistant)
+
+1. **Phân tích hiện trạng:**
+   - Dropdown địa điểm trên thanh tìm kiếm Hero tại Trang Chủ trước đây bị cố định (hardcode) chỉ có 4 thành phố: `Ho Chi Minh City`, `Tokyo`, `Kyoto`, `Osaka`.
+
+2. **Giải pháp triển khai mở rộng:**
+   - Xây dựng hàm động `pds_get_job_locations()` tại `inc/template-functions.php`:
+     + Tự động quét các địa điểm thực tế có trong cơ sở dữ liệu (`wp_postmeta._job_location`).
+     + Bổ sung đầy đủ các trung tâm du lịch, khách sạn trọng điểm tại Việt Nam: **Ho Chi Minh City, Ha Noi, Da Nang, Nha Trang, Phu Quoc, Hoi An, Vung Tau, Binh Duong**.
+     + Bổ sung các thành phố phát triển chuỗi nhà hàng khách sạn tại Nhật Bản: **Tokyo, Kyoto, Osaka, Fukuoka, Nagoya, Kobe, Sapporo, Okinawa**.
+     + Bổ sung các chi nhánh quốc tế: **Bali (Indonesia), New York (USA)**.
+   - Tích hợp hàm vào `template-parts/home-content.php` và widget `PDS_Home_Hero_Search_Widget` trong `inc/pds-widgets.php`.
+   - Giữ nguyên trạng thái đã chọn (`selected`) khi người dùng tìm kiếm.
+
+3. **Kiểm thử & Đồng bộ Git:**
+   - Kiểm tra bằng `curl` và `browser_subagent`: Dropdown hiển thị đầy đủ 18 địa điểm phong phú.
+   - Chạy `php -l`: Đạt 100% không lỗi cú pháp.
+   - Chạy `git diff --check`: Sạch 100%.
+   - Commit và push đồng bộ lên cả nhánh `tran-cao-trong/home` và `main`.
