@@ -1,8 +1,30 @@
 <?php
 /**
- * Template part: Job Card for "OTHER JOBS" section on Job Detail page
+ * =============================================================================
+ * COMPONENT: THẺ VIỆC LÀM LIÊN QUAN TRANG JOB DETAIL (OTHER JOBS CARD)
+ * =============================================================================
  *
- * @package JobScout
+ * @package           JobScout
+ * @subpackage        PDS / Job Detail Related Card
+ * @author            Trần Văn Trọng
+ * @git_branch        tran-van-trong/job-detail
+ * @ui_reference      docs/ui-reference/05-job-detail.png
+ *
+ * -----------------------------------------------------------------------------
+ * 1. CHỨC NĂNG HOẠT ĐỘNG (FUNCTIONAL OVERVIEW):
+ * -----------------------------------------------------------------------------
+ * - Dùng trong mục "OTHER JOBS" ở cuối trang chi tiết việc làm.
+ * - Trích xuất thông tin: Tên công việc, URL chi tiết, ngày đăng, tên doanh nghiệp, địa điểm.
+ * - Taxonomies: Lấy thông tin job_listing_type (Fulltime/Part-time) và job_listing_category.
+ * - Brand Logo: Nhận diện linh hoạt logo công ty (tải lên hoặc huy hiệu thương hiệu vector SVG).
+ * - Bullet Points: Trích xuất 3 điểm nổi bật nhất từ excerpt/nội dung bài viết.
+ *
+ * -----------------------------------------------------------------------------
+ * 2. GIAO DIỆN & BỐ CỤC UI (DESIGN SPECS):
+ * -----------------------------------------------------------------------------
+ * - Tương thích thiết kế dạng lưới 2 cột hoặc 3 cột chuẩn mục "OTHER JOBS".
+ * - Hiển thị card viền mỏng thanh lịch, logo vuông góc trái, thông tin việc làm và danh sách đãi ngộ.
+ * =============================================================================
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

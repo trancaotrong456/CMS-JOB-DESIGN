@@ -1,14 +1,50 @@
 <?php
 /**
- * page-about.php
+ * =============================================================================
+ * TRANG GIỚI THIỆU (ABOUT US / ABOUT PDS)
+ * =============================================================================
  *
- * WordPress automatically selects this file for the page with slug "about"
- * via template hierarchy: page-{slug}.php → page-{id}.php → page.php
- * No manual template assignment in WP Admin required — works on every machine.
+ * @package           JobScout
+ * @subpackage        PDS / About Page
+ * @author            Hồ Hoàng Đức Huy
+ * @git_branch        ho-hoang-duc-huy/about
+ * @ui_reference      docs/ui-reference/02-about.png
  *
- * Description: Purpose-built About Us page for JobScout.
+ * -----------------------------------------------------------------------------
+ * 1. CHỨC NĂNG HOẠT ĐỘNG (FUNCTIONAL OVERVIEW):
+ * -----------------------------------------------------------------------------
+ * - Template Hierarchy: WordPress tự động chọn file này cho trang có slug "/about"
+ *   (page-about.php -> page.php).
+ * - Tự động tải tài nguyên hình ảnh hạt giống (Seed Assets):
+ *   + Truy vấn ảnh cổng Torii Nhật Bản (`about-torii-lake`) qua `_cms_shared_seed_asset`,
+ *     tự động fallback về đường dẫn ảnh seed nếu chưa import media.
+ *   + Truy vấn ảnh tháp Tokyo (`about-tokyo-tower`) qua `_cms_shared_seed_asset` tương tự.
+ * - Hỗ trợ Sidebar Widget:
+ *   + `about-hero-banner` (Hero banner trên cùng).
+ *   + `about-middle-content` (Nội dung giới thiệu triết lý Omotenashi).
+ *   + `about-company-stats` (Bảng thông số hồ sơ doanh nghiệp).
+ *   + Fallback code HTML chuẩn chỉnh toàn bộ nội dung mẫu nếu chưa gán widget.
  *
- * @package JobScout
+ * -----------------------------------------------------------------------------
+ * 2. GIAO DIỆN & BỐ CỤC UI (DESIGN SPECS):
+ * -----------------------------------------------------------------------------
+ * - Mẫu chuẩn: bám sát thiết kế tham chiếu docs/ui-reference/02-about.png.
+ * - Hero Banner:
+ *   + Ảnh nền phong cảnh Nhật Bản (cổng Torii hồ nước), lớp phủ tối mờ tinh tế.
+ *   + Dòng khẩu hiệu in hoa lớn "SHARE OMOTENASHI", chữ trắng sắc nét căn giữa trang.
+ * - Khối Triết lý & Sứ mệnh (Philosophy & Mission):
+ *   + Bố cục 2 cột: Một bên là hình ảnh biểu trưng văn hóa Nhật Bản (tháp Tokyo/Torii),
+ *     bên còn lại là văn bản trình bày triết lý phục vụ Omotenashi ("Spirit of Japanese Hospitality").
+ *   + Tiêu đề phân đoạn in hoa, font chữ sang trọng, đoạn văn căn chỉnh dễ đọc.
+ * - Khối Giới thiệu Lĩnh vực hoạt động:
+ *   + Mô tả chuyên sâu về mạng lưới quản lý và phát triển chuỗi nhà hàng, khách sạn cao cấp.
+ * - Bảng Hồ sơ Năng lực Doanh nghiệp (Company Profile / Stats):
+ *   + Thiết kế dạng bảng hoặc danh sách 2 cột: Tên công ty, Ngày thành lập (Established),
+ *     Trụ sở chính (Head Office tại Tokyo & chi nhánh TP.HCM), Vốn điều lệ (Capital),
+ *     Đại diện pháp luật (CEO), Quy mô nhân sự (Number of Employees).
+ *   + Viền kẻ mảnh phân cách trang nhã, màu sắc trang nhã, chuẩn corporate Nhật Bản.
+ * - Newsletter Banner & Footer ở chân trang.
+ * =============================================================================
  */
 
 // Filter body classes to allow page-scoped styling and disable breadcrumbs

@@ -1,12 +1,49 @@
 <?php
 /**
- * Template Name: All Jobs
- * Description: Purpose-built All Jobs listing page for JobScout matching reference design.
+ * =============================================================================
+ * TRANG ALL JOBS (DANH SÁCH TẤT CẢ VIỆC LÀM)
+ * =============================================================================
  *
- * WordPress selects this template for the page with slug "jobs"
- * via template hierarchy: page-jobs.php -> page.php.
+ * @package           JobScout
+ * @subpackage        PDS / Job Listings
+ * @author            Trần Văn Trọng
+ * @git_branch        tran-van-trong/all-jobs
+ * @ui_reference      docs/ui-reference/04-all-jobs.png
  *
- * @package JobScout
+ * -----------------------------------------------------------------------------
+ * 1. CHỨC NĂNG HOẠT ĐỘNG (FUNCTIONAL OVERVIEW):
+ * -----------------------------------------------------------------------------
+ * - Routing & Template Hierarchy: WordPress tự động ưu tiên file này khi người
+ *   dùng truy cập trang có slug "/jobs" (page-jobs.php -> page.php).
+ * - Tích hợp bộ máy tìm kiếm thông minh: Nhận tham số tìm kiếm qua GET (search_keywords,
+ *   search_location) từ thanh tìm kiếm trang chủ hoặc bộ lọc tại chỗ, truy vấn qua
+ *   hàm cốt lõi `pds_get_jobs_query_args()` với thuật toán ưu tiên trọng số Title/Company.
+ * - Cơ chế AJAX Real-Time (Load More & Dynamic Sort):
+ *   + Xử lý trực tiếp request `pds_ajax_jobs` trong cùng file template (Self-Contained AJAX),
+ *     trả về JSON chứa HTML card rendered, tổng số job, trạng thái phân trang.
+ *   + Nút "LOAD MORE JOBS" tải thêm 6 việc làm tiếp theo mà không làm gián đoạn trải nghiệm.
+ *   + Dropdown "Sort Jobs" cập nhật danh sách ngay tức thì khi thay đổi tiêu chí sắp xếp.
+ * - Widget fallback: Cho phép quản trị viên chèn widget tùy biến vào sidebar `jobs-hero-banner`
+ *   và `jobs-list-content` nếu có, fallback sang layout code cứng chuẩn mẫu thiết kế.
+ *
+ * -----------------------------------------------------------------------------
+ * 2. GIAO DIỆN & BỐ CỤC UI (DESIGN SPECS):
+ * -----------------------------------------------------------------------------
+ * - Mẫu chuẩn: bám sát thiết kế tham chiếu docs/ui-reference/04-all-jobs.png.
+ * - Hero Banner: Khung nền tối/ảnh đại diện với tiêu đề trung tâm "CAREER WITH US",
+ *   chữ trắng in hoa, font đậm nét, căn giữa hoàn hảo.
+ * - Header thanh lọc & điều khiển:
+ *   + Tiêu đề mục "ALL JOBS" (font 22px, in đậm, màu #111111).
+ *   + Dropdown "Sort Jobs" căn phải với viền mỏng #e0e0e0, bo góc nhẹ, mũi tên sổ xuống tinh tế.
+ * - Thanh trạng thái tìm kiếm (Search Status Bar):
+ *   + Nền cam pastel nhẹ (#fff8f2), viền cam nhạt (#ffd8b8), làm nổi bật từ khóa tìm kiếm màu cam (#f2761b).
+ *   + Nút "Clear Filter" màu đỏ cam (#d9534f) cho phép reset nhanh về danh sách ban đầu.
+ * - Job Grid: Layout dạng lưới/cột thẳng hàng, các card việc làm có viền mỏng, padding 24px,
+ *   chia 2 phần: Header card (Logo thương hiệu bên trái, thông tin job & pills bên phải)
+ *   và Footer card (danh sách bullets nổi bật).
+ * - Nút "LOAD MORE JOBS": Căn giữa trang, nền cam chủ đạo (#f2761b), bo góc nhẹ, hover hiệu ứng nổi bật.
+ * - Newsletter Section: Tích hợp form đăng ký nhận việc làm cuối trang trước Footer.
+ * =============================================================================
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

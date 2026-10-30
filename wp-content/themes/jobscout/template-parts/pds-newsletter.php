@@ -1,9 +1,32 @@
 <?php
 /**
- * Template Part: PDS Newsletter Banner
+ * =============================================================================
+ * COMPONENT: BANNER ĐĂNG KÝ BẢN TIN (PDS NEWSLETTER BANNER)
+ * =============================================================================
  *
- * Fully modular and customizable via the 'footer-newsletter' Widget Area.
- * In WordPress Customizer, clicking the pencil icon directly edits this block.
+ * @package           JobScout
+ * @subpackage        PDS / Shared Components
+ * @author            Trần Cao Trọng (Lead)
+ * @git_branch        tran-cao-trong/home
+ * @ui_reference      Dùng chung cho toàn bộ 7 trang (Home, About, News, Jobs, Contact, Single)
+ *
+ * -----------------------------------------------------------------------------
+ * 1. CHỨC NĂNG HOẠT ĐỘNG (FUNCTIONAL OVERVIEW):
+ * -----------------------------------------------------------------------------
+ * - Hỗ trợ Widget hóa: Kiểm tra widget area `footer-newsletter`. Trong WordPress Customizer,
+ *   quản trị viên có thể nhấp trực tiếp vào biểu tượng bút chì để chỉnh sửa khối này.
+ * - Tích hợp Contact Form 7: Ưu tiên nhúng form shortcode `[contact-form-7 id="66ddf06" title="NewSelecter"]`.
+ * - Tự động Fallback: Nếu CF7 chưa kích hoạt hoặc form bị xóa, tự động render form HTML
+ *   với input email và nút "SUBSCRIBE" giữ nguyên trải nghiệm thị giác mượt mà.
+ *
+ * -----------------------------------------------------------------------------
+ * 2. GIAO DIỆN & BỐ CỤC UI (DESIGN SPECS):
+ * -----------------------------------------------------------------------------
+ * - Bọc trong section class `pds-contact-newsletter`: Nền cam chủ đạo (#f2761b) nổi bật toàn chiều rộng.
+ * - Tiêu đề 2 dòng: "Subscribe To / Our Newsletter", font chữ trắng in đậm kích thước 28px - 34px.
+ * - Khung nhập email: Bo góc mềm mại, icon lá thư xám bên trái, placeholder "Input your email address".
+ * - Nút bấm: "SUBSCRIBE" nền đen hoặc cam đậm tương phản, hiệu ứng hover nhấp nháy tinh tế.
+ * =============================================================================
  */
 
 if ( is_active_sidebar( 'footer-newsletter' ) ) :
@@ -21,7 +44,7 @@ else :
             <?php
             $cf7_shortcode = '[contact-form-7 id="66ddf06" title="NewSelecter"]';
             $cf7_rendered  = do_shortcode( $cf7_shortcode );
-            
+
             if ( ! empty( $cf7_rendered ) && strpos( $cf7_rendered, '[contact-form-7' ) === false && stripos( $cf7_rendered, 'not found' ) === false ) :
                 echo $cf7_rendered;
             else :

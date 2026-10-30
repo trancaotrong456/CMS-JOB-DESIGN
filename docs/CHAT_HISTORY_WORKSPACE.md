@@ -961,3 +961,33 @@ còn trang new và new detail?
 - **Job Detail:** Xác nhận 2 chi tiết còn thiếu là Form ứng tuyển có upload file CV (`Upload CV`) và Popup Lightbox phóng to ảnh cho Company Photos.
 - **News & News Detail:** Xác nhận đã hoàn thiện 100% đầy đủ chức năng theo yêu cầu đề bài.
 - Tuân thủ quy trình giao nhận Git [AGENTS_CMS-JOB-DESIGN.md](file:///c:/wamp64/www/CMS-JOB-DESIGN/rule/AGENTS_CMS-JOB-DESIGN.md), cập nhật nhật ký workspace, kiểm tra `php -l`, commit và push đồng bộ toàn bộ mã nguồn lên GitHub.
+
+---
+
+### 👤 Lượt 23: Yêu Cầu Của Người Dùng
+
+hãy comment tất cả các phần code chi tiết nhé (từ chức năng hoạt động như thế nào,giao diện ra sao) và comment tên theo phần của mỗi người đã được phân code cho mỗi trang (đọc file AGENTS_CMS-JOB-DESIGN.md để nắm thông tin)
+
+
+### 🤖 Phản Hồi Của Trợ Lý (AI Assistant)
+
+1. **Đọc và đối soát bảng phân công thành viên (`rule/AGENTS_CMS-JOB-DESIGN.md`):**
+   - **Trần Cao Trọng (Lead)**: Nhánh `tran-cao-trong/home` — Trang Home (`front-page.php`, `template-parts/home-content.php`, `css/home.css`, `assets/js/home-search.js`, Header, Footer, Newsletter).
+   - **Trần Văn Trọng**: Nhánh `tran-van-trong/all-jobs` — Trang All Jobs (`page-jobs.php`, `assets/css/all-jobs.css`, `template-parts/all-jobs-card.php`, `assets/js/all-jobs.js`).
+   - **Trần Văn Trọng**: Nhánh `tran-van-trong/job-detail` — Trang Job Detail (`single-job_listing.php`, `assets/css/job-detail.css`, `assets/js/job-detail.js`, `template-parts/job-detail-card.php`).
+   - **Nguyễn Hữu Chúc**: Nhánh `nguyen-huu-chuc/news` — Trang News (`page-news.php`, `assets/css/news.css`).
+   - **Nguyễn Hữu Chúc**: Nhánh `nguyen-huu-chuc/news-detail` — Trang News Detail (`single-post.php`, `assets/css/news-detail.css`).
+   - **Hồ Hoàng Đức Huy**: Nhánh `ho-hoang-duc-huy/about` — Trang About (`page-about.php`, `assets/css/about.css`).
+   - **Nguyễn Hữu Phong**: Nhánh `nguyen-huu-phong/contact` — Trang Contact (`page-contact.php`, `assets/css/contact.css`).
+
+2. **Tiến hành bổ sung comment chi tiết chuẩn hóa trên toàn bộ 11 tệp template PHP:**
+   - **Cấu trúc chuẩn từng file:**
+     + Header Block: Tên trang, phân hệ chức năng, tác giả phụ trách, nhánh git, file mẫu tham chiếu UI (`docs/ui-reference/0x-*.png`).
+     + Mục 1: **Chức năng hoạt động** (Template hierarchy, luồng dữ liệu, truy vấn WP_Query, xử lý AJAX / hook, tương tác người dùng, widget areas fallback).
+     + Mục 2: **Giao diện & Bố cục UI** (Hero banner, bố cục lưới card, màu sắc chuẩn, typography, kích thước viền/padding, các trạng thái hover/active).
+     + Comment cụ thể từng phân đoạn (Section) và khối code bên trong.
+
+3. **Kiểm thử chất lượng & Đồng bộ Git:**
+   - Chạy `php -l` kiểm tra cú pháp toàn bộ 11 file PHP: 100% không có lỗi.
+   - Chạy `git diff --check`: Đã làm sạch toàn bộ trailing whitespace và blank line at EOF, đạt chuẩn sạch 100%.
+   - Commit lên nhánh `tran-cao-trong/home`, đồng bộ vào `main` và đẩy lên GitHub.

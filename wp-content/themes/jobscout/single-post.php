@@ -1,7 +1,54 @@
 <?php
 /**
- * News detail for standard WordPress posts.
- * Widget-ready sections; retains the active theme header/footer and newsletter.
+ * =============================================================================
+ * TRANG CHI TIẾT TIN TỨC (NEWS DETAIL)
+ * =============================================================================
+ *
+ * @package           JobScout
+ * @subpackage        PDS / News Detail Single
+ * @author            Nguyễn Hữu Chúc
+ * @git_branch        nguyen-huu-chuc/news-detail
+ * @ui_reference      docs/ui-reference/06-news-detail.png
+ *
+ * -----------------------------------------------------------------------------
+ * 1. CHỨC NĂNG HOẠT ĐỘNG (FUNCTIONAL OVERVIEW):
+ * -----------------------------------------------------------------------------
+ * - Template Hierarchy: WordPress tự động sử dụng file này cho tất cả bài viết
+ *   thuộc post type chuẩn `post` (single-post.php -> single.php).
+ * - Bóc tách dữ liệu bài viết chi tiết:
+ *   + Tiêu đề bài viết (get_the_title).
+ *   + Ảnh bìa đại diện (Featured Image) cỡ lớn hoặc thumbnail chất lượng cao.
+ *   + Thông tin tác giả, ngày đăng bài (định dạng ngày tháng chuẩn).
+ *   + Danh mục (Categories) và thẻ (Tags) bài viết.
+ *   + Nội dung đầy đủ của bài viết (the_content).
+ * - Tính năng tương tác:
+ *   + Nút "Share": Chia sẻ nhanh bài viết lên các mạng xã hội (Facebook, Twitter, LinkedIn,...).
+ *   + Nút "Back to news": Điều hướng quay lại trang danh sách bài viết `/news`.
+ *   + Sidebar bài viết mới nhất (Recent News / Related Posts): Truy vấn các bài viết liên quan
+ *     hoặc bài viết mới nhất để tăng thời gian ở lại trang của độc giả.
+ * - Widget Areas: Hỗ trợ 3 khu vực widget linh hoạt:
+ *   + `pds-detail-breadcrumb` (thanh điều hướng breadcrumb tùy biến).
+ *   + `pds-detail-summary` (khối tóm tắt bài viết trên cùng).
+ *   + `pds-detail-content` (nội dung bổ trợ hoặc banner quảng cáo).
+ *
+ * -----------------------------------------------------------------------------
+ * 2. GIAO DIỆN & BỐ CỤC UI (DESIGN SPECS):
+ * -----------------------------------------------------------------------------
+ * - Mẫu chuẩn: bám sát thiết kế tham chiếu docs/ui-reference/06-news-detail.png.
+ * - Breadcrumb điều hướng: Home / News / News Detail với style tối giản, thanh lịch.
+ * - Khối tóm tắt bài viết (Article Header):
+ *   + Ảnh bìa đại diện bên trái hoặc trên cùng, bo góc nhẹ 4px, chất lượng sắc nét.
+ *   + Khối tiêu đề bài viết: Font chữ lớn 26px - 32px, đậm nét, màu #111111.
+ *   + Meta bài viết: Ngày đăng, tác giả, chuyên mục xếp theo hàng ngang tinh tế.
+ *   + Cụm nút tương tác: Nút Share viền mỏng và nút Back to news tiện lợi.
+ * - Bố cục nội dung 2 cột:
+ *   + Cột chính (Nội dung bài viết): Typography rõ ràng, dễ đọc, căn lề chuẩn, khoảng cách
+ *     giữa các đoạn văn (line-height: 1.8), ảnh chèn trong bài có caption đẹp mắt.
+ *   + Cột phụ (Sidebar - nếu có): Danh sách "Recent News" với thumbnail nhỏ và tiêu đề ngắn gọn.
+ * - Khối bài viết liên quan dưới cùng ("NEWEST BLOG ENTRIES"):
+ *   + Lưới 4 card bài viết liên quan dạng thumbnail nhỏ kèm tiêu đề và ngày đăng.
+ * - Cuối trang: Tích hợp Newsletter đăng ký email và Footer.
+ * =============================================================================
  */
 if ( ! defined( 'ABSPATH' ) ) {
     exit;

@@ -1,9 +1,51 @@
 <?php
 /**
- * The template for displaying all single job posts.
- * Purpose-built Job Detail page matching reference design 05-job-detail.png.
+ * =============================================================================
+ * TRANG CHI TIẾT VIỆC LÀM (JOB DETAIL)
+ * =============================================================================
  *
- * @package JobScout
+ * @package           JobScout
+ * @subpackage        PDS / Job Detail Single
+ * @author            Trần Văn Trọng
+ * @git_branch        tran-van-trong/job-detail
+ * @ui_reference      docs/ui-reference/05-job-detail.png
+ *
+ * -----------------------------------------------------------------------------
+ * 1. CHỨC NĂNG HOẠT ĐỘNG (FUNCTIONAL OVERVIEW):
+ * -----------------------------------------------------------------------------
+ * - Template Hierarchy: File chuẩn của WordPress và WP Job Manager hiển thị chi tiết
+ *   cho custom post type `job_listing` (single-job_listing.php).
+ * - Bóc tách dữ liệu việc làm:
+ *   + Tiêu đề công việc, ngày đăng bài, công ty tuyển dụng, địa điểm làm việc.
+ *   + Loại hình tuyển dụng (Fulltime/Part-time), chuyên mục (Hospitality,...).
+ *   + Điểm đánh giá nhân viên (Staff Rating: _cms_reference_staff_rating, mặc định 4.0/5.0).
+ *   + Số lượng hình ảnh công ty (_cms_reference_company_photo_count, mặc định 6 ảnh).
+ *   + Bộ làm sạch nội dung bài viết: Loại bỏ danh sách tóm tắt trùng lặp đầu bài nếu đã có H2.
+ * - Tương tác người dùng:
+ *   + Nút "Share": Mở modal/hộp thoại chia sẻ liên kết tuyển dụng lên mạng xã hội hoặc sao chép link.
+ *   + Nút "APPLY THIS JOB": Mở modal ứng tuyển nhanh hoặc cuộn đến form ứng tuyển của hệ thống.
+ *   + Sidebar đánh giá Staff Rating & Thư viện ảnh Company Photos có popup/lightbox.
+ *   + Khối việc làm liên quan ("OTHER JOBS"): Truy vấn các job cùng chuyên mục để đề xuất cho ứng viên.
+ *
+ * -----------------------------------------------------------------------------
+ * 2. GIAO DIỆN & BỐ CỤC UI (DESIGN SPECS):
+ * -----------------------------------------------------------------------------
+ * - Mẫu chuẩn: bám sát thiết kế tham chiếu docs/ui-reference/05-job-detail.png.
+ * - Breadcrumb điều hướng: Home / Jobs / [Tên công việc], phân cách bởi dấu gạch chéo xám.
+ * - Khung tóm tắt đầu bài (Job Summary Header Card):
+ *   + Logo thương hiệu nổi bật bên trái (88x88px), hỗ trợ đầy đủ các logo brand Nhật Bản cao cấp.
+ *   + Cột giữa: Tiêu đề việc làm in hoa đậm nét, ngày tạo, thẻ pill phân loại [Type | Category | Location].
+ *   + Cột phải: 2 nút tương tác gồm nút "Share" viền mỏng và nút "APPLY THIS JOB" nền cam #f2761b nổi bật.
+ * - Khối nội dung 2 cột (Main Content & Sidebar):
+ *   + Cột trái (Nội dung chính): Thông tin chi tiết mô tả công việc, yêu cầu ứng viên, chế độ đãi ngộ,
+ *     các tiêu đề mục in đậm rõ nét, khoảng cách dòng thoáng đãng, dễ đọc.
+ *   + Cột phải (Sidebar):
+ *     * Widget Staff Rating: Khung đánh giá với số điểm to (4.0), 5 ngôi sao vàng, thanh phân phối tỷ lệ sao.
+ *     * Widget Company Photos: Khung hiển thị ảnh nơi làm việc với huy hiệu số lượng ảnh "+5 photos".
+ * - Phần chân trang:
+ *   + Lưới việc làm liên quan "OTHER JOBS" (các thẻ card chuẩn đồng bộ).
+ *   + Form đăng ký Newsletter và Footer hoàn chỉnh.
+ * =============================================================================
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

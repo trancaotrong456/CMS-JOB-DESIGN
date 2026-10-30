@@ -1,9 +1,50 @@
 <?php
 /**
- * Template Name: Contact
- * Description: Purpose-built Contact Us page for JobScout.
+ * =============================================================================
+ * TRANG LIÊN HỆ (CONTACT US)
+ * =============================================================================
  *
- * @package JobScout
+ * @package           JobScout
+ * @subpackage        PDS / Contact Page
+ * @author            Nguyễn Hữu Phong
+ * @git_branch        nguyen-huu-phong/contact
+ * @ui_reference      docs/ui-reference/07-contact.png
+ *
+ * -----------------------------------------------------------------------------
+ * 1. CHỨC NĂNG HOẠT ĐỘNG (FUNCTIONAL OVERVIEW):
+ * -----------------------------------------------------------------------------
+ * - Template Name: Contact (áp dụng cho trang slug "/contact" hoặc trang mẫu Contact).
+ * - Cung cấp kênh liên hệ đa chiều cho cả Nhà tuyển dụng (Employers) và Ứng viên (Jobseekers):
+ *   + Hotline tư vấn tuyển dụng & hỗ trợ sự nghiệp tại TP.HCM và Hà Nội.
+ *   + Kênh mạng xã hội chính thức (Fanpage Facebook) và bài viết bí quyết nghề nghiệp (Tips Blog).
+ * - Tích hợp bản đồ trực tuyến tương tác: Nhúng Google Maps Iframe chính xác trụ sở chính PDS tại TP.HCM.
+ * - Form liên hệ gửi thông điệp trực tuyến:
+ *   + Tích hợp Contact Form 7 shortcode `[contact-form-7 id="..."]` qua do_shortcode.
+ *   + Fallback form HTML chuẩn giao diện nếu chưa cấu hình plugin Contact Form 7.
+ * - Hỗ trợ Sidebar Widget:
+ *   + `contact-hero-banner` (Hero banner).
+ *   + `contact-headquarters` (Khối thông tin trụ sở & bản đồ).
+ *   + `contact-details` (Khối thông tin chia 2 đối tượng Employers & Jobseekers).
+ *   + `contact-form-section` (Khu vực biểu mẫu liên hệ).
+ *
+ * -----------------------------------------------------------------------------
+ * 2. GIAO DIỆN & BỐ CỤC UI (DESIGN SPECS):
+ * -----------------------------------------------------------------------------
+ * - Mẫu chuẩn: bám sát thiết kế tham chiếu docs/ui-reference/07-contact.png.
+ * - Hero Banner:
+ *   + Ảnh nền phong cảnh (chiếc dù đỏ truyền thống Nhật Bản), chữ in hoa "CONTACT US"
+ *     màu trắng sắc nét căn giữa.
+ * - Khối Trụ sở chính (Headquarters):
+ *   + Bản đồ Google Maps tương tác mượt mà bên trái hoặc bên trên.
+ *   + Địa chỉ chi tiết, số điện thoại văn phòng, email hỗ trợ, mã số thuế.
+ * - Khối Chia 2 Đối tượng (Employers & Jobseekers):
+ *   + Cột 1 (For Employers): Hướng dẫn hợp tác tuyển dụng, số hotline tư vấn doanh nghiệp.
+ *   + Cột 2 (For Jobseekers): Kênh hỗ trợ ứng viên tìm việc, link cộng đồng Facebook, bài viết định hướng.
+ * - Biểu mẫu liên hệ (Contact Form):
+ *   + Các ô nhập liệu họ tên, email, số điện thoại, tiêu đề, nội dung tin nhắn.
+ *   + Nút gửi "SUBMIT MESSAGE" màu cam chủ đạo (#f2761b), font in hoa, đổ bóng tinh tế.
+ * - Newsletter Banner & Footer hoàn chỉnh cuối trang.
+ * =============================================================================
  */
 
 // Filter body classes to allow page-scoped styling and disable breadcrumbs

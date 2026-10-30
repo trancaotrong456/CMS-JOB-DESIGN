@@ -1,8 +1,51 @@
 <?php
 /**
- * Template part: Single Job Card for All Jobs listing page
+ * =============================================================================
+ * COMPONENT: THẺ VIỆC LÀM TRANG ALL JOBS (ALL JOBS CARD)
+ * =============================================================================
  *
- * @package JobScout
+ * @package           JobScout
+ * @subpackage        PDS / Job Card Component
+ * @author            Trần Văn Trọng
+ * @git_branch        tran-van-trong/all-jobs
+ * @ui_reference      docs/ui-reference/04-all-jobs.png
+ *
+ * -----------------------------------------------------------------------------
+ * 1. CHỨC NĂNG HOẠT ĐỘNG (FUNCTIONAL OVERVIEW):
+ * -----------------------------------------------------------------------------
+ * - Dữ liệu động: Trích xuất các trường dữ liệu việc làm từ post ID hiện tại:
+ *   + Tiêu đề (get_the_title) và permalink điều hướng tới trang Job Detail.
+ *   + Ngày tạo bài đăng (get_the_date định dạng 'M j, Y').
+ *   + Tên công ty (_company_name) và địa điểm làm việc (_job_location).
+ *   + Phân loại công việc: Taxonomies `job_listing_type` (Fulltime, Part-time,...)
+ *     và `job_listing_category` (Hospitality, F&B,...).
+ * - Hệ thống Logo Brand thông minh:
+ *   + Ưu tiên logo tải lên từ WP Job Manager hoặc Thumbnail bài viết.
+ *   + Tự động nhận diện chuỗi tên công ty (SODOH, Fortune Garden, Shikaku,
+ *     The Sayan House, Phở Thìn, From Where I Stand) để hiển thị biểu tượng SVG/Typography
+ *     chuẩn từng thương hiệu cao cấp nếu chưa có ảnh upload.
+ *   + Fallback: Tạo avatar thương hiệu với chữ cái đầu viết tắt.
+ * - Trích xuất Bullets thông minh:
+ *   + Quét thẻ <li> trong bài viết/trích đoạn để bóc tách thành danh sách 3 gạch đầu dòng ngắn gọn.
+ *   + Nếu không có dạng danh sách, tách dòng theo đoạn văn (<p>, <br>).
+ *   + Tự động áp dụng bộ 3 đãi ngộ chuẩn ngành Hospitality nếu bài viết để trống.
+ *
+ * -----------------------------------------------------------------------------
+ * 2. GIAO DIỆN & BỐ CỤC UI (DESIGN SPECS):
+ * -----------------------------------------------------------------------------
+ * - Bọc trong thẻ <article class="pds-all-jobs-card">: Khung nền trắng #fff, viền mỏng
+ *   #ebebeb, đổ bóng nhẹ, chuyển động translateY mượt mà khi hover.
+ * - Header Card (pds-all-jobs-card-header):
+ *   + Khối Logo (80x80px): Viền nhẹ, căn giữa nội dung biểu tượng/logo.
+ *   + Cột thông tin:
+ *     * Tiêu đề job: Font 18px đậm nét #111, hover chuyển màu cam #f2761b.
+ *     * Ngày tạo bài: Font 12px, chữ xám #888 dạng "Created: Oct 28, 2026".
+ *     * Meta Pill: Khung viền mỏng dạng thanh ngang, chứa [Job Type | Category | Location]
+ *       ngăn cách bởi ký tự "|" tinh tế.
+ * - Bullets (pds-all-jobs-card-bullets):
+ *   + Danh sách <ul> không viền số, dấu chấm tròn nhỏ màu cam hoặc xám thanh lịch.
+ *   + Chữ xám đậm #444, font 13px, khoảng cách dòng thoáng (line-height: 1.6).
+ * =============================================================================
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
