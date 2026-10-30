@@ -36,7 +36,7 @@ if( ! function_exists( 'jobscout_responsive_header' ) ) :
 */
 function jobscout_responsive_header(){ 
     $post_job_label  = get_theme_mod( 'post_job_label', __( 'Post Jobs', 'jobscout' ) );
-    $post_job_url    = get_theme_mod( 'post_job_url', '#' );
+    $post_job_url = jobscout_get_submit_job_url();
     ?>
     <div class="responsive-nav">
         <div class="nav-top">
@@ -174,12 +174,16 @@ function jobscout_content_start(){
         <?php endif; 
             if( is_singular( 'job_listing' ) ){
                 global $post;
-                $banner_image   = get_header_image();
-                $show_banner    = get_theme_mod( 'ed_job_banner', true );
+                if ( is_active_sidebar( 'job-detail-hero' ) ) {
+                    dynamic_sidebar( 'job-detail-hero' );
+                } else {
+                    $banner_image   = get_header_image();
+                    $show_banner    = get_theme_mod( 'ed_job_banner', true );
 
-                if( $banner_image && $show_banner ){
-                    $banner_style = 'background-image: url(' . esc_url( $banner_image ) . '); background-size: cover;';
-                    echo '<header class="entry-header" style="'. esc_attr( $banner_style ) .'"></header>';
+                    if( $banner_image && $show_banner ){
+                        $banner_style = 'background-image: url(' . esc_url( $banner_image ) . '); background-size: cover;';
+                        echo '<header class="entry-header" style="'. esc_attr( $banner_style ) .'"></header>';
+                    }
                 }
             } 
         ?>
@@ -520,39 +524,49 @@ if( ! function_exists( 'jobscout_footer_bottom' ) ) :
 function jobscout_footer_bottom(){ ?>
     <div class="home-footer-main">
         <div class="container">
-            <div class="home-footer-brand"><?php jobscout_site_branding( true ); ?></div>
-            <nav class="home-footer-navigation" aria-label="<?php esc_attr_e( 'Footer navigation', 'jobscout' ); ?>">
-                <?php wp_nav_menu( array( 'theme_location' => 'footer', 'menu_id' => 'footer-menu', 'menu_class' => 'home-footer-menu', 'container' => false, 'fallback_cb' => 'jobscout_footer_menu_fallback' ) ); ?>
-            </nav>
-            <div class="home-footer-social" aria-label="<?php esc_attr_e( 'Social links', 'jobscout' ); ?>">
-                <?php
-                $home_social_links = array( 'facebook' => 'Facebook', 'twitter' => 'Twitter', 'instagram' => 'Instagram', 'linkedin' => 'LinkedIn' );
-                $has_home_social_link = false;
-                foreach ( $home_social_links as $key => $label ) :
-                    $social_url = get_theme_mod( $key . '_link', '' );
-                    if ( $social_url ) : $has_home_social_link = true; ?>
-                        <a class="home-social--<?php echo esc_attr( $key ); ?>" href="<?php echo esc_url( $social_url ); ?>" rel="noopener noreferrer" target="_blank" aria-label="<?php echo esc_attr( $label ); ?>"><?php echo esc_html( 'facebook' === $key ? 'f' : strtoupper( substr( $label, 0, 1 ) ) ); ?></a>
-                    <?php endif;
-                endforeach;
-                if ( ! $has_home_social_link ) : ?>
-                    <span class="home-social--facebook" aria-hidden="true">f</span>
-                    <span class="home-social--google" aria-hidden="true">G</span>
-                    <span class="home-social--line" aria-hidden="true">LINE</span>
-                    <span class="home-social--twitter" aria-hidden="true">t</span>
-                <?php endif; ?>
-            </div>
+            <?php if ( is_active_sidebar( 'footer-bottom' ) ) : ?>
+                <div class="footer-bottom-sidebar">
+                    <?php dynamic_sidebar( 'footer-bottom' ); ?>
+                </div>
+            <?php else : ?>
+                <div class="home-footer-brand"><?php jobscout_site_branding( true ); ?></div>
+                <nav class="home-footer-navigation" aria-label="<?php esc_attr_e( 'Footer navigation', 'jobscout' ); ?>">
+                    <?php wp_nav_menu( array( 'theme_location' => 'footer', 'menu_id' => 'footer-menu', 'menu_class' => 'home-footer-menu', 'container' => false, 'fallback_cb' => 'jobscout_footer_menu_fallback' ) ); ?>
+                </nav>
+                <div class="home-footer-social" aria-label="<?php esc_attr_e( 'Social links', 'jobscout' ); ?>">
+                    <?php
+                    $home_social_links = array( 'facebook' => 'Facebook', 'twitter' => 'Twitter', 'instagram' => 'Instagram', 'linkedin' => 'LinkedIn' );
+                    $has_home_social_link = false;
+                    foreach ( $home_social_links as $key => $label ) :
+                        $social_url = get_theme_mod( $key . '_link', '' );
+                        if ( $social_url ) : $has_home_social_link = true; ?>
+                            <a class="home-social--<?php echo esc_attr( $key ); ?>" href="<?php echo esc_url( $social_url ); ?>" rel="noopener noreferrer" target="_blank" aria-label="<?php echo esc_attr( $label ); ?>"><?php echo esc_html( 'facebook' === $key ? 'f' : strtoupper( substr( $label, 0, 1 ) ) ); ?></a>
+                        <?php endif;
+                    endforeach;
+                    if ( ! $has_home_social_link ) : ?>
+                        <span class="home-social--facebook" aria-hidden="true">f</span>
+                        <span class="home-social--google" aria-hidden="true">G</span>
+                        <span class="home-social--line" aria-hidden="true">LINE</span>
+                        <span class="home-social--twitter" aria-hidden="true">t</span>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
     <div class="footer-b">
 		<div class="container">
             <?php 
                 if ( function_exists( 'the_privacy_policy_link' )  )  the_privacy_policy_link( '<div class="privacy-block">', '</div>' );
+                if ( is_active_sidebar( 'footer-copyright' ) ) :
+                    dynamic_sidebar( 'footer-copyright' );
+                else :
             ?>
 			<div class="copyright">            
             <?php
-                echo '&copy; ' . esc_html( gmdate( 'Y' ) ) . ' ' . esc_html( get_bloginfo( 'name' ) ) . '.';
+                echo '&copy; ' . esc_html( gmdate( 'Y' ) ) . ' Plan Do See Global. All Rights Reserved.';
             ?>               
             </div>
+            <?php endif; ?>
 		</div>
 	</div>
     <?php
@@ -582,3 +596,243 @@ function jobscout_page_end(){ ?>
 }
 endif;
 add_action( 'jobscout_after_footer', 'jobscout_page_end', 20 );
+
+/**
+ * =============================================================================
+ * HỆ THỐNG TRUY VẤN VÀ TÌM KIẾM THÔNG MINH VIỆC LÀM (SMART JOB SEARCH ENGINE)
+ * =============================================================================
+ *
+ * @package           JobScout
+ * @subpackage        PDS / Core Backend Query & Search
+ * @author            Trần Cao Trọng (Lead) & Trần Văn Trọng (Jobs)
+ * @git_branch        tran-cao-trong/home & tran-van-trong/all-jobs
+ *
+ * -----------------------------------------------------------------------------
+ * 1. THUẬT TOÁN TÌM KIẾM THÔNG MINH & TRỌNG SỐ LIÊN QUAN (RELEVANCE ALGORITHM):
+ * -----------------------------------------------------------------------------
+ * - Mở rộng phạm vi tìm kiếm sang:
+ *   + Tiêu đề công việc (post_title), nội dung (post_content), tóm tắt (post_excerpt).
+ *   + Tên công ty tuyển dụng qua postmeta (_company_name).
+ *   + Taxonomies việc làm: job_listing_type (Fulltime, Part-time), job_listing_category, job_listing_tag.
+ * - Xử lý thông minh biến thể & từ khóa viết cách:
+ *   + Tự động đồng bộ các dạng: "full time" ⇄ "fulltime" ⇄ "full-time", "part time" ⇄ "parttime".
+ *   + Ánh xạ từ đồng nghĩa tiếng Việt sang tiếng Anh chuẩn chuyên ngành:
+ *     "khách sạn" / "khach san" ➔ "hotel"
+ *     "quản lý" / "quan ly" ➔ "manager"
+ *     "đầu bếp" / "dau bep" ➔ "chef", "cook"
+ * - Thuật toán xếp hạng ưu tiên (Relevance Ordering SQL):
+ *   + Mức 0 (Cao nhất): Khớp trong post_title hoặc _company_name.
+ *   + Mức 1 (Ưu tiên tiếp theo): Khớp trong Taxonomy job_listing_type hoặc job_listing_category.
+ *   + Mức 2: Khớp trong mô tả nội dung post_content hoặc post_excerpt.
+ * =============================================================================
+ */
+if ( ! function_exists( 'pds_filter_job_listing_search' ) ) :
+function pds_filter_job_listing_search( $clauses, $query ) {
+    $keywords  = $query->get( 'pds_job_keywords' );
+    $post_type = $query->get( 'post_type' );
+    $is_job    = ( 'job_listing' === $post_type || ( is_array( $post_type ) && in_array( 'job_listing', $post_type, true ) ) );
+
+    if ( ! empty( $keywords ) && $is_job ) {
+        global $wpdb;
+
+        // Sinh danh sách các biến thể từ khóa thông minh
+        $variants = array( $keywords );
+        $lower_kw = mb_strtolower( trim( $keywords ) );
+
+        // Xử lý biến thể Full time / Fulltime / Full-time
+        if ( false !== strpos( $lower_kw, 'full time' ) || false !== strpos( $lower_kw, 'full-time' ) || false !== strpos( $lower_kw, 'fulltime' ) ) {
+            $variants[] = 'full time';
+            $variants[] = 'fulltime';
+            $variants[] = 'full-time';
+        }
+        // Xử lý biến thể Part time / Parttime / Part-time
+        if ( false !== strpos( $lower_kw, 'part time' ) || false !== strpos( $lower_kw, 'part-time' ) || false !== strpos( $lower_kw, 'parttime' ) ) {
+            $variants[] = 'part time';
+            $variants[] = 'parttime';
+            $variants[] = 'part-time';
+        }
+        // Ánh xạ đồng nghĩa thông dụng ngành hospitality
+        if ( 'khach san' === $lower_kw || 'khách sạn' === $lower_kw ) {
+            $variants[] = 'hotel';
+        }
+        if ( 'quan ly' === $lower_kw || 'quản lý' === $lower_kw ) {
+            $variants[] = 'manager';
+        }
+        if ( 'dau bep' === $lower_kw || 'đầu bếp' === $lower_kw ) {
+            $variants[] = 'chef';
+            $variants[] = 'cook';
+        }
+        $variants = array_values( array_unique( $variants ) );
+
+        // Nối bảng postmeta để lấy tên công ty
+        $clauses['join'] .= " LEFT JOIN {$wpdb->postmeta} AS pds_comp ON ({$wpdb->posts}.ID = pds_comp.post_id AND pds_comp.meta_key = '_company_name') ";
+
+        // Nối các bảng taxonomy (job_listing_type, job_listing_category, job_listing_tag)
+        $clauses['join'] .= " LEFT JOIN {$wpdb->term_relationships} AS pds_tr ON ({$wpdb->posts}.ID = pds_tr.object_id) ";
+        $clauses['join'] .= " LEFT JOIN {$wpdb->term_taxonomy} AS pds_tt ON (pds_tr.term_taxonomy_id = pds_tt.term_taxonomy_id AND pds_tt.taxonomy IN ('job_listing_type', 'job_listing_category', 'job_listing_tag')) ";
+        $clauses['join'] .= " LEFT JOIN {$wpdb->terms} AS pds_terms ON (pds_tt.term_id = pds_terms.term_id) ";
+
+        // Xây dựng điều kiện WHERE cho tất cả các biến thể
+        $where_conditions = array();
+        foreach ( $variants as $v ) {
+            $kw = '%' . $wpdb->esc_like( $v ) . '%';
+            $where_conditions[] = $wpdb->prepare(
+                "({$wpdb->posts}.post_title LIKE %s OR {$wpdb->posts}.post_content LIKE %s OR {$wpdb->posts}.post_excerpt LIKE %s OR pds_comp.meta_value LIKE %s OR pds_terms.name LIKE %s OR pds_terms.slug LIKE %s)",
+                $kw, $kw, $kw, $kw, $kw, $kw
+            );
+        }
+        $clauses['where'] .= ' AND (' . implode( ' OR ', $where_conditions ) . ') ';
+
+        // Relevance ordering:
+        // Mức 1: Khớp trong post_title hoặc _company_name (ưu tiên cao nhất)
+        // Mức 2: Khớp trong taxonomy (job type, category)
+        // Mức 3: Khớp trong post_content hoặc post_excerpt
+        $title_conditions = array();
+        $term_conditions  = array();
+        foreach ( $variants as $v ) {
+            $kw_v = '%' . $wpdb->esc_like( $v ) . '%';
+            $title_conditions[] = $wpdb->prepare( "({$wpdb->posts}.post_title LIKE %s OR pds_comp.meta_value LIKE %s)", $kw_v, $kw_v );
+            $term_conditions[]  = $wpdb->prepare( "(pds_terms.name LIKE %s OR pds_terms.slug LIKE %s)", $kw_v, $kw_v );
+        }
+        $title_sql = implode( ' OR ', $title_conditions );
+        $term_sql  = implode( ' OR ', $term_conditions );
+
+        $relevance_order = " (CASE WHEN ({$title_sql}) THEN 0 WHEN ({$term_sql}) THEN 1 ELSE 2 END) ASC ";
+
+        if ( ! empty( trim( $clauses['orderby'] ?? '' ) ) ) {
+            $clauses['orderby'] = $relevance_order . ', ' . $clauses['orderby'];
+        } else {
+            $clauses['orderby'] = $relevance_order;
+        }
+
+        $clauses['distinct'] = 'DISTINCT';
+    }
+    return $clauses;
+}
+add_filter( 'posts_clauses', 'pds_filter_job_listing_search', 10, 2 );
+endif;
+
+/**
+ * Handle AJAX Live Search Suggestions for Home page
+ */
+add_action( 'template_redirect', 'pds_handle_live_search_suggest' );
+function pds_handle_live_search_suggest() {
+    if ( ! isset( $_GET['pds_ajax_search_suggest'] ) ) {
+        return;
+    }
+
+    $keyword  = isset( $_GET['keyword'] ) ? sanitize_text_field( wp_unslash( $_GET['keyword'] ) ) : '';
+    $location = isset( $_GET['location'] ) ? sanitize_text_field( wp_unslash( $_GET['location'] ) ) : '';
+
+    if ( mb_strlen( trim( $keyword ) ) < 2 ) {
+        wp_send_json_success( array( 'jobs' => array(), 'total' => 0 ) );
+    }
+
+    $args = pds_get_jobs_query_args( array(
+        'posts_per_page'  => 5,
+        'search_keywords' => $keyword,
+        'search_location' => $location,
+        'sort'            => 'latest',
+    ) );
+
+    $query = new WP_Query( $args );
+    $jobs  = array();
+
+    if ( $query->have_posts() ) {
+        while ( $query->have_posts() ) {
+            $query->the_post();
+            $job_id = get_the_ID();
+
+            $types = wp_get_post_terms( $job_id, 'job_listing_type' );
+            $job_type = ( ! empty( $types ) && ! is_wp_error( $types ) ) ? $types[0]->name : 'Fulltime';
+
+            $company = get_post_meta( $job_id, '_company_name', true );
+            $loc     = get_post_meta( $job_id, '_job_location', true );
+
+            $jobs[] = array(
+                'id'       => $job_id,
+                'title'    => get_the_title(),
+                'company'  => $company ? $company : 'Plan Do See',
+                'location' => $loc ? $loc : 'Ho Chi Minh City',
+                'type'     => $job_type,
+                'url'      => get_permalink(),
+            );
+        }
+    }
+    wp_reset_postdata();
+
+    // URL chuyển sang trang Jobs khi người dùng chọn xem toàn bộ kết quả
+    $jobs_page_url = home_url( '/jobs/?search_keywords=' . urlencode( $keyword ) );
+    if ( ! empty( $location ) ) {
+        $jobs_page_url .= '&search_location=' . urlencode( $location );
+    }
+
+    wp_send_json_success( array(
+        'jobs'          => $jobs,
+        'total'         => $query->found_posts,
+        'jobs_page_url' => $jobs_page_url,
+        'keyword'       => $keyword,
+    ) );
+}
+
+/**
+ * Build unified WP_Query args for job listings with search keywords, location and sorting.
+ *
+ * @param array $params Custom overrides (posts_per_page, paged, sort, search_keywords, search_location)
+ * @return array Sanitized WP_Query arguments
+ */
+if ( ! function_exists( 'pds_get_jobs_query_args' ) ) :
+function pds_get_jobs_query_args( $params = array() ) {
+    $paged     = isset( $params['paged'] ) ? max( 1, (int) $params['paged'] ) : 1;
+    $count     = isset( $params['posts_per_page'] ) ? (int) $params['posts_per_page'] : 6;
+    $sort      = isset( $params['sort'] ) ? sanitize_text_field( $params['sort'] ) : 'latest';
+    $keywords  = isset( $params['search_keywords'] ) ? trim( sanitize_text_field( $params['search_keywords'] ) ) : '';
+    $location  = isset( $params['search_location'] ) ? trim( sanitize_text_field( $params['search_location'] ) ) : '';
+
+    $query_args = array(
+        'post_type'      => 'job_listing',
+        'post_status'    => 'publish',
+        'posts_per_page' => $count,
+        'paged'          => $paged,
+    );
+
+    // Sorting
+    switch ( $sort ) {
+        case 'oldest':
+            $query_args['orderby'] = 'date';
+            $query_args['order']   = 'ASC';
+            break;
+        case 'title_asc':
+            $query_args['orderby'] = 'title';
+            $query_args['order']   = 'ASC';
+            break;
+        case 'title_desc':
+            $query_args['orderby'] = 'title';
+            $query_args['order']   = 'DESC';
+            break;
+        case 'latest':
+        default:
+            $query_args['orderby'] = 'date';
+            $query_args['order']   = 'DESC';
+            break;
+    }
+
+    // Search keywords (matches post_title, post_content, post_excerpt, _company_name)
+    if ( ! empty( $keywords ) ) {
+        $query_args['pds_job_keywords'] = $keywords;
+    }
+
+    // Search location (matches _job_location meta)
+    if ( ! empty( $location ) && strtolower( $location ) !== 'all locations' ) {
+        $query_args['meta_query'] = array(
+            array(
+                'key'     => '_job_location',
+                'value'   => $location,
+                'compare' => 'LIKE',
+            ),
+        );
+    }
+
+    return $query_args;
+}
+endif;

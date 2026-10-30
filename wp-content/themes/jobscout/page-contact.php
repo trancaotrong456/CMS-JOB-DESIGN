@@ -1,9 +1,50 @@
 <?php
 /**
- * Template Name: Contact
- * Description: Purpose-built Contact Us page for JobScout.
+ * =============================================================================
+ * TRANG LIÊN HỆ (CONTACT US)
+ * =============================================================================
  *
- * @package JobScout
+ * @package           JobScout
+ * @subpackage        PDS / Contact Page
+ * @author            Nguyễn Hữu Phong
+ * @git_branch        nguyen-huu-phong/contact
+ * @ui_reference      docs/ui-reference/07-contact.png
+ *
+ * -----------------------------------------------------------------------------
+ * 1. CHỨC NĂNG HOẠT ĐỘNG (FUNCTIONAL OVERVIEW):
+ * -----------------------------------------------------------------------------
+ * - Template Name: Contact (áp dụng cho trang slug "/contact" hoặc trang mẫu Contact).
+ * - Cung cấp kênh liên hệ đa chiều cho cả Nhà tuyển dụng (Employers) và Ứng viên (Jobseekers):
+ *   + Hotline tư vấn tuyển dụng & hỗ trợ sự nghiệp tại TP.HCM và Hà Nội.
+ *   + Kênh mạng xã hội chính thức (Fanpage Facebook) và bài viết bí quyết nghề nghiệp (Tips Blog).
+ * - Tích hợp bản đồ trực tuyến tương tác: Nhúng Google Maps Iframe chính xác trụ sở chính PDS tại TP.HCM.
+ * - Form liên hệ gửi thông điệp trực tuyến:
+ *   + Tích hợp Contact Form 7 shortcode `[contact-form-7 id="..."]` qua do_shortcode.
+ *   + Fallback form HTML chuẩn giao diện nếu chưa cấu hình plugin Contact Form 7.
+ * - Hỗ trợ Sidebar Widget:
+ *   + `contact-hero-banner` (Hero banner).
+ *   + `contact-headquarters` (Khối thông tin trụ sở & bản đồ).
+ *   + `contact-details` (Khối thông tin chia 2 đối tượng Employers & Jobseekers).
+ *   + `contact-form-section` (Khu vực biểu mẫu liên hệ).
+ *
+ * -----------------------------------------------------------------------------
+ * 2. GIAO DIỆN & BỐ CỤC UI (DESIGN SPECS):
+ * -----------------------------------------------------------------------------
+ * - Mẫu chuẩn: bám sát thiết kế tham chiếu docs/ui-reference/07-contact.png.
+ * - Hero Banner:
+ *   + Ảnh nền phong cảnh (chiếc dù đỏ truyền thống Nhật Bản), chữ in hoa "CONTACT US"
+ *     màu trắng sắc nét căn giữa.
+ * - Khối Trụ sở chính (Headquarters):
+ *   + Bản đồ Google Maps tương tác mượt mà bên trái hoặc bên trên.
+ *   + Địa chỉ chi tiết, số điện thoại văn phòng, email hỗ trợ, mã số thuế.
+ * - Khối Chia 2 Đối tượng (Employers & Jobseekers):
+ *   + Cột 1 (For Employers): Hướng dẫn hợp tác tuyển dụng, số hotline tư vấn doanh nghiệp.
+ *   + Cột 2 (For Jobseekers): Kênh hỗ trợ ứng viên tìm việc, link cộng đồng Facebook, bài viết định hướng.
+ * - Biểu mẫu liên hệ (Contact Form):
+ *   + Các ô nhập liệu họ tên, email, số điện thoại, tiêu đề, nội dung tin nhắn.
+ *   + Nút gửi "SUBMIT MESSAGE" màu cam chủ đạo (#f2761b), font in hoa, đổ bóng tinh tế.
+ * - Newsletter Banner & Footer hoàn chỉnh cuối trang.
+ * =============================================================================
  */
 
 // Filter body classes to allow page-scoped styling and disable breadcrumbs
@@ -28,28 +69,120 @@ get_header();
 <div class="pds-contact-page">
 
     <!-- HERO BANNER -->
-    <section class="pds-contact-hero" aria-labelledby="pds-contact-hero-title">
-        <div class="pds-contact-hero-overlay"></div>
-        <div class="pds-contact-hero-inner">
-            <h1 id="pds-contact-hero-title" class="pds-contact-hero-title">
-                <?php esc_html_e( 'CONTACT US', 'jobscout' ); ?>
-            </h1>
-        </div>
-    </section>
+    <?php if ( is_active_sidebar( 'contact-hero-banner' ) ) : ?>
+        <section class="pds-contact-hero pds-contact-hero--widget" aria-labelledby="pds-contact-hero-title">
+            <?php dynamic_sidebar( 'contact-hero-banner' ); ?>
+        </section>
+    <?php else : ?>
+        <?php
+        $contact_featured_img = has_post_thumbnail() ? get_the_post_thumbnail_url( get_the_ID(), 'full' ) : '';
+        if ( ! empty( $contact_featured_img ) ) : ?>
+            <style>.pds-contact-hero { background-image: url('<?php echo esc_url( $contact_featured_img ); ?>') !important; }</style>
+        <?php endif; ?>
+        <section class="pds-contact-hero" aria-labelledby="pds-contact-hero-title">
+            <div class="pds-contact-hero-overlay"></div>
+            <div class="pds-contact-hero-inner" style="margin: 0 auto !important; text-align: center !important;">
+                <h1 id="pds-contact-hero-title" class="pds-contact-hero-title" style="margin: 0 auto !important; text-align: center !important;">
+                    <?php esc_html_e( 'CONTACT US', 'jobscout' ); ?>
+                </h1>
+            </div>
+        </section>
+    <?php endif; ?>
 
     <!-- HEADQUARTERS ADDRESS SECTION -->
+    <?php if ( is_active_sidebar( 'contact-headquarters' ) ) : ?>
+        <section class="pds-contact-hq pds-widget-area-section" aria-labelledby="pds-contact-hq-title">
+            <div class="pds-contact-container">
+                <?php dynamic_sidebar( 'contact-headquarters' ); ?>
+            </div>
+        </section>
+    <?php else : ?>
     <section class="pds-contact-hq" aria-labelledby="pds-contact-hq-title">
         <div class="pds-contact-container">
             <h2 id="pds-contact-hq-title" class="pds-contact-hq-title">
                 <?php esc_html_e( 'Our Headquarters Address', 'jobscout' ); ?>
             </h2>
-            <p class="pds-contact-hq-address">
-                <?php esc_html_e( '60 Nguyen Van Thu, Ward Da Kao, District 1, Ho Chi Minh City, Viet Nam', 'jobscout' ); ?>
-            </p>
+
+            <div class="pds-contact-hq-address-wrapper">
+                <a href="https://www.google.com/maps/search/?api=1&amp;query=60+Nguyen+Van+Thu%2C+Ward+Da+Kao%2C+District+1%2C+Ho+Chi+Minh+City%2C+Viet+Nam"
+                   class="pds-contact-hq-address-link pds-contact-hq-address-btn"
+                   id="pds-contact-map-trigger"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-expanded="false"
+                   aria-controls="pds-contact-map-card"
+                   title="<?php esc_attr_e( 'Click to view map', 'jobscout' ); ?>">
+                    <span class="pds-contact-pin-icon" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5-2.5 2.5-2.5 2.5z"/>
+                        </svg>
+                    </span>
+                    <span class="pds-contact-address-text">
+                        <?php esc_html_e( '60 Nguyen Van Thu, Ward Da Kao, District 1, Ho Chi Minh City, Viet Nam', 'jobscout' ); ?>
+                    </span>
+                    <span class="pds-contact-address-badge">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+                            <line x1="8" y1="2" x2="8" y2="18"></line>
+                            <line x1="16" y1="6" x2="16" y2="22"></line>
+                        </svg>
+                        <span class="pds-contact-badge-label"><?php esc_html_e( 'Bấm để xem bản đồ', 'jobscout' ); ?></span>
+                    </span>
+                </a>
+            </div>
+
+            <!-- INTERACTIVE MAP CONTAINER -->
+            <div class="pds-contact-map-card" id="pds-contact-map-card" aria-hidden="true">
+                <div class="pds-contact-map-header">
+                    <div class="pds-contact-map-actions">
+                        <a href="https://www.google.com/maps/search/?api=1&amp;query=60+Nguyen+Van+Thu%2C+Ward+Da+Kao%2C+District+1%2C+Ho+Chi+Minh+City%2C+Viet+Nam"
+                           class="pds-contact-map-external-link"
+                           target="_blank"
+                           rel="noopener noreferrer">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                            </svg>
+                            <span><?php esc_html_e( 'Mở Google Maps', 'jobscout' ); ?></span>
+                        </a>
+                        <button type="button"
+                                class="pds-contact-map-close-btn"
+                                id="pds-contact-map-close"
+                                aria-label="<?php esc_attr_e( 'Đóng bản đồ', 'jobscout' ); ?>">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            <span><?php esc_html_e( 'Đóng bản đồ', 'jobscout' ); ?></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pds-contact-map-frame-wrapper">
+                    <iframe
+                        id="pds-contact-map-iframe"
+                        title="<?php esc_attr_e( 'Google Map - 60 Nguyen Van Thu, Ward Da Kao, District 1, Ho Chi Minh City', 'jobscout' ); ?>"
+                        data-src="https://maps.google.com/maps?q=60+Nguyen+Van+Thu,+Ward+Da+Kao,+District+1,+Ho+Chi+Minh+City,+Viet+Nam&amp;t=m&amp;z=16&amp;output=embed"
+                        src="about:blank"
+                        loading="lazy"
+                        allowfullscreen
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
         </div>
     </section>
+    <?php endif; ?>
 
     <!-- TWO COLUMNS CONTACT CHANNELS -->
+    <?php if ( is_active_sidebar( 'contact-hotline-info' ) ) : ?>
+        <section class="pds-contact-channels pds-widget-area-section" aria-label="<?php esc_attr_e( 'Contact Channels', 'jobscout' ); ?>">
+            <div class="pds-contact-container">
+                <?php dynamic_sidebar( 'contact-hotline-info' ); ?>
+            </div>
+        </section>
+    <?php else : ?>
     <section class="pds-contact-channels" aria-label="<?php esc_attr_e( 'Contact Channels', 'jobscout' ); ?>">
         <div class="pds-contact-container">
             <div class="pds-contact-grid">
@@ -120,29 +253,159 @@ get_header();
             </div>
         </div>
     </section>
+    <?php endif; ?>
+
 
     <!-- NEWSLETTER BANNER -->
-    <section class="pds-contact-newsletter" aria-labelledby="pds-contact-newsletter-title">
-        <div class="pds-contact-newsletter-inner">
-            <h2 id="pds-contact-newsletter-title" class="pds-contact-newsletter-heading">
-                <?php esc_html_e( 'Subscribe To', 'jobscout' ); ?><br>
-                <?php esc_html_e( 'Our Newsletter', 'jobscout' ); ?>
-            </h2>
-            <form class="pds-contact-newsletter-form" onsubmit="return false;">
-                <label class="pds-contact-newsletter-field">
-                    <span class="pds-contact-newsletter-icon" aria-hidden="true">
-                        <svg width="20" height="16" viewBox="0 0 20 16" fill="currentColor">
-                            <path d="M18 0H2C0.9 0 0.01 0.9 0.01 2L0 14C0 15.1 0.9 16 2 16H18C19.1 16 20 15.1 20 14V2C20 0.9 19.1 0 18 0ZM18 4L10 9L2 4V2L10 7L18 2V4Z"/>
-                        </svg>
-                    </span>
-                    <input type="email" name="contact_newsletter_email" placeholder="<?php esc_attr_e( 'Input your email address', 'jobscout' ); ?>" required>
-                </label>
-                <button type="button" class="pds-contact-newsletter-btn"><?php esc_html_e( 'SUBSCRIBE', 'jobscout' ); ?></button>
-            </form>
-        </div>
-    </section>
+    <?php get_template_part( 'template-parts/pds-newsletter' ); ?>
 
 </div>
+
+<script>
+(function () {
+    function initContactMap() {
+        var hqSection = document.querySelector('.pds-contact-hq');
+        if (!hqSection) return;
+
+        var existingTrigger = document.getElementById('pds-contact-map-trigger');
+        var existingCard = document.getElementById('pds-contact-map-card');
+
+        // If widget is active, dynamically enhance .pds-contact-hq-address
+        if (!existingTrigger) {
+            var addressEl = hqSection.querySelector('.pds-contact-hq-address');
+            if (addressEl) {
+                var addressText = addressEl.textContent.trim();
+                if (!addressText) {
+                    addressText = '60 Nguyen Van Thu, Ward Da Kao, District 1, Ho Chi Minh City, Viet Nam';
+                }
+                var encodedQuery = encodeURIComponent(addressText);
+                var mapEmbedUrl = 'https://maps.google.com/maps?q=' + encodedQuery + '&t=m&z=16&output=embed';
+                var mapExternalUrl = 'https://www.google.com/maps/search/?api=1&query=' + encodedQuery;
+
+                var wrapper = document.createElement('div');
+                wrapper.className = 'pds-contact-hq-address-wrapper';
+                wrapper.innerHTML =
+                    '<button type="button" class="pds-contact-hq-address-btn" id="pds-contact-map-trigger" aria-expanded="false" aria-controls="pds-contact-map-card" title="<?php echo esc_js( __( 'Click to view map', 'jobscout' ) ); ?>">' +
+                        '<span class="pds-contact-pin-icon" aria-hidden="true">' +
+                            '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">' +
+                                '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>' +
+                            '</svg>' +
+                        '</span>' +
+                        '<span class="pds-contact-address-text">' + addressText + '</span>' +
+                        '<span class="pds-contact-address-badge">' +
+                            '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+                                '<polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>' +
+                                '<line x1="8" y1="2" x2="8" y2="18"></line>' +
+                                '<line x1="16" y1="6" x2="16" y2="22"></line>' +
+                            '</svg>' +
+                            '<span class="pds-contact-badge-label"><?php echo esc_js( __( 'Bấm để xem bản đồ', 'jobscout' ) ); ?></span>' +
+                        '</span>' +
+                    '</button>';
+
+                var mapCard = document.createElement('div');
+                mapCard.className = 'pds-contact-map-card';
+                mapCard.id = 'pds-contact-map-card';
+                mapCard.setAttribute('aria-hidden', 'true');
+                mapCard.innerHTML =
+                    '<div class="pds-contact-map-header">' +
+                        '<div class="pds-contact-map-actions">' +
+                            '<a href="' + mapExternalUrl + '" class="pds-contact-map-external-link" target="_blank" rel="noopener noreferrer">' +
+                                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+                                    '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>' +
+                                    '<polyline points="15 3 21 3 21 9"></polyline>' +
+                                    '<line x1="10" y1="14" x2="21" y2="3"></line>' +
+                                '</svg>' +
+                                '<span><?php echo esc_js( __( 'Mở Google Maps', 'jobscout' ) ); ?></span>' +
+                            '</a>' +
+                            '<button type="button" class="pds-contact-map-close-btn" id="pds-contact-map-close" aria-label="<?php echo esc_js( __( 'Đóng bản đồ', 'jobscout' ) ); ?>">' +
+                                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+                                    '<line x1="18" y1="6" x2="6" y2="18"></line>' +
+                                    '<line x1="6" y1="6" x2="18" y2="18"></line>' +
+                                '</svg>' +
+                                '<span><?php echo esc_js( __( 'Đóng bản đồ', 'jobscout' ) ); ?></span>' +
+                            '</button>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="pds-contact-map-frame-wrapper">' +
+                        '<iframe id="pds-contact-map-iframe" title="<?php echo esc_js( __( 'Google Map', 'jobscout' ) ); ?>" data-src="' + mapEmbedUrl + '" src="about:blank" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>' +
+                    '</div>';
+
+                addressEl.parentNode.replaceChild(wrapper, addressEl);
+                wrapper.parentNode.insertBefore(mapCard, wrapper.nextSibling);
+            }
+        }
+
+        var triggerBtn = document.getElementById('pds-contact-map-trigger');
+        var card = document.getElementById('pds-contact-map-card');
+        var iframe = document.getElementById('pds-contact-map-iframe');
+        var closeBtn = document.getElementById('pds-contact-map-close');
+
+        if (!triggerBtn || !card) return;
+
+        window.pdsOpenContactMap = function (e) {
+            if (e && e.preventDefault) e.preventDefault();
+            if (iframe && iframe.getAttribute('data-src')) {
+                if (!iframe.src || iframe.src === 'about:blank' || iframe.src.indexOf('about:blank') !== -1) {
+                    iframe.src = iframe.getAttribute('data-src');
+                }
+            }
+            card.classList.add('is-active');
+            card.style.display = 'block';
+            card.setAttribute('aria-hidden', 'false');
+            triggerBtn.setAttribute('aria-expanded', 'true');
+            triggerBtn.classList.add('is-active');
+            var badgeLabel = triggerBtn.querySelector('.pds-contact-badge-label');
+            if (badgeLabel) {
+                badgeLabel.textContent = '<?php echo esc_js( __( 'Bấm để ẩn bản đồ', 'jobscout' ) ); ?>';
+            }
+        };
+
+        window.pdsCloseContactMap = function (e) {
+            if (e && e.preventDefault) e.preventDefault();
+            card.classList.remove('is-active');
+            card.style.display = 'none';
+            card.setAttribute('aria-hidden', 'true');
+            triggerBtn.setAttribute('aria-expanded', 'false');
+            triggerBtn.classList.remove('is-active');
+            var badgeLabel = triggerBtn.querySelector('.pds-contact-badge-label');
+            if (badgeLabel) {
+                badgeLabel.textContent = '<?php echo esc_js( __( 'Bấm để xem bản đồ', 'jobscout' ) ); ?>';
+            }
+            triggerBtn.focus();
+        };
+
+        window.pdsToggleContactMap = function (e) {
+            if (card.classList.contains('is-active') || card.style.display === 'block') {
+                window.pdsCloseContactMap(e);
+            } else {
+                window.pdsOpenContactMap(e);
+            }
+        };
+
+        triggerBtn.onclick = function (e) {
+            window.pdsToggleContactMap(e);
+        };
+
+        if (closeBtn) {
+            closeBtn.onclick = function (e) {
+                window.pdsCloseContactMap(e);
+            };
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && (card.classList.contains('is-active') || card.style.display === 'block')) {
+                window.pdsCloseContactMap(e);
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initContactMap);
+    } else {
+        initContactMap();
+    }
+})();
+</script>
 
 <?php
 get_footer();

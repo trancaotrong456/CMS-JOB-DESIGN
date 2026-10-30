@@ -1,0 +1,358 @@
+/* Submit Job page styling reuses the Home palette, container, card, and controls. */
+.pds-submit-job-body {
+	--pds-submit-orange: var(--jobscout-orange, #f2761b);
+	--pds-submit-ink: var(--jobscout-ink, #302b29);
+	--pds-submit-paper: var(--jobscout-paper, #f3f3f3);
+	background: var(--pds-submit-paper);
+	color: var(--pds-submit-ink);
+}
+
+.pds-submit-job-body #content.site-content {
+	margin: 0;
+	padding: 0;
+	max-width: 100%;
+}
+
+.pds-submit-job-body #content.site-content > .container,
+.pds-submit-job-body .site-content > .container {
+	width: 100% !important;
+	max-width: 100% !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+.pds-submit-job-body .breadcrumb-wrap,
+.pds-submit-job-body #secondary,
+.pds-submit-job-body .sidebar {
+	display: none !important;
+}
+
+.pds-submit-job-body #primary.content-area {
+	float: none;
+	width: 100% !important;
+	max-width: 100% !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+.pds-submit-job-page {
+	width: 100%;
+	min-width: 0;
+	background: var(--pds-submit-paper);
+}
+
+.pds-submit-job-section {
+	min-width: 0;
+}
+
+.pds-submit-job-section .home-section-title {
+	margin-bottom: 11px;
+	color: var(--pds-submit-ink);
+}
+
+.pds-submit-job-description {
+	max-width: 720px;
+	margin: 0 auto 34px;
+	color: #696461;
+	font-size: 14px;
+	line-height: 1.65;
+	text-align: center;
+}
+
+.pds-submit-job-panel {
+	min-width: 0;
+	padding: 28px 30px;
+	background: #fff;
+}
+
+.pds-submit-job-group-title {
+	margin: 0 0 21px;
+	padding: 0 0 14px;
+	border-bottom: 1px solid #d7d7d7;
+	color: var(--pds-submit-ink);
+	font-size: 17px;
+	font-weight: 700;
+	line-height: 1.35;
+	text-transform: uppercase;
+}
+
+.pds-submit-job-form-content,
+.pds-submit-job-form-content * {
+	box-sizing: border-box;
+}
+
+.pds-submit-job-form-content .job-manager-form,
+.pds-submit-job-form-content .job-manager-form fieldset {
+	margin: 0;
+}
+
+.pds-submit-job-form-content .job-manager-form {
+	width: 100%;
+	max-width: none;
+}
+
+.pds-submit-job-form-content .job-manager-form > fieldset {
+	min-width: 0;
+	padding: 0 0 20px;
+	border: 0;
+}
+
+.pds-submit-job-form-content .job-manager-form > fieldset + fieldset {
+	padding-top: 2px;
+}
+
+.pds-submit-job-form-content .job-manager-form > fieldset > label {
+	display: block;
+	margin: 0 0 8px;
+	color: var(--pds-submit-ink);
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+.pds-submit-job-form-content .job-manager-form label small {
+	margin-left: 5px;
+	color: #696461;
+	font-size: 12px;
+	font-weight: 400;
+}
+
+.pds-submit-job-form-content .job-manager-form .field {
+	width: 100%;
+	min-width: 0;
+}
+
+.pds-submit-job-form-content .job-manager-form input[type="text"],
+.pds-submit-job-form-content .job-manager-form input[type="email"],
+.pds-submit-job-form-content .job-manager-form input[type="url"],
+.pds-submit-job-form-content .job-manager-form input[type="number"],
+.pds-submit-job-form-content .job-manager-form input[type="password"],
+.pds-submit-job-form-content .job-manager-form input[type="tel"],
+.pds-submit-job-form-content .job-manager-form select,
+.pds-submit-job-form-content .job-manager-form textarea,
+.pds-submit-job-form-content .job-manager-form .select2-container .select2-selection {
+	display: block;
+	width: 100%;
+	min-height: 52px;
+	padding: 12px 16px;
+	border: 1px solid #d7d7d7;
+	border-radius: 0;
+	background-color: #fff;
+	color: #3b3837;
+	font: inherit;
+	font-size: 14px;
+	line-height: 1.5;
+	box-shadow: none;
+	transition: border-color .16s ease, box-shadow .16s ease;
+}
+
+.pds-submit-job-form-content .job-manager-form textarea {
+	min-height: 170px;
+	resize: vertical;
+}
+
+.pds-submit-job-form-content .job-manager-form input[type="file"] {
+	display: block;
+	width: 100%;
+	max-width: 100%;
+	padding: 12px;
+	border: 1px dashed #d7d7d7;
+	background: #f8f8f8;
+	color: #696461;
+	font-size: 13px;
+}
+
+.pds-submit-job-form-content .job-manager-form input:focus,
+.pds-submit-job-form-content .job-manager-form select:focus,
+.pds-submit-job-form-content .job-manager-form textarea:focus,
+.pds-submit-job-form-content .job-manager-form .select2-container--focus .select2-selection {
+	border-color: var(--pds-submit-orange);
+	outline: 0;
+	box-shadow: 0 0 0 2px rgba(242, 118, 27, .18);
+}
+
+.pds-submit-job-form-content .job-manager-form input[type="checkbox"],
+.pds-submit-job-form-content .job-manager-form input[type="radio"] {
+	accent-color: var(--pds-submit-orange);
+}
+
+.pds-submit-job-form-content .job-manager-form .description,
+.pds-submit-job-form-content .job-manager-form .field-description {
+	display: block;
+	margin: 7px 0 0;
+	color: #696461;
+	font-size: 12px;
+	line-height: 1.55;
+}
+
+.pds-submit-job-form-content .job-manager-form h2 {
+	margin: 24px 0 20px;
+	padding: 22px 0 14px;
+	border-top: 1px solid #d7d7d7;
+	border-bottom: 1px solid #d7d7d7;
+	color: var(--pds-submit-ink);
+	font-size: 17px;
+	font-weight: 700;
+	line-height: 1.35;
+	text-transform: uppercase;
+}
+
+.pds-submit-job-form-content .job-manager-form .account-sign-in {
+	color: #696461;
+	font-size: 14px;
+	line-height: 1.65;
+}
+
+.pds-submit-job-form-content .job-manager-form .account-sign-in a.button,
+.pds-submit-job-form-content .job-manager-form input[type="submit"],
+.pds-submit-job-form-content .job-manager-form button,
+.pds-submit-job-form-content .job-manager-form .button {
+	display: inline-flex;
+	min-height: 52px;
+	align-items: center;
+	justify-content: center;
+	padding: 0 22px;
+	border: 1px solid var(--pds-submit-orange);
+	border-radius: 0;
+	background: var(--pds-submit-orange);
+	color: #fff;
+	font-family: inherit;
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 1.2;
+	text-decoration: none;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: background-color .16s ease, border-color .16s ease, color .16s ease;
+}
+
+.pds-submit-job-form-content .job-manager-form input[type="submit"]:hover,
+.pds-submit-job-form-content .job-manager-form button:hover,
+.pds-submit-job-form-content .job-manager-form .button:hover,
+.pds-submit-job-form-content .job-manager-form input[type="submit"]:focus-visible,
+.pds-submit-job-form-content .job-manager-form button:focus-visible,
+.pds-submit-job-form-content .job-manager-form .button:focus-visible {
+	border-color: #d95f0e;
+	background: #d95f0e;
+	color: #fff;
+	outline: 2px solid rgba(242, 118, 27, .25);
+	outline-offset: 2px;
+}
+
+.pds-submit-job-form-content .job-manager-form input.secondary,
+.pds-submit-job-form-content .job-manager-form .button.secondary,
+.pds-submit-job-form-content .job-manager-form .job-manager-back-button {
+	border-color: #99918d;
+	background: #fff;
+	color: #4b4541;
+}
+
+.pds-submit-job-form-content .job-manager-form input.secondary:hover,
+.pds-submit-job-form-content .job-manager-form .button.secondary:hover,
+.pds-submit-job-form-content .job-manager-form .job-manager-back-button:hover {
+	border-color: var(--pds-submit-orange);
+	background: #fff;
+	color: var(--pds-submit-orange);
+}
+
+.pds-submit-job-form-content .job-manager-message,
+.pds-submit-job-form-content .job-manager-error,
+.pds-submit-job-form-content ul.job-manager-error {
+	margin: 0 0 20px;
+	padding: 14px 17px;
+	border-left: 3px solid var(--pds-submit-orange);
+	background: #fff7f0;
+	color: #4a3b31;
+	font-size: 14px;
+	line-height: 1.55;
+}
+
+.pds-submit-job-form-content ul.job-manager-error {
+	padding-left: 36px;
+	border-left-color: #bd3c32;
+	background: #fff3f1;
+}
+
+.pds-submit-job-form-content .job-manager-error a,
+.pds-submit-job-form-content .job-manager-message a {
+	color: #b84e0a;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.pds-submit-job-form-content .wp-editor-wrap,
+.pds-submit-job-form-content .wp-editor-container,
+.pds-submit-job-form-content .mce-container,
+.pds-submit-job-form-content .tox-tinymce {
+	max-width: 100%;
+}
+
+.pds-submit-job-form-content .select2-container {
+	width: 100% !important;
+	max-width: 100%;
+}
+
+.pds-submit-job-form-content .select2-container .select2-selection {
+	display: flex;
+	align-items: center;
+}
+
+.pds-submit-job-form-content .select2-container--default .select2-selection--single .select2-selection__rendered {
+	padding: 0;
+	color: #3b3837;
+	line-height: 1.5;
+}
+
+.pds-submit-job-form-content .select2-container--default .select2-selection--single .select2-selection__arrow {
+	top: 9px;
+	right: 8px;
+}
+
+@media (max-width: 1024px) {
+	.pds-submit-job-panel {
+		padding: 24px;
+	}
+}
+
+@media (max-width: 767px) {
+	.pds-submit-job-panel {
+		padding: 18px 16px;
+	}
+
+	.pds-submit-job-description {
+		margin-bottom: 25px;
+	}
+
+	.pds-submit-job-section .home-section-title {
+		font-size: 25px;
+	}
+
+	.pds-submit-job-form-content .job-manager-form > fieldset {
+		padding-bottom: 18px;
+	}
+
+	.pds-submit-job-form-content .job-manager-form input[type="submit"],
+	.pds-submit-job-form-content .job-manager-form button,
+	.pds-submit-job-form-content .job-manager-form .button {
+		max-width: 100%;
+		white-space: normal;
+	}
+}
+/* Keep the existing shared newsletter component usable at narrow widths. */
+@media (max-width: 860px) {
+	.pds-submit-job-body .pds-contact-newsletter-inner {
+		grid-template-columns: 1fr;
+		gap: 20px;
+		text-align: center;
+	}
+
+	.pds-submit-job-body .pds-contact-newsletter-heading {
+		text-align: center;
+	}
+}
+
+@media (max-width: 580px) {
+	.pds-submit-job-body .pds-contact-newsletter-form {
+		grid-template-columns: 1fr;
+	}
+}

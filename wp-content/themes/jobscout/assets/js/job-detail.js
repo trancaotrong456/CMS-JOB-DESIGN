@@ -1,6 +1,31 @@
 /**
- * Job Detail Page Scripts
- * Handles Share button clipboard copy and Apply button smooth scroll.
+ * =============================================================================
+ * TƯƠNG TÁC NGƯỜI DÙNG TRANG CHI TIẾT VIỆC LÀM (JOB DETAIL SCRIPTS)
+ * =============================================================================
+ *
+ * @package           JobScout
+ * @subpackage        PDS / JavaScript Job Detail
+ * @author            Trần Văn Trọng
+ * @git_branch        tran-van-trong/job-detail
+ * @ui_reference      docs/ui-reference/05-job-detail.png
+ *
+ * -----------------------------------------------------------------------------
+ * 1. CHỨC NĂNG HOẠT ĐỘNG (FUNCTIONAL OVERVIEW):
+ * -----------------------------------------------------------------------------
+ * - Tương tác Nút "Share":
+ *   + Tự động sao chép URL của bài viết việc làm vào Clipboard bằng `navigator.clipboard`.
+ *   + Hiển thị thông báo trạng thái "COPIED!" trong 2 giây rồi tự hoàn về chữ "SHARE".
+ *   + Fallback hộp thoại `prompt` an toàn nếu trình duyệt không hỗ trợ Clipboard API.
+ * - Tương tác Nút "APPLY THIS JOB":
+ *   + Mở rộng khung/form ứng tuyển công việc bên dưới hoặc mở modal ứng tuyển trực tuyến.
+ *   + Tự động cuộn trang êm ái (Smooth Scroll) đưa người dùng đến khu vực điền thông tin và đính kèm CV.
+ *
+ * -----------------------------------------------------------------------------
+ * 2. GIAO DIỆN & TRẠNG THÁI UI (DESIGN SPECS):
+ * -----------------------------------------------------------------------------
+ * - Nút Share: Viền mỏng 1px #ccc, bo góc nhẹ 3px, font chữ in hoa thanh lịch, hiệu ứng phản hồi nhanh.
+ * - Nút Apply: Nền cam #f2761b, chữ in hoa trắng đậm nét, hiệu ứng phóng nhẹ khi click.
+ * =============================================================================
  */
 
 (function () {

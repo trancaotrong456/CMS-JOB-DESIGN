@@ -1,7 +1,48 @@
 <?php
 /**
- * Template Name: News
- * Description: PDS News listing page.
+ * =============================================================================
+ * TRANG TIN TỨC (PDS NEWS / BLOG LISTING)
+ * =============================================================================
+ *
+ * @package           JobScout
+ * @subpackage        PDS / News & Blog
+ * @author            Nguyễn Hữu Chúc
+ * @git_branch        nguyen-huu-chuc/news
+ * @ui_reference      docs/ui-reference/03-news.png
+ *
+ * -----------------------------------------------------------------------------
+ * 1. CHỨC NĂNG HOẠT ĐỘNG (FUNCTIONAL OVERVIEW):
+ * -----------------------------------------------------------------------------
+ * - Template Name: News (gán cho trang có slug "/news" hoặc trang chỉ định mẫu News).
+ * - Cơ chế truy vấn (WP_Query):
+ *   + Lấy 8 bài viết mới nhất thuộc post type `post` ở trạng thái đã xuất bản (`publish`).
+ *   + Sắp xếp giảm dần theo thời gian đăng (`orderby => date`, `order => DESC`).
+ *   + Bỏ qua sticky post (`ignore_sticky_posts => true`) và tối ưu hiệu năng với `no_found_rows => true`.
+ * - Hỗ trợ Sidebar Widget:
+ *   + Khối Hero Banner có hook kiểm tra `is_active_sidebar('news-hero-banner')`.
+ *   + Khối Grid bài viết có hook kiểm tra `is_active_sidebar('news-grid-content')`.
+ *   + Nếu không có widget, fallback hiển thị trực tiếp danh sách bài viết từ database.
+ * - Điều hướng bài viết: Mỗi thẻ bài viết trỏ trực tiếp đến URL chi tiết `single-post.php`.
+ *
+ * -----------------------------------------------------------------------------
+ * 2. GIAO DIỆN & BỐ CỤC UI (DESIGN SPECS):
+ * -----------------------------------------------------------------------------
+ * - Mẫu chuẩn: bám sát thiết kế tham chiếu docs/ui-reference/03-news.png.
+ * - Hero Banner:
+ *   + Khung nền xám tối hoặc ảnh chụp, chữ in hoa "PDS NEWS" màu trắng nổi bật, căn giữa,
+ *     font chữ đậm nét, chiều cao banner chuẩn 240px - 280px.
+ * - Tiêu đề chính mục tin tức:
+ *   + Dòng chữ "NEWEST BLOG ENTRIES", font in hoa thanh lịch, màu #111111, căn giữa trên cùng.
+ * - Lưới bài viết (pds-news-grid):
+ *   + Bố cục 2 cột (2 columns layout) cân đối trên màn hình Desktop, chuyển về 1 cột trên Mobile.
+ *   + Mỗi bài viết (pds-news-card):
+ *     * Ảnh đại diện (Featured Image): Tỷ lệ khung hình chữ nhật ngang, hiệu ứng zoom nhẹ khi hover.
+ *     * Ngày đăng bài: Font nhỏ, màu chữ xám, căn chỉnh phía trên tiêu đề.
+ *     * Tiêu đề bài viết: Màu đen #111, hover sang màu cam #f2761b, font size 18px.
+ *     * Đoạn tóm tắt (Excerpt): Giới hạn độ dài, câu từ súc tích, màu chữ #666.
+ *     * Liên kết xem tiếp: Nút hoặc dòng "READ MORE" màu cam kèm mũi tên điều hướng.
+ * - Form Newsletter: Tích hợp cuối trang trước khi kết thúc bằng Footer.
+ * =============================================================================
  */
 
 get_header();
@@ -26,16 +67,22 @@ $news_query = new WP_Query([
 <div class="pds-news-page">
 
     <!-- NEWS HERO -->
-    <section class="pds-news-hero"
-             aria-labelledby="pds-news-hero-title">
-
-        <h1 id="pds-news-hero-title">
-            PDS NEWS
-        </h1>
-
-    </section>
+    <?php if ( is_active_sidebar( 'news-hero-banner' ) ) : ?>
+        <?php dynamic_sidebar( 'news-hero-banner' ); ?>
+    <?php else : ?>
+        <section class="pds-news-hero" aria-labelledby="pds-news-hero-title">
+            <h1 id="pds-news-hero-title">PDS NEWS</h1>
+        </section>
+    <?php endif; ?>
 
     <!-- NEWS CONTENT -->
+    <?php if ( is_active_sidebar( 'news-grid-content' ) ) : ?>
+        <main class="pds-news-main pds-widget-area-section">
+            <div class="pds-news-container">
+                <?php dynamic_sidebar( 'news-grid-content' ); ?>
+            </div>
+        </main>
+    <?php else : ?>
     <main class="pds-news-main">
 
         <div class="pds-news-container">
@@ -136,6 +183,7 @@ $news_query = new WP_Query([
         </div>
 
     </main>
+    <?php endif; ?>
 
     <!-- NEWSLETTER BANNER -->
     <?php get_template_part('template-parts/pds-newsletter'); ?>
