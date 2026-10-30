@@ -48,10 +48,10 @@ Phiên chat này là một phiên làm việc mới nên không giữ nguyên l�
 
 ### 🛠️ Các công việc gần đây nhất trên workspace:
 1. **Merge & Tích hợp vào `main`:** Đã merge hoàn tất các trang từ branch của các thành viên (About, Contact, News, News Detail, All Jobs, Job Detail, Home).
-2. **Sửa Header & Menu:** 
+2. **Sửa Header & Menu:**
    * Chuẩn hóa 5 menu item: *Home, Jobs, News, About, Contact*.
    * Căn chỉnh Flexbox & khoảng cách để menu không còn đè lên nút CTA **SUBMIT JOB**.
-3. **Chuẩn hóa Widget Areas & Customizer:** 
+3. **Chuẩn hóa Widget Areas & Customizer:**
    * Đăng ký 16 widget areas có fallback HTML (`dynamic_sidebar`) hỗ trợ tinh chỉnh qua WordPress Customizer trên toàn bộ 7 trang (`tran-cao-trong/standardize-all-pages`).
 4. **Các tính năng nhánh mở rộng đang có sẵn:**
    * `tran-cao-trong/submit-job-page` (trang đăng tin tuyển dụng)
@@ -107,7 +107,7 @@ không chỉnh được nội dung "Ask a question on our Facebook page
 Read our blog posts on interview and CV tips"
 -trang About:
 không chỉnh được văn bản các chữ :Established since,Head Office,Capital,CEO,Number of Employees chưa chỉnh được
--trang POST A JOB (sau khi bấm nút submit job): chưa có widget cho giao diện 
+-trang POST A JOB (sau khi bấm nút submit job): chưa có widget cho giao diện
 --> Đây là những gì tôi rà soát được những chỗ chưa thể custom giao diện bạn hãy bổ sung thêm đi
 
 
@@ -466,7 +466,7 @@ hãy kiểm tra lại lần nữa đi
 
 ### 🤖 Phản Hồi Của Trợ Lý (AI Assistant)
 
-Tôi đã rà soát lại một lần nữa toàn bộ các tệp mã nguồn, mẫu giao diện (templates), các widget và kịch bản JavaScript của hệ thống. 
+Tôi đã rà soát lại một lần nữa toàn bộ các tệp mã nguồn, mẫu giao diện (templates), các widget và kịch bản JavaScript của hệ thống.
 
 Dưới đây là kết quả kiểm tra đối chiếu chi tiết theo từng trang:
 
@@ -475,7 +475,7 @@ Dưới đây là kết quả kiểm tra đối chiếu chi tiết theo từng t
 ### 1. Mọi trang (Header + Footer dùng chung)
 
 *   **Menu điều hướng và đánh dấu trang hiện tại**: **ĐÃ CÓ (100%)**
-    *   Hệ thống có hàm `jobscout_primary_menu_fallback()` tự động đối chiếu URL và gán class `current-menu-item current_page_item` cho mục tương ứng khi bạn ở trang **Home, Jobs, News, About** hay **Contact**. 
+    *   Hệ thống có hàm `jobscout_primary_menu_fallback()` tự động đối chiếu URL và gán class `current-menu-item current_page_item` cho mục tương ứng khi bạn ở trang **Home, Jobs, News, About** hay **Contact**.
     *   Nếu dùng Menu tùy chỉnh của WordPress (`wp_nav_menu`), WordPress cũng tự động sinh class này.
 *   **Nút SUBMIT JOB**: **ĐÃ CÓ (100%)**
     *   Nằm cố định trên Header bên phải, nút màu cam dẫn tới `/submit-job/`. Được quản lý qua widget `pds_header_cta`.

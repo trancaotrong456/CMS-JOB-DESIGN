@@ -598,7 +598,33 @@ endif;
 add_action( 'jobscout_after_footer', 'jobscout_page_end', 20 );
 
 /**
- * Filter job listings search clauses to cover title, content, excerpt, and company name.
+ * =============================================================================
+ * HỆ THỐNG TRUY VẤN VÀ TÌM KIẾM THÔNG MINH VIỆC LÀM (SMART JOB SEARCH ENGINE)
+ * =============================================================================
+ *
+ * @package           JobScout
+ * @subpackage        PDS / Core Backend Query & Search
+ * @author            Trần Cao Trọng (Lead) & Trần Văn Trọng (Jobs)
+ * @git_branch        tran-cao-trong/home & tran-van-trong/all-jobs
+ *
+ * -----------------------------------------------------------------------------
+ * 1. THUẬT TOÁN TÌM KIẾM THÔNG MINH & TRỌNG SỐ LIÊN QUAN (RELEVANCE ALGORITHM):
+ * -----------------------------------------------------------------------------
+ * - Mở rộng phạm vi tìm kiếm sang:
+ *   + Tiêu đề công việc (post_title), nội dung (post_content), tóm tắt (post_excerpt).
+ *   + Tên công ty tuyển dụng qua postmeta (_company_name).
+ *   + Taxonomies việc làm: job_listing_type (Fulltime, Part-time), job_listing_category, job_listing_tag.
+ * - Xử lý thông minh biến thể & từ khóa viết cách:
+ *   + Tự động đồng bộ các dạng: "full time" ⇄ "fulltime" ⇄ "full-time", "part time" ⇄ "parttime".
+ *   + Ánh xạ từ đồng nghĩa tiếng Việt sang tiếng Anh chuẩn chuyên ngành:
+ *     "khách sạn" / "khach san" ➔ "hotel"
+ *     "quản lý" / "quan ly" ➔ "manager"
+ *     "đầu bếp" / "dau bep" ➔ "chef", "cook"
+ * - Thuật toán xếp hạng ưu tiên (Relevance Ordering SQL):
+ *   + Mức 0 (Cao nhất): Khớp trong post_title hoặc _company_name.
+ *   + Mức 1 (Ưu tiên tiếp theo): Khớp trong Taxonomy job_listing_type hoặc job_listing_category.
+ *   + Mức 2: Khớp trong mô tả nội dung post_content hoặc post_excerpt.
+ * =============================================================================
  */
 if ( ! function_exists( 'pds_filter_job_listing_search' ) ) :
 function pds_filter_job_listing_search( $clauses, $query ) {

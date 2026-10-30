@@ -1,6 +1,36 @@
 /**
- * Live Search Suggestions for JobScout Home Search
- * Automatically suggests matching jobs and redirects to Jobs page
+ * =============================================================================
+ * TÍNH NĂNG TÌM KIẾM THÔNG MINH & GỢI Ý LIVE SEARCH TRANG CHỦ (HOME SEARCH)
+ * =============================================================================
+ *
+ * @package           JobScout
+ * @subpackage        PDS / JavaScript Live Search
+ * @author            Trần Cao Trọng (Lead)
+ * @git_branch        tran-cao-trong/home
+ * @ui_reference      docs/ui-reference/01-home.png
+ *
+ * -----------------------------------------------------------------------------
+ * 1. CHỨC NĂNG HOẠT ĐỘNG (FUNCTIONAL OVERVIEW):
+ * -----------------------------------------------------------------------------
+ * - Lắng nghe sự kiện gõ phím (`input`) trong ô tìm kiếm việc làm tại Trang Chủ.
+ * - Cơ chế Debounce (250ms): Giảm tải tần suất gửi request về server khi người dùng gõ liên tục.
+ * - Ngưỡng kích hoạt: Bắt đầu tìm kiếm tự động khi từ khóa có từ 2 ký tự trở lên.
+ * - Kết nối Endpoint AJAX gợi ý: Gửi request ngầm qua tham số `pds_ajax_search_suggest=1`.
+ * - Điều hướng thông minh:
+ *   + Khi người dùng click vào một công việc trong dropdown -> Điều hướng thẳng đến trang Job Detail của job đó.
+ *   + Khi click "Xem tất cả việc làm" hoặc nhấn Enter / nút SEARCH JOB -> Điều hướng sang trang All Jobs (`/jobs/?search_keywords=...&search_location=...`).
+ * - Tự động đóng dropdown khi click chuột ra ngoài vùng tìm kiếm hoặc ấn ESC.
+ *
+ * -----------------------------------------------------------------------------
+ * 2. GIAO DIỆN & TƯƠNG TÁC UI (DESIGN SPECS):
+ * -----------------------------------------------------------------------------
+ * - Bảng gợi ý dạng Dropdown (`pds-search-suggest-dropdown`):
+ *   + Nền trắng tinh khiết (#ffffff), bo góc 6px, đổ bóng mềm mại (box-shadow: 0 12px 30px rgba(0,0,0,0.18)).
+ *   + Mỗi mục gợi ý gồm: Tiêu đề công việc in đậm #111, huy hiệu badge Loại công việc (Fulltime) màu cam nhẹ,
+ *     dòng phụ chứa tên công ty và địa điểm làm việc màu xám #666.
+ *   + Hiệu ứng Hover: Nền chuyển sang màu xám sáng (#f9f7f5), tiêu đề chuyển màu cam #f2761b.
+ *   + Chân bảng gợi ý: Dòng chữ "Xem tất cả kết quả..." nổi bật màu cam kèm icon mũi tên.
+ * =============================================================================
  */
 (function () {
     'use strict';

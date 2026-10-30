@@ -1,7 +1,35 @@
 /**
- * All Jobs interactive sorting and AJAX Load More
+ * =============================================================================
+ * TƯƠNG TÁC AJAX LOAD MORE & SẮP XẾP ĐỘNG TRANG ALL JOBS (ALL JOBS SCRIPTS)
+ * =============================================================================
  *
- * Scoped specifically to .pds-all-jobs-page
+ * @package           JobScout
+ * @subpackage        PDS / JavaScript All Jobs
+ * @author            Trần Văn Trọng
+ * @git_branch        tran-van-trong/all-jobs
+ * @ui_reference      docs/ui-reference/04-all-jobs.png
+ *
+ * -----------------------------------------------------------------------------
+ * 1. CHỨC NĂNG HOẠT ĐỘNG (FUNCTIONAL OVERVIEW):
+ * -----------------------------------------------------------------------------
+ * - Cơ chế AJAX Phân trang (Load More Jobs):
+ *   + Khi người dùng bấm nút "LOAD MORE JOBS", gửi request ngầm `pds_ajax_jobs=1` kèm số trang `page=N`.
+ *   + Nối thêm danh sách thẻ việc làm mới vào cuối `#pds-all-jobs-grid` mượt mà không load lại trang.
+ *   + Cập nhật lại thuộc tính `data-page` và vô hiệu hóa nút khi đã tải hết toàn bộ việc làm.
+ * - Sắp xếp tức thời (Dynamic Sort):
+ *   + Khi thay đổi lựa chọn trong dropdown "Sort Jobs" (Latest, Oldest, Title A-Z, Title Z-A),
+ *     tự động reset về trang 1 và gửi request AJAX cập nhật lại danh sách ngay lập tức.
+ * - Duy trì bộ lọc tìm kiếm (Keywords & Location):
+ *   + Tự động đọc tham số từ đối tượng `window.pdsAllJobsData` hoặc URL query string để đảm bảo
+ *     Load More và Sort luôn tôn trọng tiêu chí tìm kiếm hiện tại.
+ *
+ * -----------------------------------------------------------------------------
+ * 2. GIAO DIỆN & TRẠNG THÁI UI (DESIGN SPECS):
+ * -----------------------------------------------------------------------------
+ * - Trạng thái Loading của nút: Thay đổi văn bản thành "LOADING..." kèm hiệu ứng mờ nhẹ (opacity: 0.7).
+ * - Trạng thái hoàn thành: Đổi văn bản nút thành "NO MORE JOBS" với màu xám nhạt khi không còn bài đăng.
+ * - Hiệu ứng chuyển động mượt mà (Fade In) cho các card mới được chèn vào lưới.
+ * =============================================================================
  */
 
 (function () {
