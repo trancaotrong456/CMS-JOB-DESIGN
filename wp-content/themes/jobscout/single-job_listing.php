@@ -82,6 +82,26 @@ add_action( 'wp_enqueue_scripts', function() {
         defined( 'JOBSCOUT_THEME_VERSION' ) ? JOBSCOUT_THEME_VERSION : '1.0.0',
         true
     );
+
+    wp_localize_script(
+        'pds-job-detail-script',
+        'pdsJobDetailData',
+        array(
+            'ajax_url' => admin_url( 'admin-ajax.php' ),
+            'nonce'    => wp_create_nonce( 'pds_job_apply_nonce' ),
+            'i18n'     => array(
+                'submitting'     => __( 'Submitting...', 'jobscout' ),
+                'submit'         => __( 'SUBMIT APPLICATION', 'jobscout' ),
+                'invalid_file'   => __( 'Invalid file format. Only .pdf, .doc, and .docx are supported.', 'jobscout' ),
+                'file_too_large' => __( 'File size exceeds the 10MB limit.', 'jobscout' ),
+                'copied'         => __( 'COPIED!', 'jobscout' ),
+                'share'          => __( 'SHARE', 'jobscout' ),
+                'lightbox_prev'  => __( 'Previous photo', 'jobscout' ),
+                'lightbox_next'  => __( 'Next photo', 'jobscout' ),
+                'lightbox_close' => __( 'Close gallery (Esc)', 'jobscout' ),
+            ),
+        )
+    );
 }, 20 );
 
 get_header();
@@ -115,11 +135,10 @@ while ( have_posts() ) :
     $rating_num = (float) $staff_rating;
 
     // Company Photos
-    $photo_count = (int) get_post_meta( $job_id, '_cms_reference_company_photo_count', true );
-    if ( ! $photo_count ) {
-        $photo_count = 6;
-    }
-    $extra_photos = max( 1, $photo_count - 1 );
+    $company_photos = function_exists( 'pds_get_job_company_photos' ) ? pds_get_job_company_photos( $job_id ) : array();
+    $photo_count    = count( $company_photos );
+    $extra_photos   = max( 0, $photo_count - 1 );
+    $primary_photo  = ! empty( $company_photos[0]['thumb'] ) ? $company_photos[0]['thumb'] : content_url( '/uploads/seed-cms-content/news-restaurant-hotel-operations-600x450.png' );
 
     // Logo
     $logo_url = '';
@@ -278,8 +297,10 @@ while ( have_posts() ) :
                     <!-- Application Section -->
                     <div id="pds-job-apply" class="pds-job-detail-application-area">
                         <?php
-                        if ( function_exists( 'candidates_can_apply' ) && candidates_can_apply() ) {
+                        if ( function_exists( 'get_job_manager_template' ) ) {
                             get_job_manager_template( 'job-application.php' );
+                        } else {
+                            get_template_part( 'job_manager/job-application' );
                         }
                         ?>
                     </div>
@@ -327,16 +348,25 @@ while ( have_posts() ) :
                     <h3 class="pds-job-detail-widget-title">
                         <?php esc_html_e( 'Company Photos', 'jobscout' ); ?>
                     </h3>
-                    <div class="pds-company-photo-wrap">
+                    <div
+                        class="pds-company-photo-wrap"
+                        id="pds-company-photos-trigger"
+                        role="button"
+                        tabindex="0"
+                        aria-label="<?php esc_attr_e( 'View Company Photos in Lightbox', 'jobscout' ); ?>"
+                        data-gallery="<?php echo esc_attr( wp_json_encode( $company_photos ) ); ?>"
+                    >
                         <img
-                            src="<?php echo esc_url( content_url( '/uploads/seed-cms-content/news-restaurant-hotel-operations-600x450.png' ) ); ?>"
+                            src="<?php echo esc_url( $primary_photo ); ?>"
                             alt="<?php echo esc_attr( $company ?: $title ); ?>"
                             class="pds-company-photo-img"
                             loading="lazy"
                         >
-                        <div class="pds-company-photo-overlay">
-                            <span class="pds-photo-more-badge">+<?php echo esc_html( $extra_photos ); ?></span>
-                        </div>
+                        <?php if ( $extra_photos > 0 ) : ?>
+                            <div class="pds-company-photo-overlay">
+                                <span class="pds-photo-more-badge">+<?php echo esc_html( $extra_photos ); ?></span>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
 

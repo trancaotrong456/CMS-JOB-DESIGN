@@ -628,3 +628,50 @@ body.page-template-page-jobs .page-header {
     width: 1px;
     word-wrap: normal !important;
 }
+
+/* Pagination */
+.pds-all-jobs-pagination {
+    margin-top: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.pds-all-jobs-pagination .page-numbers {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    height: 38px;
+    padding: 0 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333333;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.pds-all-jobs-pagination .page-numbers:hover:not(.current):not(.dots) {
+    background: #fdf2e9;
+    border-color: #f2761b;
+    color: #f2761b;
+}
+
+.pds-all-jobs-pagination .page-numbers.current {
+    background: #f2761b;
+    border-color: #f2761b;
+    color: #ffffff;
+    cursor: default;
+}
+
+.pds-all-jobs-pagination .page-numbers.dots {
+    border: none;
+    background: transparent;
+    color: #888888;
+}
+

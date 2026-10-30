@@ -58,6 +58,9 @@
         var searchLocation = (config.location !== undefined && config.location !== null && config.location !== '')
             ? config.location
             : (currentUrlParams.get('search_location') || '');
+        var searchCategory = (config.category !== undefined && config.category !== null && config.category !== '')
+            ? config.category
+            : (currentUrlParams.get('search_category') || '');
 
         // If initial load already has all posts loaded
         if (loadMoreBtn && maxPages <= 1) {
@@ -94,6 +97,9 @@
                 }
                 if (searchLocation) {
                     url.searchParams.set('search_location', searchLocation);
+                }
+                if (searchCategory) {
+                    url.searchParams.set('search_category', searchCategory);
                 }
 
                 fetch(url.toString(), {
@@ -161,6 +167,9 @@
                 if (searchLocation) {
                     url.searchParams.set('search_location', searchLocation);
                 }
+                if (searchCategory) {
+                    url.searchParams.set('search_category', searchCategory);
+                }
 
                 fetch(url.toString(), {
                     method: 'GET',
@@ -202,6 +211,9 @@
                             }
                             if (searchLocation) {
                                 stateUrl.searchParams.set('search_location', searchLocation);
+                            }
+                            if (searchCategory) {
+                                stateUrl.searchParams.set('search_category', searchCategory);
                             }
                             window.history.pushState({ sort: currentSort }, '', stateUrl.toString());
                         }

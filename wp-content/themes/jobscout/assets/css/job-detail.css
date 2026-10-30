@@ -772,6 +772,520 @@ body.single-job_listing .page-header {
 }
 
 /* --------------------------------------------------------------------------
+   APPLICATION FORM SECTION (#pds-job-apply)
+   -------------------------------------------------------------------------- */
+.pds-job-detail-application-area {
+    margin-top: 36px;
+    padding-top: 28px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.pds-application-card {
+    background: #ffffff;
+}
+
+.pds-application-header {
+    margin-bottom: 22px;
+}
+
+.pds-application-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+    text-transform: uppercase;
+    margin: 0 0 6px 0;
+    letter-spacing: 0.4px;
+}
+
+.pds-application-subtitle {
+    font-size: 13.5px;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Alert Notification Boxes */
+.pds-app-alert {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-radius: 3px;
+    margin-bottom: 22px;
+    font-size: 13.5px;
+    line-height: 1.5;
+}
+
+.pds-app-alert-icon {
+    flex-shrink: 0;
+}
+
+.pds-app-alert--error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+}
+
+.pds-app-alert--success {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+}
+
+/* Form Layout */
+.pds-form-grid {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.pds-form-group {
+    margin-bottom: 18px;
+    width: 100%;
+}
+
+.pds-form-group--half {
+    flex: 1 1 calc(50% - 9px);
+    min-width: 240px;
+}
+
+.pds-form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+.pds-req {
+    color: #ef4444;
+    font-weight: 700;
+}
+
+.pds-optional {
+    font-weight: 400;
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+.pds-form-input,
+.pds-form-textarea {
+    width: 100%;
+    padding: 11px 14px;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 2px;
+    background: #ffffff;
+    color: #1f2937;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pds-form-input:focus,
+.pds-form-textarea:focus {
+    border-color: #f2761b;
+    box-shadow: 0 0 0 3px rgba(242, 118, 27, 0.15);
+    outline: none;
+}
+
+.pds-form-input.has-error,
+.pds-form-textarea.has-error,
+.pds-cv-dropzone.has-error {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15) !important;
+}
+
+.pds-field-error {
+    font-size: 12px;
+    color: #ef4444;
+    margin-top: 4px;
+    display: none;
+    font-weight: 500;
+}
+
+/* CV Upload Area */
+.pds-upload-group {
+    margin-bottom: 22px;
+}
+
+.pds-file-input-hidden {
+    display: none !important;
+}
+
+.pds-cv-dropzone {
+    border: 2px dashed #cbd5e1;
+    border-radius: 4px;
+    background: #f8fafc;
+    padding: 26px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.pds-cv-dropzone:hover,
+.pds-cv-dropzone.is-dragover,
+.pds-cv-dropzone:focus {
+    border-color: #f2761b;
+    background: #fff9f5;
+}
+
+.pds-cv-upload-icon {
+    stroke: #94a3b8;
+    margin: 0 auto 10px;
+    display: block;
+    transition: stroke 0.2s ease, transform 0.2s ease;
+}
+
+.pds-cv-dropzone:hover .pds-cv-upload-icon,
+.pds-cv-dropzone.is-dragover .pds-cv-upload-icon {
+    stroke: #f2761b;
+    transform: translateY(-2px);
+}
+
+.pds-cv-dropzone-text {
+    font-size: 14px;
+    color: #475569;
+    margin: 0 0 5px 0;
+}
+
+.pds-cv-dropzone-text strong {
+    color: #f2761b;
+    text-decoration: underline;
+}
+
+.pds-cv-dropzone-hint {
+    font-size: 12px;
+    color: #94a3b8;
+    display: block;
+}
+
+/* Selected File Card */
+.pds-cv-selected-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 4px;
+    padding: 12px 16px;
+    transition: all 0.2s ease;
+}
+
+.pds-cv-file-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.pds-cv-file-icon {
+    background: #0284c7;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+}
+
+.pds-cv-file-meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.pds-cv-file-name {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #0f172a;
+    word-break: break-all;
+}
+
+.pds-cv-file-size {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.pds-cv-remove-btn {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 2px;
+    transition: color 0.15s ease, background 0.15s ease;
+    flex-shrink: 0;
+}
+
+.pds-cv-remove-btn:hover {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+}
+
+/* Submit Button */
+.pds-form-actions {
+    margin-top: 10px;
+}
+
+.pds-btn-submit-app {
+    background: #f2761b;
+    color: #ffffff;
+    border: none;
+    padding: 12px 32px;
+    font-size: 13.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 2px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 44px;
+    transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pds-btn-submit-app:hover {
+    background: #e0650c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(242, 118, 27, 0.28);
+}
+
+.pds-btn-submit-app:active {
+    transform: translateY(0);
+}
+
+.pds-btn-submit-app:disabled,
+.pds-btn-submit-app.is-submitting {
+    opacity: 0.75;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.pds-spinner-svg {
+    animation: pds-spin 0.9s linear infinite;
+    display: block;
+}
+
+@keyframes pds-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* --------------------------------------------------------------------------
+   COMPANY PHOTOS LIGHTBOX MODAL
+   -------------------------------------------------------------------------- */
+body.pds-lightbox-active {
+    overflow: hidden !important;
+}
+
+.pds-company-photo-wrap {
+    cursor: pointer;
+    outline: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pds-company-photo-wrap:focus-visible {
+    box-shadow: 0 0 0 3px #f2761b;
+    border-radius: 2px;
+}
+
+.pds-lightbox-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.pds-lightbox-modal.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.pds-lightbox-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+
+.pds-lightbox-dialog {
+    position: relative;
+    z-index: 2;
+    max-width: 94vw;
+    width: 1040px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.pds-lightbox-btn-close {
+    position: absolute;
+    top: -12px;
+    right: 12px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: #ffffff;
+    font-size: 28px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    line-height: 1;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.pds-lightbox-btn-close:hover {
+    background: #f2761b;
+    transform: scale(1.1);
+}
+
+.pds-lightbox-stage {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    position: relative;
+    gap: 16px;
+}
+
+.pds-lightbox-viewport {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 320px;
+}
+
+.pds-lightbox-image {
+    max-width: 82vw;
+    max-height: 70vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 3px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    transform: scale(0.96);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    display: block;
+}
+
+.pds-lightbox-image.is-loaded {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.pds-lightbox-caption {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+    color: #ffffff;
+    font-size: 13.5px;
+}
+
+.pds-lightbox-counter {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 3px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.pds-lightbox-title {
+    color: #e5e7eb;
+    font-weight: 500;
+}
+
+.pds-lightbox-nav {
+    background: rgba(255, 255, 255, 0.12);
+    border: none;
+    color: #ffffff;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.pds-lightbox-nav:hover {
+    background: #f2761b;
+    transform: scale(1.08);
+}
+
+.pds-lightbox-thumbs {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+    max-width: 80vw;
+    overflow-x: auto;
+    padding: 4px 6px;
+    scrollbar-width: thin;
+    scrollbar-color: #f2761b rgba(255, 255, 255, 0.1);
+}
+
+.pds-lightbox-thumb-btn {
+    border: 2px solid transparent;
+    border-radius: 3px;
+    padding: 0;
+    width: 68px;
+    height: 48px;
+    overflow: hidden;
+    background: transparent;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.pds-lightbox-thumb-btn:hover {
+    opacity: 0.9;
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.pds-lightbox-thumb-btn.is-active {
+    opacity: 1;
+    border-color: #f2761b;
+    transform: scale(1.06);
+}
+
+.pds-lightbox-thumb-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* --------------------------------------------------------------------------
    RESPONSIVE DESIGN
    -------------------------------------------------------------------------- */
 @media (max-width: 900px) {
@@ -780,6 +1294,18 @@ body.single-job_listing .page-header {
     }
     .pds-job-detail-other-grid {
         grid-template-columns: 1fr;
+    }
+    .pds-form-group--half {
+        flex: 1 1 100%;
+    }
+    .pds-lightbox-dialog {
+        width: 100%;
+        padding: 10px;
+    }
+    .pds-lightbox-nav {
+        width: 38px;
+        height: 38px;
+        font-size: 16px;
     }
 }
 
@@ -800,4 +1326,22 @@ body.single-job_listing .page-header {
     .pds-job-detail-content-card {
         padding: 22px 18px;
     }
+    .pds-btn-submit-app {
+        width: 100%;
+    }
+    .pds-lightbox-btn-close {
+        top: 0;
+        right: 0;
+        width: 36px;
+        height: 36px;
+        font-size: 22px;
+    }
+    .pds-lightbox-stage {
+        gap: 6px;
+    }
+    .pds-lightbox-image {
+        max-height: 55vh;
+        max-width: 86vw;
+    }
 }
+
