@@ -3050,14 +3050,18 @@ class PDS_Submit_Job_Content_Widget extends WP_Widget {
             return;
         }
 
-        $heading   = ! empty( $instance['heading'] ) ? $instance['heading'] : __( 'JOB DETAILS', 'jobscout' );
-        $shortcode = ! empty( $instance['shortcode'] ) ? $instance['shortcode'] : '[submit_job_form]';
+        $heading          = ! empty( $instance['heading'] ) ? $instance['heading'] : __( 'JOB DETAILS', 'jobscout' );
+        $instruction_text = ! empty( $instance['instruction_text'] ) ? $instance['instruction_text'] : '';
+        $shortcode        = ! empty( $instance['shortcode'] ) ? $instance['shortcode'] : '[submit_job_form]';
 
         echo $args['before_widget'];
         ?>
         <div class="home-job-card pds-submit-job-panel post-job-form-wrapper">
             <?php if ( $heading ) : ?>
                 <h2 class="pds-submit-job-group-title post-job-form-heading"><?php echo esc_html( $heading ); ?></h2>
+            <?php endif; ?>
+            <?php if ( $instruction_text ) : ?>
+                <p class="pds-submit-job-instruction"><?php echo esc_html( $instruction_text ); ?></p>
             <?php endif; ?>
             <div class="pds-submit-job-form-content post-job-form-body">
                 <?php echo do_shortcode( $shortcode ); ?>
@@ -3068,8 +3072,9 @@ class PDS_Submit_Job_Content_Widget extends WP_Widget {
     }
 
     public function form( $instance ) {
-        $heading   = isset( $instance['heading'] ) ? $instance['heading'] : __( 'JOB DETAILS', 'jobscout' );
-        $shortcode = isset( $instance['shortcode'] ) ? $instance['shortcode'] : '[submit_job_form]';
+        $heading          = isset( $instance['heading'] ) ? $instance['heading'] : __( 'JOB DETAILS', 'jobscout' );
+        $instruction_text = isset( $instance['instruction_text'] ) ? $instance['instruction_text'] : '';
+        $shortcode        = isset( $instance['shortcode'] ) ? $instance['shortcode'] : '[submit_job_form]';
 
         $snippet = <<<HTML
 <div class="post-job-form-wrapper">
@@ -3085,6 +3090,10 @@ HTML;
             <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'heading' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'heading' ) ); ?>" type="text" value="<?php echo esc_attr( $heading ); ?>">
         </p>
         <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'instruction_text' ) ); ?>"><?php esc_html_e( 'Lời nhắc / Hướng dẫn điền form (tùy chọn):', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'instruction_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'instruction_text' ) ); ?>" type="text" value="<?php echo esc_attr( $instruction_text ); ?>">
+        </p>
+        <p>
             <label for="<?php echo esc_attr( $this->get_field_id( 'shortcode' ) ); ?>"><?php esc_html_e( 'Mã Shortcode Form (mặc định [submit_job_form]):', 'jobscout' ); ?></label>
             <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'shortcode' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'shortcode' ) ); ?>" type="text" value="<?php echo esc_attr( $shortcode ); ?>">
         </p>
@@ -3093,9 +3102,339 @@ HTML;
     }
 
     public function update( $new_instance, $old_instance ) {
+        $instance                     = array();
+        $instance['heading']          = sanitize_text_field( $new_instance['heading'] ?? '' );
+        $instance['instruction_text'] = sanitize_text_field( $new_instance['instruction_text'] ?? '' );
+        $instance['shortcode']        = sanitize_text_field( $new_instance['shortcode'] ?? '' );
+        $instance['custom_html']      = ! empty( $new_instance['custom_html'] ) ? wp_unslash( $new_instance['custom_html'] ) : '';
+        return $instance;
+    }
+}
+
+/**
+ * 8.7 Submit Job Success Confirmation Widget
+ */
+class PDS_Submit_Job_Success_Widget extends WP_Widget {
+
+    public function __construct() {
+        parent::__construct(
+            'pds_submit_job_success',
+            __( '[Submit Job] Success Confirmation Widget', 'jobscout' ),
+            array(
+                'description'                 => __( 'Khối thông báo chúc mừng & điều hướng khi người dùng hoàn thành đăng tin tuyển dụng.', 'jobscout' ),
+                'customize_selective_refresh' => true,
+            )
+        );
+    }
+
+    public function widget( $args, $instance ) {
+        $job = $GLOBALS['pds_submitted_job'] ?? null;
+        if ( ! $job && isset( $_GET['job_id'] ) ) {
+            $job = get_post( absint( $_GET['job_id'] ) );
+        }
+        $job_title     = $job ? get_the_title( $job->ID ) : __( 'Vị trí tuyển dụng', 'jobscout' );
+        $job_permalink = $job ? get_permalink( $job->ID ) : home_url( '/jobs/' );
+
+        if ( ! empty( trim( $instance['custom_html'] ?? '' ) ) ) {
+            $custom_html = wp_unslash( $instance['custom_html'] );
+            $custom_html = str_replace( '{job_title}', esc_html( $job_title ), $custom_html );
+            $custom_html = str_replace( '{job_url}', esc_url( $job_permalink ), $custom_html );
+            echo $args['before_widget'];
+            echo do_shortcode( $custom_html );
+            echo $args['after_widget'];
+            return;
+        }
+
+        $title         = ! empty( $instance['title'] ) ? $instance['title'] : __( 'Đăng tin tuyển dụng thành công!', 'jobscout' );
+        $desc_template = ! empty( $instance['desc_template'] ) ? $instance['desc_template'] : __( 'Tin tuyển dụng "{job_title}" đã được xuất bản trực tiếp và hiển thị công khai trên website.', 'jobscout' );
+        $desc          = str_replace( '{job_title}', '<strong>' . esc_html( $job_title ) . '</strong>', esc_html( $desc_template ) );
+
+        $show_view_btn        = ! empty( $instance['show_view_btn'] ?? '1' );
+        $view_btn_text        = ! empty( $instance['view_btn_text'] ) ? $instance['view_btn_text'] : __( 'Xem tin vừa đăng', 'jobscout' );
+
+        $show_all_jobs_btn    = ! empty( $instance['show_all_jobs_btn'] ?? '1' );
+        $all_jobs_btn_text    = ! empty( $instance['all_jobs_btn_text'] ) ? $instance['all_jobs_btn_text'] : __( 'Xem danh sách việc làm', 'jobscout' );
+        $all_jobs_btn_url     = ! empty( $instance['all_jobs_btn_url'] ) ? $instance['all_jobs_btn_url'] : home_url( '/jobs/' );
+
+        $show_submit_more_btn = ! empty( $instance['show_submit_more_btn'] ?? '1' );
+        $submit_more_btn_text = ! empty( $instance['submit_more_btn_text'] ) ? $instance['submit_more_btn_text'] : __( 'Đăng tin khác', 'jobscout' );
+        $submit_more_btn_url  = ! empty( $instance['submit_more_btn_url'] ) ? $instance['submit_more_btn_url'] : home_url( '/submit-job/' );
+
+        echo $args['before_widget'];
+        ?>
+        <div class="pds-submit-success-card">
+            <div class="pds-submit-success-icon" aria-hidden="true">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+            </div>
+            <div class="pds-submit-success-content">
+                <h3 class="pds-submit-success-title"><?php echo esc_html( $title ); ?></h3>
+                <p class="pds-submit-success-desc"><?php echo wp_kses_post( $desc ); ?></p>
+                <div class="pds-submit-success-actions">
+                    <?php if ( $show_view_btn && $job ) : ?>
+                        <a href="<?php echo esc_url( $job_permalink ); ?>" class="btn pds-btn-view-job">
+                            <?php echo esc_html( $view_btn_text ); ?>
+                        </a>
+                    <?php endif; ?>
+                    <?php if ( $show_all_jobs_btn ) : ?>
+                        <a href="<?php echo esc_url( $all_jobs_btn_url ); ?>" class="btn pds-btn-all-jobs">
+                            <?php echo esc_html( $all_jobs_btn_text ); ?>
+                        </a>
+                    <?php endif; ?>
+                    <?php if ( $show_submit_more_btn ) : ?>
+                        <a href="<?php echo esc_url( $submit_more_btn_url ); ?>" class="btn pds-btn-submit-more">
+                            <?php echo esc_html( $submit_more_btn_text ); ?>
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+        <?php
+        echo $args['after_widget'];
+    }
+
+    public function form( $instance ) {
+        $title                = isset( $instance['title'] ) ? $instance['title'] : __( 'Đăng tin tuyển dụng thành công!', 'jobscout' );
+        $desc_template        = isset( $instance['desc_template'] ) ? $instance['desc_template'] : __( 'Tin tuyển dụng "{job_title}" đã được xuất bản trực tiếp và hiển thị công khai trên website.', 'jobscout' );
+        $show_view_btn        = isset( $instance['show_view_btn'] ) ? (bool) $instance['show_view_btn'] : true;
+        $view_btn_text        = isset( $instance['view_btn_text'] ) ? $instance['view_btn_text'] : __( 'Xem tin vừa đăng', 'jobscout' );
+        $show_all_jobs_btn    = isset( $instance['show_all_jobs_btn'] ) ? (bool) $instance['show_all_jobs_btn'] : true;
+        $all_jobs_btn_text    = isset( $instance['all_jobs_btn_text'] ) ? $instance['all_jobs_btn_text'] : __( 'Xem danh sách việc làm', 'jobscout' );
+        $all_jobs_btn_url     = isset( $instance['all_jobs_btn_url'] ) ? $instance['all_jobs_btn_url'] : home_url( '/jobs/' );
+        $show_submit_more_btn = isset( $instance['show_submit_more_btn'] ) ? (bool) $instance['show_submit_more_btn'] : true;
+        $submit_more_btn_text = isset( $instance['submit_more_btn_text'] ) ? $instance['submit_more_btn_text'] : __( 'Đăng tin khác', 'jobscout' );
+        $submit_more_btn_url  = isset( $instance['submit_more_btn_url'] ) ? $instance['submit_more_btn_url'] : home_url( '/submit-job/' );
+
+        $snippet = <<<HTML
+<div class="pds-submit-success-card">
+    <div class="pds-submit-success-content">
+        <h3 class="pds-submit-success-title">Đăng tin tuyển dụng thành công!</h3>
+        <p class="pds-submit-success-desc">Tin tuyển dụng "{job_title}" đã được xuất bản trực tiếp.</p>
+        <div class="pds-submit-success-actions">
+            <a href="{job_url}" class="btn pds-btn-view-job">Xem tin vừa đăng</a>
+            <a href="/jobs/" class="btn pds-btn-all-jobs">Xem danh sách việc làm</a>
+            <a href="/submit-job/" class="btn pds-btn-submit-more">Đăng tin khác</a>
+        </div>
+    </div>
+</div>
+HTML;
+        ?>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_html_e( 'Tiêu đề thông báo:', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'desc_template' ) ); ?>"><?php esc_html_e( 'Mô tả thông báo (dùng {job_title} để chèn tên việc làm):', 'jobscout' ); ?></label>
+            <textarea class="widefat" rows="3" id="<?php echo esc_attr( $this->get_field_id( 'desc_template' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'desc_template' ) ); ?>"><?php echo esc_textarea( $desc_template ); ?></textarea>
+        </p>
+        <hr>
+        <p>
+            <input class="checkbox" type="checkbox" <?php checked( $show_view_btn ); ?> id="<?php echo esc_attr( $this->get_field_id( 'show_view_btn' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'show_view_btn' ) ); ?>" value="1" />
+            <label for="<?php echo esc_attr( $this->get_field_id( 'show_view_btn' ) ); ?>"><?php esc_html_e( 'Hiển thị nút Xem tin vừa đăng', 'jobscout' ); ?></label>
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'view_btn_text' ) ); ?>"><?php esc_html_e( 'Chữ nút Xem tin vừa đăng:', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'view_btn_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'view_btn_text' ) ); ?>" type="text" value="<?php echo esc_attr( $view_btn_text ); ?>">
+        </p>
+        <hr>
+        <p>
+            <input class="checkbox" type="checkbox" <?php checked( $show_all_jobs_btn ); ?> id="<?php echo esc_attr( $this->get_field_id( 'show_all_jobs_btn' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'show_all_jobs_btn' ) ); ?>" value="1" />
+            <label for="<?php echo esc_attr( $this->get_field_id( 'show_all_jobs_btn' ) ); ?>"><?php esc_html_e( 'Hiển thị nút Xem danh sách việc làm', 'jobscout' ); ?></label>
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'all_jobs_btn_text' ) ); ?>"><?php esc_html_e( 'Chữ nút Danh sách việc làm:', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'all_jobs_btn_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'all_jobs_btn_text' ) ); ?>" type="text" value="<?php echo esc_attr( $all_jobs_btn_text ); ?>">
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'all_jobs_btn_url' ) ); ?>"><?php esc_html_e( 'URL nút Danh sách việc làm:', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'all_jobs_btn_url' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'all_jobs_btn_url' ) ); ?>" type="url" value="<?php echo esc_attr( $all_jobs_btn_url ); ?>">
+        </p>
+        <hr>
+        <p>
+            <input class="checkbox" type="checkbox" <?php checked( $show_submit_more_btn ); ?> id="<?php echo esc_attr( $this->get_field_id( 'show_submit_more_btn' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'show_submit_more_btn' ) ); ?>" value="1" />
+            <label for="<?php echo esc_attr( $this->get_field_id( 'show_submit_more_btn' ) ); ?>"><?php esc_html_e( 'Hiển thị nút Đăng tin khác', 'jobscout' ); ?></label>
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'submit_more_btn_text' ) ); ?>"><?php esc_html_e( 'Chữ nút Đăng tin khác:', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'submit_more_btn_text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'submit_more_btn_text' ) ); ?>" type="text" value="<?php echo esc_attr( $submit_more_btn_text ); ?>">
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'submit_more_btn_url' ) ); ?>"><?php esc_html_e( 'URL nút Đăng tin khác:', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'submit_more_btn_url' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'submit_more_btn_url' ) ); ?>" type="url" value="<?php echo esc_attr( $submit_more_btn_url ); ?>">
+        </p>
+        <?php
+        pds_render_custom_html_field( $this, $instance, $snippet );
+    }
+
+    public function update( $new_instance, $old_instance ) {
+        $instance                         = array();
+        $instance['title']                = sanitize_text_field( $new_instance['title'] ?? '' );
+        $instance['desc_template']        = sanitize_text_field( $new_instance['desc_template'] ?? '' );
+        $instance['show_view_btn']        = ! empty( $new_instance['show_view_btn'] ) ? 1 : 0;
+        $instance['view_btn_text']        = sanitize_text_field( $new_instance['view_btn_text'] ?? '' );
+        $instance['show_all_jobs_btn']    = ! empty( $new_instance['show_all_jobs_btn'] ) ? 1 : 0;
+        $instance['all_jobs_btn_text']    = sanitize_text_field( $new_instance['all_jobs_btn_text'] ?? '' );
+        $instance['all_jobs_btn_url']     = esc_url_raw( $new_instance['all_jobs_btn_url'] ?? '' );
+        $instance['show_submit_more_btn'] = ! empty( $new_instance['show_submit_more_btn'] ) ? 1 : 0;
+        $instance['submit_more_btn_text'] = sanitize_text_field( $new_instance['submit_more_btn_text'] ?? '' );
+        $instance['submit_more_btn_url']  = esc_url_raw( $new_instance['submit_more_btn_url'] ?? '' );
+        $instance['custom_html']          = ! empty( $new_instance['custom_html'] ) ? wp_unslash( $new_instance['custom_html'] ) : '';
+        return $instance;
+    }
+}
+
+/**
+ * 8.8 Submit Job Recruitment Benefits Widget
+ */
+class PDS_Submit_Job_Benefits_Widget extends WP_Widget {
+
+    public function __construct() {
+        parent::__construct(
+            'pds_submit_job_benefits',
+            __( '[Submit Job] Recruitment Benefits Widget', 'jobscout' ),
+            array(
+                'description'                 => __( 'Khối lợi ích và điểm nổi bật dành cho nhà tuyển dụng khi đăng tin.', 'jobscout' ),
+                'customize_selective_refresh' => true,
+            )
+        );
+    }
+
+    public function widget( $args, $instance ) {
+        if ( ! empty( trim( $instance['custom_html'] ?? '' ) ) ) {
+            echo $args['before_widget'];
+            echo do_shortcode( wp_unslash( $instance['custom_html'] ) );
+            echo $args['after_widget'];
+            return;
+        }
+
+        $title       = ! empty( $instance['title'] ) ? $instance['title'] : __( 'LỢI ÍCH KHI ĐĂNG TIN TUYỂN DỤNG CÙNG CHÚNG TÔI', 'jobscout' );
+        $item1_title = ! empty( $instance['item1_title'] ) ? $instance['item1_title'] : __( 'Ứng viên chất lượng cao', 'jobscout' );
+        $item1_desc  = ! empty( $instance['item1_desc'] ) ? $instance['item1_desc'] : __( 'Tiếp cận hàng nghìn chuyên gia, quản lý và nhân sự ngành du lịch - khách sạn hàng đầu.', 'jobscout' );
+        $item2_title = ! empty( $instance['item2_title'] ) ? $instance['item2_title'] : __( 'Xuất bản tin tức thì', 'jobscout' );
+        $item2_desc  = ! empty( $instance['item2_desc'] ) ? $instance['item2_desc'] : __( 'Hệ thống tự động kích hoạt và hiển thị tin tuyển dụng ngay lập tức trên trang chủ và danh mục.', 'jobscout' );
+        $item3_title = ! empty( $instance['item3_title'] ) ? $instance['item3_title'] : __( 'Tối ưu đa nền tảng', 'jobscout' );
+        $item3_desc  = ! empty( $instance['item3_desc'] ) ? $instance['item3_desc'] : __( 'Giao diện hiển thị chuyên nghiệp, mượt mà trên cả điện thoại, máy tính bảng và máy tính.', 'jobscout' );
+
+        echo $args['before_widget'];
+        ?>
+        <div class="pds-submit-job-benefits-section">
+            <?php if ( $title ) : ?>
+                <h3 class="pds-submit-job-benefits-title"><?php echo esc_html( $title ); ?></h3>
+            <?php endif; ?>
+            <div class="pds-submit-job-benefits-grid">
+                <div class="pds-submit-job-benefit-item">
+                    <div class="pds-benefit-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <h4><?php echo esc_html( $item1_title ); ?></h4>
+                    <p><?php echo esc_html( $item1_desc ); ?></p>
+                </div>
+                <div class="pds-submit-job-benefit-item">
+                    <div class="pds-benefit-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                    </div>
+                    <h4><?php echo esc_html( $item2_title ); ?></h4>
+                    <p><?php echo esc_html( $item2_desc ); ?></p>
+                </div>
+                <div class="pds-submit-job-benefit-item">
+                    <div class="pds-benefit-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                    </div>
+                    <h4><?php echo esc_html( $item3_title ); ?></h4>
+                    <p><?php echo esc_html( $item3_desc ); ?></p>
+                </div>
+            </div>
+        </div>
+        <?php
+        echo $args['after_widget'];
+    }
+
+    public function form( $instance ) {
+        $title       = isset( $instance['title'] ) ? $instance['title'] : __( 'LỢI ÍCH KHI ĐĂNG TIN TUYỂN DỤNG CÙNG CHÚNG TÔI', 'jobscout' );
+        $item1_title = isset( $instance['item1_title'] ) ? $instance['item1_title'] : __( 'Ứng viên chất lượng cao', 'jobscout' );
+        $item1_desc  = isset( $instance['item1_desc'] ) ? $instance['item1_desc'] : __( 'Tiếp cận hàng nghìn chuyên gia, quản lý và nhân sự ngành du lịch - khách sạn hàng đầu.', 'jobscout' );
+        $item2_title = isset( $instance['item2_title'] ) ? $instance['item2_title'] : __( 'Xuất bản tin tức thì', 'jobscout' );
+        $item2_desc  = isset( $instance['item2_desc'] ) ? $instance['item2_desc'] : __( 'Hệ thống tự động kích hoạt và hiển thị tin tuyển dụng ngay lập tức trên trang chủ và danh mục.', 'jobscout' );
+        $item3_title = isset( $instance['item3_title'] ) ? $instance['item3_title'] : __( 'Tối ưu đa nền tảng', 'jobscout' );
+        $item3_desc  = isset( $instance['item3_desc'] ) ? $instance['item3_desc'] : __( 'Giao diện hiển thị chuyên nghiệp, mượt mà trên cả điện thoại, máy tính bảng và máy tính.', 'jobscout' );
+
+        $snippet = <<<HTML
+<div class="pds-submit-job-benefits-section">
+    <h3 class="pds-submit-job-benefits-title">LỢI ÍCH KHI ĐĂNG TIN TUYỂN DỤNG</h3>
+    <div class="pds-submit-job-benefits-grid">
+        <div class="pds-submit-job-benefit-item">
+            <h4>Ứng viên chất lượng cao</h4>
+            <p>Tiếp cận hàng nghìn chuyên gia và nhân sự ngành khách sạn.</p>
+        </div>
+        <div class="pds-submit-job-benefit-item">
+            <h4>Xuất bản tức thì</h4>
+            <p>Tin đăng hiển thị ngay lập tức không cần chờ đợi.</p>
+        </div>
+        <div class="pds-submit-job-benefit-item">
+            <h4>Tối ưu đa nền tảng</h4>
+            <p>Trải nghiệm mượt mà trên mọi thiết bị.</p>
+        </div>
+    </div>
+</div>
+HTML;
+        ?>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_html_e( 'Tiêu đề khối lợi ích:', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
+        </p>
+        <hr>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'item1_title' ) ); ?>"><?php esc_html_e( 'Mục 1 - Tiêu đề:', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'item1_title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'item1_title' ) ); ?>" type="text" value="<?php echo esc_attr( $item1_title ); ?>">
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'item1_desc' ) ); ?>"><?php esc_html_e( 'Mục 1 - Mô tả:', 'jobscout' ); ?></label>
+            <textarea class="widefat" rows="2" id="<?php echo esc_attr( $this->get_field_id( 'item1_desc' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'item1_desc' ) ); ?>"><?php echo esc_textarea( $item1_desc ); ?></textarea>
+        </p>
+        <hr>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'item2_title' ) ); ?>"><?php esc_html_e( 'Mục 2 - Tiêu đề:', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'item2_title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'item2_title' ) ); ?>" type="text" value="<?php echo esc_attr( $item2_title ); ?>">
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'item2_desc' ) ); ?>"><?php esc_html_e( 'Mục 2 - Mô tả:', 'jobscout' ); ?></label>
+            <textarea class="widefat" rows="2" id="<?php echo esc_attr( $this->get_field_id( 'item2_desc' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'item2_desc' ) ); ?>"><?php echo esc_textarea( $item2_desc ); ?></textarea>
+        </p>
+        <hr>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'item3_title' ) ); ?>"><?php esc_html_e( 'Mục 3 - Tiêu đề:', 'jobscout' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'item3_title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'item3_title' ) ); ?>" type="text" value="<?php echo esc_attr( $item3_title ); ?>">
+        </p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'item3_desc' ) ); ?>"><?php esc_html_e( 'Mục 3 - Mô tả:', 'jobscout' ); ?></label>
+            <textarea class="widefat" rows="2" id="<?php echo esc_attr( $this->get_field_id( 'item3_desc' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'item3_desc' ) ); ?>"><?php echo esc_textarea( $item3_desc ); ?></textarea>
+        </p>
+        <?php
+        pds_render_custom_html_field( $this, $instance, $snippet );
+    }
+
+    public function update( $new_instance, $old_instance ) {
         $instance                = array();
-        $instance['heading']     = sanitize_text_field( $new_instance['heading'] ?? '' );
-        $instance['shortcode']   = sanitize_text_field( $new_instance['shortcode'] ?? '' );
+        $instance['title']       = sanitize_text_field( $new_instance['title'] ?? '' );
+        $instance['item1_title'] = sanitize_text_field( $new_instance['item1_title'] ?? '' );
+        $instance['item1_desc']  = sanitize_text_field( $new_instance['item1_desc'] ?? '' );
+        $instance['item2_title'] = sanitize_text_field( $new_instance['item2_title'] ?? '' );
+        $instance['item2_desc']  = sanitize_text_field( $new_instance['item2_desc'] ?? '' );
+        $instance['item3_title'] = sanitize_text_field( $new_instance['item3_title'] ?? '' );
+        $instance['item3_desc']  = sanitize_text_field( $new_instance['item3_desc'] ?? '' );
         $instance['custom_html'] = ! empty( $new_instance['custom_html'] ) ? wp_unslash( $new_instance['custom_html'] ) : '';
         return $instance;
     }
@@ -3161,6 +3500,8 @@ function pds_register_all_cms_widgets() {
     // 9. Submit Job (Post a Job)
     register_widget( 'PDS_Submit_Job_Header_Widget' );
     register_widget( 'PDS_Submit_Job_Content_Widget' );
+    register_widget( 'PDS_Submit_Job_Success_Widget' );
+    register_widget( 'PDS_Submit_Job_Benefits_Widget' );
 }
 add_action( 'widgets_init', 'pds_register_all_cms_widgets' );
 
@@ -3238,6 +3579,27 @@ function pds_auto_populate_default_widgets() {
     $ensure_widget( 'submit-job-content', 'pds_submit_job_content', 'widget_pds_submit_job_content', array(
         'heading'   => 'JOB DETAILS',
         'shortcode' => '[submit_job_form]',
+    ) );
+    $ensure_widget( 'submit-job-completed', 'pds_submit_job_success', 'widget_pds_submit_job_success', array(
+        'title'                => 'Đăng tin tuyển dụng thành công!',
+        'desc_template'        => 'Tin tuyển dụng "{job_title}" đã được xuất bản trực tiếp và hiển thị công khai trên website.',
+        'show_view_btn'        => '1',
+        'view_btn_text'        => 'Xem tin vừa đăng',
+        'show_all_jobs_btn'    => '1',
+        'all_jobs_btn_text'    => 'Xem danh sách việc làm',
+        'all_jobs_btn_url'     => home_url( '/jobs/' ),
+        'show_submit_more_btn' => '1',
+        'submit_more_btn_text' => 'Đăng tin khác',
+        'submit_more_btn_url'  => home_url( '/submit-job/' ),
+    ) );
+    $ensure_widget( 'submit-job-footer', 'pds_submit_job_benefits', 'widget_pds_submit_job_benefits', array(
+        'title'       => 'LỢI ÍCH KHI ĐĂNG TIN TUYỂN DỤNG CÙNG CHÚNG TÔI',
+        'item1_title' => 'Ứng viên chất lượng cao',
+        'item1_desc'  => 'Tiếp cận hàng nghìn chuyên gia, quản lý và nhân sự ngành du lịch - khách sạn hàng đầu.',
+        'item2_title' => 'Xuất bản tin tức thì',
+        'item2_desc'  => 'Hệ thống tự động kích hoạt và hiển thị tin tuyển dụng ngay lập tức trên trang chủ và danh mục.',
+        'item3_title' => 'Tối ưu đa nền tảng',
+        'item3_desc'  => 'Giao diện hiển thị chuyên nghiệp, mượt mà trên cả điện thoại, máy tính bảng và máy tính.',
     ) );
 
     // 6. Home Widgets

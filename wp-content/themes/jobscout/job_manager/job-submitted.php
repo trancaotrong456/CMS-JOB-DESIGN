@@ -23,6 +23,13 @@ if ( ! $job ) {
 $job_title     = get_the_title( $job->ID );
 $job_permalink = get_permalink( $job->ID );
 $is_published  = 'publish' === $job->post_status;
+
+// Share current job context with widgets
+$GLOBALS['pds_submitted_job'] = $job;
+
+if ( is_active_sidebar( 'submit-job-completed' ) ) :
+	dynamic_sidebar( 'submit-job-completed' );
+else :
 ?>
 <div class="pds-submit-success-card">
 	<div class="pds-submit-success-icon" aria-hidden="true">
@@ -58,4 +65,5 @@ $is_published  = 'publish' === $job->post_status;
 	</div>
 </div>
 <?php
+endif;
 do_action( 'job_manager_job_submitted_content_after', sanitize_title( $job->post_status ), $job );

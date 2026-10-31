@@ -556,3 +556,83 @@
 		grid-template-columns: 1fr;
 	}
 }
+
+/* Instruction & Footer Widgets */
+.pds-submit-job-instruction {
+	margin: -10px 0 24px;
+	color: #64748b;
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+.pds-submit-job-footer-widgets {
+	margin-top: 40px;
+}
+
+.pds-submit-job-benefits-section {
+	padding: 36px 30px;
+	background: #fff;
+	border: 1px solid #e2e8f0;
+}
+
+.pds-submit-job-benefits-title {
+	margin: 0 0 28px;
+	text-align: center;
+	font-size: 18px;
+	font-weight: 700;
+	color: var(--pds-submit-ink);
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+}
+
+.pds-submit-job-benefits-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 24px;
+}
+
+.pds-submit-job-benefit-item {
+	padding: 24px 20px;
+	background: #f8fafc;
+	border: 1px solid #edf2f7;
+	text-align: center;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pds-submit-job-benefit-item:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+.pds-benefit-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 52px;
+	height: 52px;
+	margin-bottom: 16px;
+	border-radius: 50%;
+	background: #fff;
+	color: var(--pds-submit-orange);
+	box-shadow: 0 2px 8px rgba(242, 118, 27, 0.15);
+}
+
+.pds-submit-job-benefit-item h4 {
+	margin: 0 0 10px;
+	font-size: 16px;
+	font-weight: 700;
+	color: #1e293b;
+}
+
+.pds-submit-job-benefit-item p {
+	margin: 0;
+	font-size: 13.5px;
+	color: #64748b;
+	line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+	.pds-submit-job-benefits-grid {
+		grid-template-columns: 1fr;
+	}
+}

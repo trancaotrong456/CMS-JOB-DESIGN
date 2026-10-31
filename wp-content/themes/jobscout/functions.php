@@ -270,6 +270,16 @@ function jobscout_register_cms_widget_areas() {
             'name'        => __( 'Submit Job Content', 'jobscout' ),
             'description' => __( 'Khối form đăng tin tuyển dụng JOB DETAILS.', 'jobscout' ),
         ),
+        array(
+            'id'          => 'submit-job-completed',
+            'name'        => __( 'Submit Job Completed (Khi hoàn thành)', 'jobscout' ),
+            'description' => __( 'Khối thông báo chúc mừng & điều hướng khi người dùng hoàn thành đăng tin tuyển dụng.', 'jobscout' ),
+        ),
+        array(
+            'id'          => 'submit-job-footer',
+            'name'        => __( 'Submit Job Footer Widgets', 'jobscout' ),
+            'description' => __( 'Khu vực bổ trợ phía dưới form đăng tin tuyển dụng.', 'jobscout' ),
+        ),
     );
 
     foreach ( $widget_areas as $area ) {

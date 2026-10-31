@@ -58,6 +58,12 @@ get_header();
 					</div>
 				</section>
 			<?php endif; ?>
+
+			<?php if ( is_active_sidebar( 'submit-job-footer' ) ) : ?>
+				<div class="pds-submit-job-footer-widgets">
+					<?php dynamic_sidebar( 'submit-job-footer' ); ?>
+				</div>
+			<?php endif; ?>
 		</div>
 	</section>
 </main>
