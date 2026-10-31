@@ -308,6 +308,88 @@
 	right: 8px;
 }
 
+/* WP Job Manager Preview Screen & Submission Notices */
+.pds-submit-job-form-content #job_preview {
+	margin: 0;
+	width: 100%;
+}
+
+.pds-submit-job-form-content .job_listing_preview_title {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 24px;
+	padding-bottom: 18px;
+	border-bottom: 1px solid #e5e5e5;
+}
+
+.pds-submit-job-form-content .job_listing_preview_title h2 {
+	margin: 0;
+	padding: 0;
+	border: none;
+	font-size: 20px;
+	font-weight: 700;
+	color: var(--pds-submit-ink);
+	order: -1;
+	width: 100%;
+}
+
+.pds-submit-job-form-content .job_listing_preview_title input[type="submit"],
+.pds-submit-job-form-content .job_listing_preview_title .button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 48px;
+	padding: 0 24px;
+	font-size: 13px;
+	font-weight: 700;
+	text-transform: uppercase;
+	border-radius: 0;
+	cursor: pointer;
+	text-decoration: none;
+	transition: background-color .16s ease, border-color .16s ease, color .16s ease;
+}
+
+.pds-submit-job-form-content .job_listing_preview_title .job-manager-button-submit-listing {
+	background: var(--pds-submit-orange);
+	border: 1px solid var(--pds-submit-orange);
+	color: #fff;
+}
+
+.pds-submit-job-form-content .job_listing_preview_title .job-manager-button-submit-listing:hover {
+	background: #d95f0e;
+	border-color: #d95f0e;
+	color: #fff;
+}
+
+.pds-submit-job-form-content .job_listing_preview_title .job-manager-button-edit-listing {
+	background: #fff;
+	border: 1px solid #99918d;
+	color: #4b4541;
+}
+
+.pds-submit-job-form-content .job_listing_preview_title .job-manager-button-edit-listing:hover {
+	border-color: var(--pds-submit-orange);
+	color: var(--pds-submit-orange);
+}
+
+.pds-submit-job-form-content .job-manager-message {
+	padding: 20px 24px;
+	background: #f0fdf4;
+	border-left: 4px solid #16a34a;
+	color: #166534;
+	font-size: 15px;
+	font-weight: 500;
+	margin-bottom: 24px;
+}
+
+.pds-submit-job-form-content .job-manager-message a {
+	color: var(--pds-submit-orange);
+	font-weight: 700;
+	text-decoration: underline;
+}
+
 @media (max-width: 1024px) {
 	.pds-submit-job-panel {
 		padding: 24px;

@@ -3055,11 +3055,11 @@ class PDS_Submit_Job_Content_Widget extends WP_Widget {
 
         echo $args['before_widget'];
         ?>
-        <div class="post-job-form-wrapper">
+        <div class="home-job-card pds-submit-job-panel post-job-form-wrapper">
             <?php if ( $heading ) : ?>
-                <h2 class="post-job-form-heading"><?php echo esc_html( $heading ); ?></h2>
+                <h2 class="pds-submit-job-group-title post-job-form-heading"><?php echo esc_html( $heading ); ?></h2>
             <?php endif; ?>
-            <div class="post-job-form-body">
+            <div class="pds-submit-job-form-content post-job-form-body">
                 <?php echo do_shortcode( $shortcode ); ?>
             </div>
         </div>
