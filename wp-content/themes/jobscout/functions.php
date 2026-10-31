@@ -63,6 +63,9 @@ require get_template_directory() . '/inc/pds-widgets.php';
  * Metabox
  */
 require get_template_directory() . '/inc/metabox.php';
+require get_template_directory() . '/inc/company-photos.php';
+require get_template_directory() . '/inc/job-application-handler.php';
+require get_template_directory() . '/inc/open-graph.php';
 
 /**
  * Getting Started

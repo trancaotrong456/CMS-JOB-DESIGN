@@ -215,9 +215,11 @@ function jobscout_scripts() {
     wp_enqueue_style( 'jobscout-google-fonts', jobscout_fonts_url(), array(), null );
     }
 
+    $theme_style = get_stylesheet_directory() . '/style.css';
+    $theme_ver   = file_exists( $theme_style ) ? filemtime( $theme_style ) : ( defined( 'JOBSCOUT_THEME_VERSION' ) ? JOBSCOUT_THEME_VERSION : '1.0.0' );
     wp_enqueue_style( 'owl-carousel', get_template_directory_uri(). '/css' . $build . '/owl.carousel' . $suffix . '.css', array(), '2.3.4' );
-    wp_enqueue_style( 'jobscout', get_stylesheet_uri(), array(), JOBSCOUT_THEME_VERSION );
-    wp_enqueue_style( 'jobscout-home', get_template_directory_uri() . '/css/home.css', array( 'jobscout' ), JOBSCOUT_THEME_VERSION );
+    wp_enqueue_style( 'jobscout', get_stylesheet_uri(), array(), $theme_ver );
+    wp_enqueue_style( 'jobscout-home', get_template_directory_uri() . '/css/home.css', array( 'jobscout' ), $theme_ver );
 
     if ( is_page_template( 'page-news.php' ) || is_page( 'news' ) || ( is_home() && get_option( 'page_for_posts' ) && 'news' === get_post_field( 'post_name', get_option( 'page_for_posts' ) ) ) ) {
         wp_enqueue_style( 'jobscout-news', get_template_directory_uri() . '/assets/css/news.css', array( 'jobscout' ), JOBSCOUT_THEME_VERSION );

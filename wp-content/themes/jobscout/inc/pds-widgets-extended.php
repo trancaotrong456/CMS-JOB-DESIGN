@@ -303,7 +303,7 @@ class PDS_Job_Detail_Hero_Widget extends WP_Widget {
         echo $args['before_widget'];
         if ( ! empty( $bg_image_url ) ) : ?>
             <div class="pds-job-detail-hero-banner" style="width: 100%; height: 360px; background: #222 url('<?php echo esc_url( $bg_image_url ); ?>') center center / cover no-repeat; position: relative;">
-                <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.15);"></div>
+                <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.15); pointer-events: none;"></div>
             </div>
         <?php endif;
         echo $args['after_widget'];
@@ -399,10 +399,10 @@ class PDS_Job_Detail_Header_Widget extends WP_Widget {
                 </div>
             </div>
             <div class="pds-job-detail-actions">
-                <button type="button" class="pds-job-detail-btn-share" data-share-url="<?php echo esc_url( get_permalink() ); ?>">
+                <button type="button" class="pds-job-detail-btn-share" data-share-url="<?php echo esc_url( get_permalink() ); ?>" data-share-title="<?php echo esc_attr( get_the_title() ); ?>" data-share-company="<?php echo esc_attr( $company ); ?>" aria-haspopup="dialog" aria-expanded="false">
                     <?php echo esc_html( $share_text ); ?>
                 </button>
-                <a href="#pds-job-apply" class="pds-job-detail-btn-apply">
+                <a href="#pds-job-apply" class="pds-job-detail-btn-apply" role="button" aria-controls="pds-job-apply" aria-expanded="false">
                     <?php echo esc_html( $apply_text ); ?>
                 </a>
             </div>
@@ -489,13 +489,8 @@ class PDS_Job_Detail_Content_Widget extends WP_Widget {
                 <?php echo apply_filters( 'the_content', $clean_content ); ?>
             </div>
 
-            <!-- Application Section -->
-            <div id="pds-job-apply" class="pds-job-detail-application-area">
-                <?php if ( $apply_title ) : ?>
-                    <h3 class="pds-job-apply-title" style="font-size: 18px; font-weight: 700; color: #211916; margin-bottom: 16px;">
-                        <?php echo esc_html( $apply_title ); ?>
-                    </h3>
-                <?php endif; ?>
+            <!-- Application Modal -->
+            <div id="pds-job-apply" class="pds-apply-modal" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1">
                 <?php
                 if ( function_exists( 'candidates_can_apply' ) && candidates_can_apply() ) {
                     get_job_manager_template( 'job-application.php' );

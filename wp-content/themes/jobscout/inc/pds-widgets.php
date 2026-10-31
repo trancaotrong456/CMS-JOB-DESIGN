@@ -1067,8 +1067,45 @@ class PDS_Job_Company_Photos_Widget extends WP_Widget {
         }
 
         $title       = ! empty( $instance['title'] ) ? $instance['title'] : __( 'Company Photos', 'jobscout' );
-        $extra_count = isset( $instance['extra_count'] ) ? absint( $instance['extra_count'] ) : 5;
-        $photo_url   = ! empty( $instance['photo_url'] ) ? $instance['photo_url'] : content_url( '/uploads/seed-cms-content/news-restaurant-hotel-operations-600x450.png' );
+        $job_id      = is_singular( 'job_listing' ) ? get_the_ID() : get_the_ID();
+        $photos      = function_exists( 'pds_get_company_photos' ) && $job_id ? pds_get_company_photos( $job_id ) : array();
+
+        if ( ! empty( $photos ) ) {
+            $primary_thumb   = $photos[0]['thumb'];
+            $large_photo_url = $photos[0]['full'];
+            $photo_count     = count( $photos );
+            $extra_count     = max( 0, $photo_count - 1 );
+            $gallery_json    = wp_json_encode( array_map( function( $p ) {
+                return array(
+                    'src'     => $p['full'],
+                    'thumb'   => $p['thumb'],
+                    'caption' => $p['title'] ?: $p['caption'],
+                );
+            }, $photos ) );
+        } else {
+            $primary_thumb   = ! empty( $instance['photo_url'] ) ? $instance['photo_url'] : content_url( '/uploads/seed-cms-content/news-restaurant-hotel-operations-600x450.png' );
+            $large_photo_url = $primary_thumb;
+            $clean_full      = preg_replace( '/-\d+x\d+(?=\.[a-zA-Z0-9]+$)/', '', $primary_thumb );
+            if ( ! empty( $clean_full ) ) {
+                $att_id = attachment_url_to_postid( $clean_full );
+                if ( $att_id ) {
+                    $large_src = wp_get_attachment_image_url( $att_id, 'full' );
+                    if ( $large_src ) {
+                        $large_photo_url = $large_src;
+                    }
+                } else {
+                    $large_photo_url = $clean_full;
+                }
+            }
+            $extra_count  = 0;
+            $gallery_json = wp_json_encode( array(
+                array(
+                    'src'     => $large_photo_url,
+                    'thumb'   => $primary_thumb,
+                    'caption' => $title,
+                ),
+            ) );
+        }
 
         echo $args['before_widget'];
         ?>
@@ -1076,8 +1113,8 @@ class PDS_Job_Company_Photos_Widget extends WP_Widget {
             <?php if ( $title ) : ?>
                 <h3 class="pds-job-detail-widget-title"><?php echo esc_html( $title ); ?></h3>
             <?php endif; ?>
-            <div class="pds-company-photo-wrap">
-                <img src="<?php echo esc_url( $photo_url ); ?>" alt="<?php echo esc_attr( $title ); ?>" class="pds-company-photo-img" loading="lazy">
+            <div class="pds-company-photo-wrap" role="button" tabindex="0" aria-label="<?php esc_attr_e( 'View company photos in fullscreen', 'jobscout' ); ?>" data-full-src="<?php echo esc_url( $large_photo_url ); ?>" data-gallery="<?php echo esc_attr( $gallery_json ); ?>" data-caption="<?php echo esc_attr( $title ); ?>">
+                <img src="<?php echo esc_url( $primary_thumb ); ?>" alt="<?php echo esc_attr( $title ); ?>" class="pds-company-photo-img" loading="lazy">
                 <?php if ( $extra_count > 0 ) : ?>
                     <div class="pds-company-photo-overlay">
                         <span class="pds-photo-more-badge">+<?php echo esc_html( $extra_count ); ?></span>
