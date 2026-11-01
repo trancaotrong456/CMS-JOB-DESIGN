@@ -342,7 +342,7 @@ class PDS_Home_Top_Jobs_Widget extends WP_Widget {
             echo '<h2 id="home-jobs-title" class="home-section-title">' . esc_html( $title ) . '</h2>';
         }
         if ( $jobs_query->have_posts() ) : ?>
-            <div class="home-job-grid pds-all-jobs-grid">
+            <div class="home-job-grid pds-all-jobs-grid" id="home-top-jobs-grid">
                 <?php while ( $jobs_query->have_posts() ) : $jobs_query->the_post();
                     get_template_part( 'template-parts/all-jobs-card' );
                 endwhile; wp_reset_postdata(); ?>
@@ -353,7 +353,7 @@ class PDS_Home_Top_Jobs_Widget extends WP_Widget {
 
         <?php if ( $button_text ) : ?>
             <div class="home-button-row">
-                <a class="home-outline-button" href="<?php echo esc_url( $button_url ); ?>"><?php echo esc_html( $button_text ); ?></a>
+                <a class="home-outline-button" id="home-view-more-jobs-btn" href="<?php echo esc_url( $button_url ); ?>" data-page="1" data-max="<?php echo esc_attr( $jobs_query->max_num_pages ); ?>" data-count="<?php echo esc_attr( $count ); ?>"><?php echo esc_html( $button_text ); ?></a>
             </div>
         <?php endif; ?>
 

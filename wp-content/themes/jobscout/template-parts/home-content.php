@@ -123,7 +123,7 @@ $jobs_query   = new WP_Query( array(
             <div class="home-container">
                 <h2 id="home-jobs-title" class="home-section-title"><?php esc_html_e( 'TOP JOBS', 'jobscout' ); ?></h2>
                 <?php if ( $jobs_query->have_posts() ) : ?>
-                    <div class="home-job-grid pds-all-jobs-grid">
+                    <div class="home-job-grid pds-all-jobs-grid" id="home-top-jobs-grid">
                         <?php while ( $jobs_query->have_posts() ) : $jobs_query->the_post();
                             get_template_part( 'template-parts/all-jobs-card' );
                         endwhile; wp_reset_postdata(); ?>
@@ -131,8 +131,10 @@ $jobs_query   = new WP_Query( array(
                 <?php else : ?>
                     <p class="home-empty-state"><?php esc_html_e( 'New hospitality opportunities will appear here soon.', 'jobscout' ); ?></p>
                 <?php endif; ?>
-                <!-- Nút dẫn sang trang danh sách tất cả việc làm -->
-                <div class="home-button-row"><a class="home-outline-button" href="<?php echo esc_url( $jobs_url ); ?>"><?php esc_html_e( 'VIEW MORE JOBS', 'jobscout' ); ?></a></div>
+                <!-- Nút dẫn sang trang danh sách tất cả việc làm / hoặc load more trực tiếp -->
+                <div class="home-button-row">
+                    <a class="home-outline-button" id="home-view-more-jobs-btn" href="<?php echo esc_url( $jobs_url ); ?>" data-page="1" data-max="<?php echo esc_attr( $jobs_query->max_num_pages ); ?>" data-count="6"><?php esc_html_e( 'VIEW MORE JOBS', 'jobscout' ); ?></a>
+                </div>
             </div>
         </section>
     <?php endif; ?>

@@ -776,6 +776,50 @@ function pds_handle_live_search_suggest() {
 }
 
 /**
+ * Handle AJAX Load More Jobs for Homepage TOP JOBS section
+ */
+add_action( 'template_redirect', 'pds_handle_home_load_more_jobs' );
+function pds_handle_home_load_more_jobs() {
+    if ( ! isset( $_REQUEST['pds_ajax_home_jobs'] ) ) {
+        return;
+    }
+
+    $paged = isset( $_REQUEST['page'] ) ? max( 1, (int) $_REQUEST['page'] ) : 2;
+    $count = isset( $_REQUEST['count'] ) ? max( 1, (int) $_REQUEST['count'] ) : 6;
+
+    $query_args = array(
+        'post_type'           => 'job_listing',
+        'post_status'         => 'publish',
+        'posts_per_page'      => $count,
+        'paged'               => $paged,
+        'orderby'             => 'date',
+        'order'               => 'DESC',
+        'ignore_sticky_posts' => true,
+    );
+
+    $jobs_query = new WP_Query( $query_args );
+
+    ob_start();
+    if ( $jobs_query->have_posts() ) {
+        while ( $jobs_query->have_posts() ) {
+            $jobs_query->the_post();
+            get_template_part( 'template-parts/all-jobs-card' );
+        }
+    }
+    $rendered_html = ob_get_clean();
+    $max_num_pages = $jobs_query->max_num_pages;
+    wp_reset_postdata();
+
+    wp_send_json_success( array(
+        'html'         => $rendered_html,
+        'has_more'     => ( $paged < $max_num_pages ),
+        'max_pages'    => $max_num_pages,
+        'current_page' => $paged,
+        'total'        => $jobs_query->found_posts,
+    ) );
+}
+
+/**
  * Build unified WP_Query args for job listings with search keywords, location and sorting.
  *
  * @param array $params Custom overrides (posts_per_page, paged, sort, search_keywords, search_location)

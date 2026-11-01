@@ -216,5 +216,79 @@
             var regex = new RegExp('(' + escapedQuery + ')', 'gi');
             return escapeHtml(text).replace(regex, '<span style="color: #f2761b; background: #fff2e6; border-radius: 2px;">$1</span>');
         }
+
+        // ---------------------------------------------------------------------
+        // Interactive AJAX Load More for TOP JOBS on Homepage
+        // ---------------------------------------------------------------------
+        var loadMoreBtn = document.getElementById('home-view-more-jobs-btn');
+        var topJobsGrid = document.getElementById('home-top-jobs-grid');
+
+        if (loadMoreBtn && topJobsGrid) {
+            var currentPage = parseInt(loadMoreBtn.getAttribute('data-page') || '1', 10);
+            var maxPages    = parseInt(loadMoreBtn.getAttribute('data-max') || '1', 10);
+            var postsCount  = parseInt(loadMoreBtn.getAttribute('data-count') || '6', 10);
+            var isAjaxLoading = false;
+
+            if (maxPages > 1) {
+                loadMoreBtn.addEventListener('click', function (e) {
+                    if (currentPage < maxPages) {
+                        e.preventDefault();
+
+                        if (isAjaxLoading) {
+                            return;
+                        }
+
+                        isAjaxLoading = true;
+                        var originalText = loadMoreBtn.textContent;
+                        loadMoreBtn.textContent = 'LOADING...';
+                        loadMoreBtn.classList.add('is-loading');
+
+                        var nextPage = currentPage + 1;
+                        var url = new URL(window.location.origin + '/');
+                        url.searchParams.set('pds_ajax_home_jobs', '1');
+                        url.searchParams.set('page', nextPage);
+                        url.searchParams.set('count', postsCount);
+
+                        fetch(url.toString(), {
+                            method: 'GET',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                        })
+                        .then(function (res) { return res.json(); })
+                        .then(function (res) {
+                            isAjaxLoading = false;
+                            loadMoreBtn.classList.remove('is-loading');
+
+                            if (res && res.success && res.data && res.data.html) {
+                                var tempDiv = document.createElement('div');
+                                tempDiv.innerHTML = res.data.html;
+
+                                var newCards = tempDiv.querySelectorAll('.pds-all-jobs-card');
+                                newCards.forEach(function (card) {
+                                    card.classList.add('pds-fade-in');
+                                    topJobsGrid.appendChild(card);
+                                });
+
+                                currentPage = nextPage;
+                                loadMoreBtn.setAttribute('data-page', currentPage);
+
+                                if (currentPage >= maxPages || !res.data.has_more) {
+                                    loadMoreBtn.textContent = 'VIEW ALL JOBS';
+                                } else {
+                                    loadMoreBtn.textContent = originalText;
+                                }
+                            } else {
+                                loadMoreBtn.textContent = 'VIEW ALL JOBS';
+                            }
+                        })
+                        .catch(function (err) {
+                            console.error('Failed to load more home jobs:', err);
+                            isAjaxLoading = false;
+                            loadMoreBtn.classList.remove('is-loading');
+                            loadMoreBtn.textContent = originalText;
+                        });
+                    }
+                });
+            }
+        }
     });
 })();

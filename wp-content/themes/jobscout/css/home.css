@@ -51,8 +51,11 @@ body { color: var(--jobscout-ink); }
 .home-job-card__excerpt p { margin: 0; }
 .home-job-card__excerpt ul { margin: 0; padding-left: 17px; }
 .home-button-row { margin-top: 48px; text-align: center; }
-.home-outline-button, .home-light-button { display: inline-flex; min-width: 224px; min-height: 52px; align-items: center; justify-content: center; border: 1px solid var(--jobscout-orange); color: var(--jobscout-orange); font-size: 13px; font-weight: 700; text-transform: uppercase; transition: background .18s ease, color .18s ease; }
-.home-outline-button:hover, .home-outline-button:focus-visible { background: var(--jobscout-orange); color: #fff; }
+.home-outline-button, .home-light-button { display: inline-flex; min-width: 224px; min-height: 52px; align-items: center; justify-content: center; border: 1px solid var(--jobscout-orange); color: var(--jobscout-orange); font-size: 13px; font-weight: 700; text-transform: uppercase; transition: background .18s ease, color .18s ease; text-decoration: none; cursor: pointer; }
+.home-outline-button:hover, .home-outline-button:focus-visible { background: var(--jobscout-orange); color: #fff; text-decoration: none; }
+.home-outline-button.is-loading { opacity: 0.72; cursor: wait; pointer-events: none; }
+.home-job-grid .pds-all-jobs-card.pds-fade-in { animation: pdsHomeFadeIn 0.35s ease forwards; }
+@keyframes pdsHomeFadeIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 .home-career { min-height: 445px; display: grid; place-items: center; padding: 64px 24px; background: #26201f url('../images/home-career-japan.png') center 48% / cover no-repeat; color: #fff; position: relative; }
 .home-career::before { content: ''; position: absolute; inset: 0; background: rgba(20,16,15,.60); }
 .home-career__inner { position: relative; width: min(900px, 100%); text-align: center; }
