@@ -1,0 +1,21 @@
+.pds-news-detail-page .pds-detail-share-wrap{position:relative;width:100%;min-width:0}
+.pds-news-detail-page .pds-detail-share-trigger{display:flex;align-items:center;justify-content:center;width:100%;min-height:45px;padding:10px 14px;cursor:pointer;background:#fff;color:#f47716;border:1px solid #f47716;font:inherit;font-weight:700;font-size:12px;text-align:center}
+.pds-news-detail-page .pds-detail-share-trigger:hover,.pds-news-detail-page .pds-detail-share-trigger:focus-visible{background:#f47716;color:#fff}
+.pds-news-detail-page .pds-detail-share-menu[hidden]{display:none!important}
+.pds-news-detail-page .pds-detail-share-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:100;min-width:200px;max-width:min(280px,90vw);padding:6px;background:#fff;border:1px solid #ddd;border-radius:6px;box-shadow:0 8px 28px rgba(0,0,0,.16)}
+.pds-news-detail-page .pds-detail-share-link,.pds-news-detail-page .pds-detail-share-copy{display:block;width:100%;padding:9px 12px;text-align:left;font:inherit;font-size:14px;line-height:1.4;color:#222;background:transparent;border:0;border-radius:4px;text-decoration:none;cursor:pointer;box-sizing:border-box}
+.pds-news-detail-page .pds-detail-share-link:hover,.pds-news-detail-page .pds-detail-share-copy:hover,.pds-news-detail-page .pds-detail-share-link:focus-visible,.pds-news-detail-page .pds-detail-share-copy:focus-visible{background:#f0f0f0;color:#111}
+@media(max-width:600px){.pds-news-detail-page .pds-detail-share-menu{left:0;right:auto;min-width:min(240px,85vw)}}
+
+/* Brand logos inside the social sharing menu */
+.pds-news-detail-page .pds-detail-share-link,
+.pds-news-detail-page .pds-detail-share-copy{display:flex;align-items:center;gap:11px}
+.pds-news-detail-page .pds-detail-share-link i,
+.pds-news-detail-page .pds-detail-share-copy i{display:inline-flex;align-items:center;justify-content:center;width:22px;min-width:22px;font-size:30px;line-height:1}
+.pds-news-detail-page .pds-detail-share-facebook i{color:#1877f2}
+.pds-news-detail-page .pds-detail-share-x i{color:#111}
+.pds-news-detail-page .pds-detail-share-linkedin i{color:#0a66c2}
+.pds-news-detail-page .pds-detail-share-whatsapp i{color:#25d366}
+.pds-news-detail-page .pds-detail-share-telegram i{color:#229ed9}
+.pds-news-detail-page .pds-detail-share-pinterest i{color:#bd081c}
+.pds-news-detail-page .pds-detail-share-copy i{color:#555}
