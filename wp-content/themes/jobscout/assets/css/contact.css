@@ -48,34 +48,61 @@
     width: 100%;
     min-height: 380px;
     background: #1f1b18 url('../images/contact-hero.png') center 42% / cover no-repeat;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
     overflow: hidden;
+}
+
+.pds-contact-hero--widget,
+.pds-contact-hero--widget > .custom-widget-box,
+.pds-contact-hero--widget .contact-hero-banner-widget,
+.widget-area-contact-hero-banner {
+    width: 100% !important;
+    min-height: 380px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    margin: 0 auto !important;
+    position: relative !important;
 }
 
 .pds-contact-hero-overlay {
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.22);
+    z-index: 1;
 }
 
 .pds-contact-hero-inner {
-    position: relative;
-    z-index: 2;
-    padding: 40px 20px;
+    position: relative !important;
+    z-index: 2 !important;
+    padding: 40px 20px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
 }
 
 .pds-contact-hero-title {
-    margin: 0;
-    color: #ffffff;
-    font-family: inherit;
-    font-size: clamp(32px, 4.5vw, 48px);
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    line-height: 1.2;
+    margin: 0 auto !important;
+    color: #ffffff !important;
+    font-family: inherit !important;
+    font-size: clamp(32px, 4.5vw, 48px) !important;
+    font-weight: 700 !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+    width: 100% !important;
+    display: block !important;
 }
 
 /* --------------------------------------------------------------------------

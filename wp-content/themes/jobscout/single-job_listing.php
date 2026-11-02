@@ -20,9 +20,16 @@ add_filter( 'body_class', function( $classes ) {
 
 add_action( 'wp_enqueue_scripts', function() {
     wp_enqueue_style(
+        'pds-all-jobs-style',
+        get_template_directory_uri() . '/assets/css/all-jobs.css',
+        array( 'jobscout' ),
+        defined( 'JOBSCOUT_THEME_VERSION' ) ? JOBSCOUT_THEME_VERSION : '1.0.0'
+    );
+
+    wp_enqueue_style(
         'pds-job-detail-style',
         get_template_directory_uri() . '/assets/css/job-detail.css',
-        array( 'jobscout' ),
+        array( 'jobscout', 'pds-all-jobs-style' ),
         defined( 'JOBSCOUT_THEME_VERSION' ) ? JOBSCOUT_THEME_VERSION : '1.0.0'
     );
 
@@ -107,6 +114,9 @@ while ( have_posts() ) :
         </nav>
 
         <!-- TOP SUMMARY / HEADER CARD -->
+        <?php if ( is_active_sidebar( 'job-detail-header' ) ) : ?>
+            <?php dynamic_sidebar( 'job-detail-header' ); ?>
+        <?php else : ?>
         <header class="pds-job-detail-header-card">
 
             <!-- Logo Box -->
@@ -208,12 +218,16 @@ while ( have_posts() ) :
             </div>
 
         </header>
+        <?php endif; ?>
 
         <!-- MAIN TWO-COLUMN CONTENT AREA -->
         <div class="pds-job-detail-columns">
 
             <!-- Left Column: Content Card -->
             <main class="pds-job-detail-main-content">
+                <?php if ( is_active_sidebar( 'job-detail-content' ) ) : ?>
+                    <?php dynamic_sidebar( 'job-detail-content' ); ?>
+                <?php else : ?>
                 <article class="pds-job-detail-content-card">
                     <div class="pds-job-detail-entry">
                         <?php echo apply_filters( 'the_content', $clean_content ); ?>
@@ -228,10 +242,15 @@ while ( have_posts() ) :
                         ?>
                     </div>
                 </article>
+                <?php endif; ?>
             </main>
 
             <!-- Right Column: Sidebar -->
             <aside class="pds-job-detail-sidebar" aria-label="<?php esc_attr_e( 'Job Details Sidebar', 'jobscout' ); ?>">
+
+                <?php if ( is_active_sidebar( 'job-detail-sidebar' ) ) : ?>
+                    <?php dynamic_sidebar( 'job-detail-sidebar' ); ?>
+                <?php else : ?>
 
                 <!-- Widget 1: Staff Rating -->
                 <div class="pds-job-detail-widget pds-job-detail-widget-rating">
@@ -279,11 +298,18 @@ while ( have_posts() ) :
                     </div>
                 </div>
 
+                <?php endif; ?>
+
             </aside>
 
         </div>
 
         <!-- "OTHER JOBS" SECTION -->
+        <?php if ( is_active_sidebar( 'job-detail-related' ) ) : ?>
+            <section class="pds-job-detail-other-section pds-widget-area-section" aria-labelledby="pds-other-jobs-title">
+                <?php dynamic_sidebar( 'job-detail-related' ); ?>
+            </section>
+        <?php else : ?>
         <section class="pds-job-detail-other-section" aria-labelledby="pds-other-jobs-title">
             <h2 id="pds-other-jobs-title" class="pds-job-detail-other-title">
                 <?php esc_html_e( 'OTHER JOBS', 'jobscout' ); ?>
@@ -312,6 +338,7 @@ while ( have_posts() ) :
 
             <?php wp_reset_postdata(); ?>
         </section>
+        <?php endif; ?>
 
     </div>
 

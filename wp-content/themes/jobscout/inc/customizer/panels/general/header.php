@@ -37,10 +37,12 @@ function jobscout_customize_register_general_header( $wp_customize ) {
         )
     );
 
-    $wp_customize->selective_refresh->add_partial( 'post_job_label', array(
-        'selector' => '.site-header .header-main .btn-wrap a.btn',
-        'render_callback' => 'jobscout_get_header_post_job_label',
-    ) );
+    if ( ! is_active_sidebar( 'header-cta' ) ) {
+        $wp_customize->selective_refresh->add_partial( 'post_job_label', array(
+            'selector' => '.site-header .header-main .btn-wrap a.btn',
+            'render_callback' => 'jobscout_get_header_post_job_label',
+        ) );
+    }
     
     /** Post Job Url */
     $wp_customize->add_setting(

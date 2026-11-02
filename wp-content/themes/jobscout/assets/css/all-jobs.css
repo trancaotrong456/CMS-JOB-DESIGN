@@ -40,16 +40,33 @@ body.page-template-page-jobs .page-header {
 .pds-all-jobs-hero {
     position: relative;
     min-height: 420px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
     background-color: #26201f;
     background-image: url('../images/all-jobs-hero.png'), url('../../images/home-career-japan.png');
     background-position: center 48%;
     background-size: cover;
     background-repeat: no-repeat;
-    text-align: center;
+    text-align: center !important;
     overflow: hidden;
+    width: 100% !important;
+}
+
+.pds-all-jobs-hero--widget,
+.pds-all-jobs-hero--widget > .custom-widget-box,
+.pds-all-jobs-hero--widget .jobs-hero-banner-widget,
+.widget-area-jobs-hero-banner {
+    width: 100% !important;
+    min-height: 420px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    margin: 0 auto !important;
+    position: relative !important;
 }
 
 .pds-all-jobs-hero-overlay {
@@ -60,30 +77,42 @@ body.page-template-page-jobs .page-header {
 }
 
 .pds-all-jobs-hero-inner {
-    position: relative;
-    z-index: 2;
-    padding: 40px 20px;
-    max-width: 900px;
+    position: relative !important;
+    z-index: 2 !important;
+    padding: 40px 20px !important;
+    max-width: 900px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
 }
 
 .pds-all-jobs-hero-title {
-    margin: 0;
-    color: #ffffff;
-    font-size: 38px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    line-height: 1.25;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    margin: 0 auto !important;
+    color: #ffffff !important;
+    font-size: 38px !important;
+    font-weight: 700 !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+    line-height: 1.25 !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45) !important;
+    text-align: center !important;
+    width: 100% !important;
+    display: block !important;
 }
 
 @media (max-width: 768px) {
-    .pds-all-jobs-hero {
-        min-height: 300px;
+    .pds-all-jobs-hero,
+    .pds-all-jobs-hero--widget,
+    .widget-area-jobs-hero-banner {
+        min-height: 300px !important;
     }
     .pds-all-jobs-hero-title {
-        font-size: 28px;
-        letter-spacing: 1px;
+        font-size: 28px !important;
+        letter-spacing: 1px !important;
     }
 }
 

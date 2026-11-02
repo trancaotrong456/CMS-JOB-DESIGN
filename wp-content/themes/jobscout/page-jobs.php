@@ -150,16 +150,34 @@ get_header();
 <div class="pds-all-jobs-page">
 
     <!-- HERO SECTION -->
-    <section class="pds-all-jobs-hero" aria-labelledby="pds-all-jobs-hero-title">
-        <div class="pds-all-jobs-hero-overlay"></div>
-        <div class="pds-all-jobs-hero-inner">
-            <h1 id="pds-all-jobs-hero-title" class="pds-all-jobs-hero-title">
-                <?php esc_html_e( 'CAREER WITH US', 'jobscout' ); ?>
-            </h1>
-        </div>
-    </section>
+    <?php if ( is_active_sidebar( 'jobs-hero-banner' ) ) : ?>
+        <section class="pds-all-jobs-hero pds-all-jobs-hero--widget" aria-labelledby="pds-all-jobs-hero-title">
+            <?php dynamic_sidebar( 'jobs-hero-banner' ); ?>
+        </section>
+    <?php else : ?>
+        <?php
+        $jobs_featured_img = has_post_thumbnail() ? get_the_post_thumbnail_url( get_the_ID(), 'full' ) : '';
+        if ( ! empty( $jobs_featured_img ) ) : ?>
+            <style>.pds-all-jobs-hero { background-image: url('<?php echo esc_url( $jobs_featured_img ); ?>') !important; }</style>
+        <?php endif; ?>
+        <section class="pds-all-jobs-hero" aria-labelledby="pds-all-jobs-hero-title">
+            <div class="pds-all-jobs-hero-overlay"></div>
+            <div class="pds-all-jobs-hero-inner" style="margin: 0 auto !important; text-align: center !important; width: 100% !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important;">
+                <h1 id="pds-all-jobs-hero-title" class="pds-all-jobs-hero-title" style="margin: 0 auto !important; text-align: center !important; width: 100% !important;">
+                    <?php esc_html_e( 'CAREER WITH US', 'jobscout' ); ?>
+                </h1>
+            </div>
+        </section>
+    <?php endif; ?>
 
     <!-- MAIN LISTING SECTION -->
+    <?php if ( is_active_sidebar( 'jobs-list-content' ) ) : ?>
+        <main class="pds-all-jobs-main pds-widget-area-section">
+            <div class="pds-all-jobs-container">
+                <?php dynamic_sidebar( 'jobs-list-content' ); ?>
+            </div>
+        </main>
+    <?php else : ?>
     <main class="pds-all-jobs-main">
         <div class="pds-all-jobs-container">
 
@@ -227,6 +245,7 @@ get_header();
 
         </div>
     </main>
+    <?php endif; ?>
 
     <!-- NEWSLETTER BANNER -->
     <?php get_template_part( 'template-parts/pds-newsletter' ); ?>

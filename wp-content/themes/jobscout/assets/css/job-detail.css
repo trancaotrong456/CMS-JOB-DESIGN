@@ -273,6 +273,59 @@ body.single-job_listing .page-header {
     border-top: 1px dashed #e5e7eb;
 }
 
+.pds-job-detail-application-area .application_button {
+    background: #f2761b;
+    border: none;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 11px 26px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.18s ease;
+}
+
+.pds-job-detail-application-area .application_button:hover {
+    background: #e0650c;
+}
+
+.pds-job-detail-application-area .application_details {
+    display: none;
+    margin-top: 18px;
+    padding: 18px 20px;
+    background: #fafafa;
+    border: 1px solid #e5e7eb;
+    border-radius: 2px;
+}
+
+.pds-job-detail-application-area .application_details p {
+    margin: 0 0 10px;
+    color: #374151;
+    font-size: 13px;
+}
+
+.pds-job-detail-application-area .application_details p:last-child {
+    margin-bottom: 0;
+}
+
+.pds-apply-email-link {
+    display: inline-block;
+    color: #f2761b;
+    font-weight: 600;
+    text-decoration: underline;
+    font-size: 14px;
+}
+
+/* Ensure JOBS in navigation displays active underline */
+.pds-job-detail-page-body .site-header .main-navigation .nav-menu li.menu-item a[href*="jobs"],
+.pds-job-detail-page-body .site-header .main-navigation .nav-menu li.current_page_item > a,
+.pds-job-detail-page-body .site-header .main-navigation .nav-menu li.current-menu-item > a {
+    border-bottom: 2px solid var(--jobscout-orange, #f2761b);
+    color: var(--jobscout-orange, #f2761b);
+}
+
 /* --------------------------------------------------------------------------
    SIDEBAR & WIDGETS
    -------------------------------------------------------------------------- */

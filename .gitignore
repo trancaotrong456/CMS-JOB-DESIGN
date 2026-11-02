@@ -55,3 +55,6 @@ wp-content/backups/
 *.sql.bak
 *.dump
 *.dump.gz
+
+# Dependencies
+node_modules/

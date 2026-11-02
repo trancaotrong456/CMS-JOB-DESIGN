@@ -38,19 +38,40 @@
             });
         }
 
-        // Apply Job Button
+        // Apply Job Button & Application Toggle
         var applyBtn = document.querySelector('.pds-job-detail-btn-apply');
         var applyArea = document.getElementById('pds-job-apply');
+
+        function toggleApplication(openOnly) {
+            if (!applyArea) return;
+            var applicationToggle = applyArea.querySelector('.application_button');
+            var details = applyArea.querySelector('.application_details');
+            if (applicationToggle && details) {
+                var isOpen = applicationToggle.classList.contains('active') || window.getComputedStyle(details).display !== 'none';
+                if (!openOnly && isOpen) {
+                    details.style.display = 'none';
+                    applicationToggle.classList.remove('active');
+                } else {
+                    details.style.display = 'block';
+                    applicationToggle.classList.add('active');
+                }
+            }
+        }
+
+        if (applyArea) {
+            applyArea.addEventListener('click', function (e) {
+                if (e.target && e.target.classList.contains('application_button')) {
+                    e.preventDefault();
+                    toggleApplication(false);
+                }
+            });
+        }
+
         if (applyBtn && applyArea) {
             applyBtn.addEventListener('click', function (e) {
-                var applicationToggle = applyArea.querySelector('.application_button');
-                if (applicationToggle) {
-                    e.preventDefault();
-                    if (!applicationToggle.classList.contains('active')) {
-                        applicationToggle.click();
-                    }
-                    applyArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+                e.preventDefault();
+                toggleApplication(true);
+                applyArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
             });
         }
     });
