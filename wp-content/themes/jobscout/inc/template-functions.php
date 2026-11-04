@@ -35,24 +35,23 @@ if( ! function_exists( 'jobscout_responsive_header' ) ) :
  * Responsive Header
 */
 function jobscout_responsive_header(){ 
-    $post_job_label  = get_theme_mod( 'post_job_label', __( 'Post Jobs', 'jobscout' ) );
+    $post_job_label  = get_theme_mod( 'post_job_label', __( 'Submit Job', 'jobscout' ) );
     $post_job_url = jobscout_get_submit_job_url();
     ?>
     <div class="responsive-nav">
         <div class="nav-top">
             <?php jobscout_site_branding( true ); ?>
+            <button class="close close-main-nav-toggle" data-toggle-target=".main-menu-modal" data-toggle-body-class="showing-main-menu-modal" aria-expanded="false" data-set-focus=".main-menu-modal" aria-label="<?php esc_attr_e( 'Close menu', 'jobscout' ); ?>"></button>
         </div>
-
 
         <nav id="mobile-site-navigation" class="main-navigation mobile-navigation">        
             <div class="primary-menu-list main-menu-modal cover-modal" data-modal-target-string=".main-menu-modal">
-                <button class="close close-main-nav-toggle" data-toggle-target=".main-menu-modal" data-toggle-body-class="showing-main-menu-modal" aria-expanded="false" data-set-focus=".main-menu-modal"></button>
                 <div class="mobile-menu" aria-label="<?php esc_attr_e( 'Mobile', 'jobscout' ); ?>">
                     <?php jobscout_primary_menu_fallback( 'mobile-primary-menu' ); ?>
                 
                     <?php if( $post_job_label || $post_job_url ){ ?>
                         <div class="btn-wrap">
-                            <a class="btn" href="<?php echo esc_url( $post_job_url ) ?>"><?php echo esc_html( $post_job_label ) ?></a>
+                            <a class="btn" href="<?php echo esc_url( $post_job_url ) ?>"><?php echo esc_html( strtoupper( $post_job_label ) ) ?></a>
                         </div>
                     <?php } ?>
                </div>
@@ -949,3 +948,44 @@ function pds_get_job_locations() {
     return $clean_locations;
 }
 endif;
+
+/**
+ * Mobile navigation toggle handler
+ * Ensures smooth open/close interactions across all viewports and inside WordPress Customizer.
+ */
+function pds_mobile_navigation_script() {
+    ?>
+    <script type="text/javascript">
+    (function($) {
+        'use strict';
+        $(document).on('click', '.header-main .main-navigation .toggle-btn', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $('body').toggleClass('menu-active');
+            $('.responsive-nav').toggleClass('menu-active');
+        });
+
+        $(document).on('click', '.responsive-nav .close, .responsive-nav .close-main-nav-toggle, .responsive-nav .close-btn', function(e) {
+            e.preventDefault();
+            $('body').removeClass('menu-active');
+            $('.responsive-nav').removeClass('menu-active');
+        });
+
+        $(document).on('click', function(e) {
+            if ($('body').hasClass('menu-active') && !$(e.target).closest('.responsive-nav, .toggle-btn').length) {
+                $('body').removeClass('menu-active');
+                $('.responsive-nav').removeClass('menu-active');
+            }
+        });
+
+        $(document).on('keyup', function(e) {
+            if (e.key === 'Escape' && $('body').hasClass('menu-active')) {
+                $('body').removeClass('menu-active');
+                $('.responsive-nav').removeClass('menu-active');
+            }
+        });
+    })(jQuery);
+    </script>
+    <?php
+}
+add_action( 'wp_footer', 'pds_mobile_navigation_script', 99 );
