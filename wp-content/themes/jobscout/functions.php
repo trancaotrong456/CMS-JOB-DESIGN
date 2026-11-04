@@ -356,3 +356,9 @@ add_filter( 'wp_nav_menu_objects', function( $items, $args ) {
     }
     return $items;
 }, 10, 2 );
+
+/**
+ * Tắt cơ chế tự động chèn thẻ <p> và <br> của Contact Form 7 (WPCF7_AUTOP)
+ * để bảo toàn layout CSS grid và flexbox theo chuẩn thiết kế giao diện đồ án.
+ */
+add_filter( 'wpcf7_autop_or_not', '__return_false' );

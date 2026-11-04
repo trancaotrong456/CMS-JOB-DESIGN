@@ -310,13 +310,15 @@ body { color: var(--jobscout-ink); }
 .home-eyebrow { margin: 0 0 8px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
 .home-hero h1 { margin: 0 0 8px; color: #fff; font-size: clamp(30px, 3vw, 42px); line-height: 1.15; text-transform: uppercase; }
 .home-hero__copy > p:not(.home-eyebrow) { max-width: 860px; margin: 0 0 25px; color: rgba(255,255,255,.92); font-size: 15px; line-height: 1.65; }
-.home-job-search { display: grid; grid-template-columns: minmax(260px, 1fr) 230px 160px; gap: 12px; padding: 12px; background: rgba(15,20,21,.48); }
-.home-search-field { display: flex; align-items: center; gap: 12px; min-width: 0; height: 52px; padding: 0 16px; color: var(--jobscout-orange); background: #fff; position: relative; }
+.home-job-search { display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(15,20,21,.48); width: 100%; box-sizing: border-box; }
+.home-search-field { display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 16px; color: var(--jobscout-orange); background: #fff; position: relative; box-sizing: border-box; }
+.home-search-field.home-search-keywords { flex: 1 1 260px; min-width: 0; }
+.home-search-field.home-search-location { flex: 0 0 230px; width: 230px; }
 .home-search-field input, .home-search-field select { width: 100%; height: 100%; border: 0; outline: 0; color: #3b3837; font-size: 14px; background: transparent; }
 .home-search-field input::placeholder { color: #92908e; }
 .home-search-icon, .home-location-icon { display: flex; align-items: center; justify-content: center; flex-shrink: 0; line-height: 1; }
 .home-search-icon svg, .home-location-icon svg { display: block; }
-.home-search-submit { height: 52px; padding: 0 22px; border: 1px solid var(--jobscout-orange); background: var(--jobscout-orange); color: #fff; font-size: 13px; font-weight: 700; text-transform: uppercase; cursor: pointer; }
+.home-search-submit { flex: 0 0 160px; width: 160px; height: 52px; padding: 0 22px; border: 1px solid var(--jobscout-orange); background: var(--jobscout-orange); color: #fff; font-size: 13px; font-weight: 700; text-transform: uppercase; cursor: pointer; box-sizing: border-box; text-align: center; }
 .home-search-submit:hover, .home-search-submit:focus-visible { background: #d95f0e; }
 .home-section { padding: 62px 0 68px; background: var(--jobscout-paper); }
 .home-section-title { margin: 0 0 38px; color: #2c2726; text-align: center; font-size: 30px; line-height: 1.2; font-weight: 700; text-transform: uppercase; }
@@ -400,7 +402,8 @@ body { color: var(--jobscout-ink); }
     .home-hero { min-height: 480px; padding: 44px 0; background-position: 58% center; }
     .home-hero h1 { font-size: 26px !important; }
     .home-hero__copy > p:not(.home-eyebrow) { font-size: 13.5px !important; }
-    .home-job-search { grid-template-columns: 1fr; padding: 10px; gap: 8px; }
+    .home-job-search { flex-direction: column !important; padding: 10px !important; gap: 8px !important; }
+    .home-search-field.home-search-keywords, .home-search-field.home-search-location, .home-search-submit { flex: 1 1 auto !important; width: 100% !important; }
     .home-search-field, .home-search-submit { height: 48px; }
 
     /* 2. TOP JOBS GRID & JOB CARDS */
@@ -843,18 +846,28 @@ body { color: var(--jobscout-ink); }
 #home-hero-search form,
 .home-hero-search-widget .home-job-search,
 .home-hero-search-widget form {
-    display: grid;
-    grid-template-columns: minmax(260px, 1fr) 230px 160px;
+    display: flex;
+    align-items: center;
     gap: 12px;
     padding: 12px;
     background: rgba(15,20,21,.48);
+    width: 100%;
+    box-sizing: border-box;
 }
 @media (max-width: 767px) {
     #home-hero-search .home-job-search,
     #home-hero-search form,
     .home-hero-search-widget .home-job-search,
     .home-hero-search-widget form {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+        padding: 10px;
+        gap: 8px;
+    }
+    .home-search-field.home-search-keywords,
+    .home-search-field.home-search-location,
+    .home-search-submit {
+        flex: 1 1 auto;
+        width: 100%;
     }
 }
 
@@ -1249,3 +1262,123 @@ div[class*="customize-partial-edit-shortcut-nav_menu"] {
     padding: 0 16px !important;
 }
 
+/* CONTACT FORM 7 STYLES FOR NEWSLETTER */
+.pds-contact-newsletter .wpcf7,
+.home-newsletter .wpcf7 {
+    width: 100%;
+}
+.pds-contact-newsletter .wpcf7-form,
+.home-newsletter .wpcf7-form {
+    display: block;
+    width: 100%;
+    margin: 0;
+}
+.pds-contact-newsletter .pds-contact-newsletter-form.cf7-newsletter-grid,
+.home-newsletter .pds-contact-newsletter-form.cf7-newsletter-grid,
+.pds-contact-newsletter .pds-cf7-newsletter-wrap,
+.home-newsletter .pds-cf7-newsletter-wrap {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 150px !important;
+    gap: 16px !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+.pds-contact-newsletter .pds-contact-newsletter-field,
+.home-newsletter .pds-contact-newsletter-field {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    height: 52px !important;
+    padding: 0 16px !important;
+    background: #ffffff !important;
+    border-radius: 1px !important;
+    gap: 12px !important;
+    cursor: text !important;
+    box-sizing: border-box !important;
+}
+.pds-contact-newsletter .pds-contact-newsletter-icon,
+.home-newsletter .pds-contact-newsletter-icon {
+    display: flex !important;
+    align-items: center !important;
+    color: #f2761b !important;
+    flex-shrink: 0 !important;
+}
+.pds-contact-newsletter .pds-contact-newsletter-field .wpcf7-form-control-wrap,
+.home-newsletter .pds-contact-newsletter-field .wpcf7-form-control-wrap {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+}
+.pds-contact-newsletter .pds-contact-newsletter-field input,
+.home-newsletter .pds-contact-newsletter-field input,
+.pds-newsletter-input {
+    width: 100% !important;
+    height: 100% !important;
+    border: 0 !important;
+    outline: 0 !important;
+    color: #393431 !important;
+    font-size: 14px !important;
+    background: transparent !important;
+    padding: 0 0 0 6px !important;
+    box-sizing: border-box !important;
+}
+.pds-contact-newsletter .pds-contact-newsletter-field input::placeholder,
+.home-newsletter .pds-contact-newsletter-field input::placeholder {
+    color: #92908e !important;
+}
+/* Tắt triệt để icon autofill màu cam của Cốc Cốc & Chromium */
+.pds-contact-newsletter-field input::-webkit-credentials-auto-fill-button,
+.pds-contact-newsletter-field input::-webkit-contacts-auto-fill-button,
+.pds-contact-newsletter-field input::-webkit-caps-lock-indicator,
+.pds-contact-newsletter-field input::-webkit-strong-password-auto-fill-button,
+input.pds-newsletter-input::-webkit-credentials-auto-fill-button,
+input.pds-newsletter-input::-webkit-contacts-auto-fill-button,
+input.pds-newsletter-input::-webkit-caps-lock-indicator {
+    visibility: hidden !important;
+    display: none !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    right: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    opacity: 0 !important;
+}
+.pds-contact-newsletter .pds-contact-newsletter-btn,
+.home-newsletter .pds-contact-newsletter-btn {
+    height: 52px !important;
+    padding: 0 24px !important;
+    border: 1px solid rgba(255, 255, 255, 0.9) !important;
+    background: transparent !important;
+    color: #ffffff !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    cursor: pointer !important;
+    border-radius: 1px !important;
+    box-sizing: border-box !important;
+    transition: background 0.18s ease, color 0.18s ease !important;
+}
+.pds-contact-newsletter .pds-contact-newsletter-btn:hover,
+.home-newsletter .pds-contact-newsletter-btn:hover {
+    background: #ffffff !important;
+    color: #f2761b !important;
+}
+.pds-contact-newsletter .wpcf7-response-output,
+.home-newsletter .wpcf7-response-output {
+    margin: 12px 0 0 0 !important;
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+    border-radius: 4px !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: #333 !important;
+    grid-column: 1 / -1 !important;
+}
+@media (max-width: 767px) {
+    .pds-contact-newsletter .pds-contact-newsletter-form.cf7-newsletter-grid,
+    .home-newsletter .pds-contact-newsletter-form.cf7-newsletter-grid,
+    .pds-contact-newsletter .pds-cf7-newsletter-wrap,
+    .home-newsletter .pds-cf7-newsletter-wrap {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+}
