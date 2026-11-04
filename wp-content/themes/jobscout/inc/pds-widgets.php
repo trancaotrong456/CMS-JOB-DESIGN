@@ -3414,11 +3414,11 @@ class PDS_Footer_Newsletter_Widget extends WP_Widget {
                         ?>
                         <form class="pds-contact-newsletter-form" onsubmit="return false;">
                             <label class="pds-contact-newsletter-field">
-                                <!-- <span class="pds-contact-newsletter-icon" aria-hidden="true">
+                                <span class="pds-contact-newsletter-icon" aria-hidden="true">
                                     <svg width="20" height="16" viewBox="0 0 20 16" fill="#f2761b">
                                         <path d="M18 0H2C0.9 0 0.01 0.9 0.01 2L0 14C0 15.1 0.9 16 2 16H18C19.1 16 20 15.1 20 14V2C20 0.9 19.1 0 18 0ZM18 4L10 9L2 4V2L10 7L18 2V4Z"/>
                                     </svg>
-                                </span> -->
+                                </span>
                                 <input type="text" inputmode="email" name="contact_newsletter_email" autocomplete="off" placeholder="<?php echo esc_attr( $placeholder ); ?>" required>
                             </label>
                             <button type="button" class="pds-contact-newsletter-btn"><?php echo esc_html( $btn_text ); ?></button>
